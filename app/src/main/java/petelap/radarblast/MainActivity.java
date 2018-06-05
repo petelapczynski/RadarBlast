@@ -2,6 +2,8 @@ package petelap.radarblast;
 //Tutorial followed - https://www.youtube.com/watch?v=cdjD_YD0obQ
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.view.Window;
@@ -21,5 +23,28 @@ public class MainActivity extends Activity {
         Constants.SCREEN_HEIGHT = dm.heightPixels;
 
         setContentView(new GamePanel(this));
+    }
+
+    @Override
+    public void onBackPressed(){
+        // On back button, Alert to prompt Main Menu
+        final AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+        builder.setMessage("Return to Game Menu?");
+        builder.setCancelable(true);
+        builder.setNegativeButton("Yes", new DialogInterface.OnClickListener(){
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.cancel();
+                SceneManager.changeScene("MENU");
+            }
+        });
+        builder.setPositiveButton("No", new DialogInterface.OnClickListener(){
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                //Do nothing
+            }
+        });
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
     }
 }

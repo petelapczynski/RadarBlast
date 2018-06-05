@@ -23,13 +23,24 @@ public class ObstacleManager {
         populateObstacles();
     }
 
-    public boolean obstacleManagerCollide(IGameObject gameob ) {
+    public boolean obstacleManagerCollide(IGameObject gob ) {
         for (Obstacle ob: obstacles) {
-            switch ( gameob.getType() ) {
-                case "Circle": return ob.obstacleCollideCircle(gameob.getCenter(), gameob.getSize() );
-                case "Square": return ob.obstacleCollideSquare(gameob.getCenter(), gameob.getSize() );
-                case "Triangle": return ob.obstacleCollideTriangle(gameob.getCenter(), gameob.getSize() );
-                default: return false;
+            switch ( gob.getType() ) {
+                case "Circle":
+                    if(ob.CollideCircle(gob.getCenter(), gob.getSize() )) {return true;}
+                    break;
+                case "Square":
+                    if(ob.CollideSquare(gob.getCenter(), gob.getSize() )) {return true;}
+                    break;
+                case "TriangleUp":
+                    if (ob.CollideTriangleUp(gob.getCenter(), gob.getSize() )) {return true;}
+                    break;
+                case "TriangleDown":
+                    if (ob.CollideTriangleDown(gob.getCenter(), gob.getSize() )) {return true;}
+                    break;
+                case "Rhombus":
+                    if (ob.CollideRhombus(gob.getCenter(), gob.getSize() )) {return true;}
+                    break;
             }
         }
         return false;
@@ -45,8 +56,6 @@ public class ObstacleManager {
             obstacles.add( new Obstacle(obstacleHeight, startX, startY, color) );
         }
     }
-
-    public void update() {}
 
     public void draw(Canvas canvas) {
         for(Obstacle ob : obstacles) {
