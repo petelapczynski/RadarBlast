@@ -17,7 +17,7 @@ public class ParticleExplosion {
     private int count;
     private Random rnd;
 
-    public ParticleExplosion(int particleCount, float size, int startX, int startY, String type) {
+    public ParticleExplosion(int particleCount, float size, Point start, String type) {
         //Log.d(TAG, "Explosion created at " + x + "," + y);
         this.state = STATE_ALIVE;
         //this.x = x;
@@ -38,13 +38,13 @@ public class ParticleExplosion {
                 case "Circle":
                     float radius = Common.randomFlt(0, size); //between 0 and the radius of the circle
                     double angle = Common.randomDbl(0,360); // between 0 and 360 (degrees)
-                    x = (int)(startX + radius * Math.cos(angle) );
-                    y = (int)(startY + radius * Math.sin(angle) );
+                    x = (int)(start.x + radius * Math.cos(angle) );
+                    y = (int)(start.y + radius * Math.sin(angle) );
                     color = Color.BLUE;
                     break;
                 case "Square":
-                    x = Common.randomInt(startX - s, startX + s );
-                    y = Common.randomInt(startY - s, startY + s );
+                    x = Common.randomInt(start.x - s, start.x + s );
+                    y = Common.randomInt(start.y - s, start.y + s );
                     color = Color.RED;
                     break;
                 case "TriangleUp":
@@ -52,9 +52,9 @@ public class ParticleExplosion {
                     //height = (float)(Math.sqrt((width*width) - (width/2.0f)*(width/2.0f)));
                     height = width * 0.866f;
 
-                    Left = new Point((int)(startX - width/2.0f), (int)(startY + (height/2.0f)));
-                    Center = new Point(startX, (int)(startY - (height/2.0f)));
-                    Right = new Point((int)(startX + width/2.0f), (int)(startY + (height/2.0f)));
+                    Left = new Point((int)(start.x - width/2.0f), (int)(start.y + (height/2.0f)));
+                    Center = new Point(start.x, (int)(start.y - (height/2.0f)));
+                    Right = new Point((int)(start.x + width/2.0f), (int)(start.y + (height/2.0f)));
 
                     rnd = new Random();
                     r1 = rnd.nextDouble();
@@ -70,9 +70,9 @@ public class ParticleExplosion {
                     //height = (float)(Math.sqrt((width*width) - (width/2.0f)*(width/2.0f)));
                     height = width * 0.866f;
 
-                    Left = new Point((int)(startX - width/2.0f), (int)(startY - (height/2.0f)));
-                    Center = new Point(startX, (int)(startY + (height/2.0f)));
-                    Right = new Point((int)(startX + width/2.0f), (int)(startY - (height/2.0f)));
+                    Left = new Point((int)(start.x - width/2.0f), (int)(start.y - (height/2.0f)));
+                    Center = new Point(start.x, (int)(start.y + (height/2.0f)));
+                    Right = new Point((int)(start.x + width/2.0f), (int)(start.y - (height/2.0f)));
 
                     rnd = new Random();
                     r1 = rnd.nextDouble();
@@ -87,12 +87,12 @@ public class ParticleExplosion {
                     width = size * 2.0f;
                     height = width * 1.732f;
 
-                    Left = new Point((int)(startX - width/2.0f), startY);
-                    Right = new Point((int)(startX + width/2.0f), startY);
+                    Left = new Point((int)(start.x - width/2.0f), start.y);
+                    Right = new Point((int)(start.x + width/2.0f), start.y);
                     if ( (i & 1) == 0 ) {
-                        Center = new Point(startX, (int)(startY - (height/2.0f)));
+                        Center = new Point(start.x, (int)(start.y - (height/2.0f)));
                     } else {
-                        Center = new Point(startX, (int)(startY + (height/2.0f)));
+                        Center = new Point(start.x, (int)(start.y + (height/2.0f)));
                     }
 
                     rnd = new Random();
@@ -104,9 +104,16 @@ public class ParticleExplosion {
                     y = (int)((1 - Math.sqrt(r1)) * Left.y + (Math.sqrt(r1) * (1 - r2)) * Center.y + (Math.sqrt(r1) * r2) * Right.y);
                     color = Color.rgb(255,140,0);
                     break;
+                case "Hexagon":
+                    float hexRadius = Common.randomFlt(0, size); //between 0 and the radius of the circle
+                    double hexAngle = Common.randomDbl(0,360); // between 0 and 360 (degrees)
+                    x = (int)(start.x + hexRadius * Math.cos(hexAngle) );
+                    y = (int)(start.y + hexRadius * Math.sin(hexAngle) );
+                    color = Color.rgb(0,255,0);
+                    break;
             }
 
-            Particle p = new Particle(x, y, color, type);
+            Particle p = new Particle(start, x, y, color, type);
             particles.add(p);
         }
     }

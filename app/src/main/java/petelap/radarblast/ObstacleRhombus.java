@@ -332,10 +332,6 @@ public class ObstacleRhombus implements IGameObject {
             Point gobLeft = new Point((int)rect.left, (int)rect.bottom);
             Point gobCenter = new Point(obCenter.x, (int)rect.top);
             Point gobRight = new Point((int)rect.right, (int)rect.bottom);
-//            //ClassObject points
-//            Point cobLeft = new Point((int)tRect.left, (int)tRect.bottom);
-//            Point cobCenter = new Point(center.x, (int)tRect.top);
-//            Point cobRight = new Point((int)tRect.right, (int)tRect.bottom);
 
             // is ClassObject inside GameObject
             if (IsPointInTri(Left, gobLeft, gobCenter, gobRight)){
@@ -394,10 +390,6 @@ public class ObstacleRhombus implements IGameObject {
             Point gobLeft = new Point((int)rect.left, (int)rect.top);
             Point gobCenter = new Point(obCenter.x, (int)rect.bottom);
             Point gobRight = new Point((int)rect.right, (int)rect.top);
-//            //ClassObject points
-//            Point cobLeft = new Point((int)tRect.left, (int)tRect.bottom);
-//            Point cobCenter = new Point(center.x, (int)tRect.top);
-//            Point cobRight = new Point((int)tRect.right, (int)tRect.bottom);
 
             // is ClassObject inside GameObject
             if (IsPointInTri(Left, gobLeft, gobCenter, gobRight)){
@@ -453,11 +445,6 @@ public class ObstacleRhombus implements IGameObject {
             Point gobRight = new Point((int)rect.right, obCenter.y);
             Point gobBottom = new Point(obCenter.x, (int)rect.bottom);
 
-//            //ClassObject points
-//            Point cobLeft = new Point((int)tRect.left, (int)tRect.bottom);
-//            Point cobCenter = new Point(center.x, (int)tRect.top);
-//            Point cobRight = new Point((int)tRect.right, (int)tRect.bottom);
-
             // is ClassObject inside GameObject
             if (IsPointInTri(Left, gobLeft, gobTop, gobRight)){
                 return true;
@@ -506,6 +493,142 @@ public class ObstacleRhombus implements IGameObject {
                 return true;
             }
             if (IsPointInTri(gobBottom, Left, Bottom, Right)){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public boolean CollideHexagon(Point obCenter, float obSize) {
+        float hexWidth = obSize * 2.0f;
+        float hexHeight = (float)(Math.sqrt((hexWidth*hexWidth) - (hexWidth/2.0f)*(hexWidth/2.0f)));
+        float hexSize = hexWidth / 2.0f;
+
+        RectF hRect = new RectF(obCenter.x - obSize, obCenter.y - (hexHeight / 2.0f), obCenter.x + obSize, obCenter.y + (hexHeight / 2.0f) );
+        RectF rRect = new RectF(center.x - size, center.y - (height / 2.0f), center.x + size, center.y + (height / 2.0f) );
+
+        // check bounding box collision first, then check points inside each other
+        // point is inside triangle of sum(area of all three individually) = area of total triangle
+        if ( rRect.left <= hRect.right && rRect.right >= hRect.left && rRect.top <= hRect.bottom && rRect.bottom >= hRect.top) {
+
+            //GameObject points
+            Point hexLeft = new Point((int)(obCenter.x - hexSize), obCenter.y );
+            Point hexTopLeft = new Point(obCenter.x - (int)(0.5f * hexSize), (int)(obCenter.y - (hexHeight/2.0f)));
+            Point hexTopRight = new Point(obCenter.x + (int)(0.5f * hexSize), (int)(obCenter.y - (hexHeight/2.0f)));
+            Point hexRight = new Point((int)(obCenter.x + hexSize), obCenter.y );
+            Point hexBottomRight = new Point(obCenter.x + (int)(0.5f * hexSize), (int)(obCenter.y + (hexHeight/2.0f)));
+            Point hexBottomLeft = new Point(obCenter.x - (int)(0.5f * hexSize), (int)(obCenter.y + (hexHeight/2.0f)));
+
+            // is ClassObject inside GameObject
+            if (IsPointInTri(Left, hexLeft, hexTopLeft, obCenter)){
+                return true;
+            }
+            if (IsPointInTri(Top, hexLeft, hexTopLeft, obCenter)){
+                return true;
+            }
+            if (IsPointInTri(Right, hexLeft, hexTopLeft, obCenter)){
+                return true;
+            }
+            if (IsPointInTri(Bottom, hexLeft, hexTopLeft, obCenter)){
+                return true;
+            }
+            if (IsPointInTri(Left, hexTopLeft, obCenter, hexTopRight)){
+                return true;
+            }
+            if (IsPointInTri(Top, hexTopLeft, obCenter, hexTopRight)){
+                return true;
+            }
+            if (IsPointInTri(Right, hexTopLeft, obCenter, hexTopRight)){
+                return true;
+            }
+            if (IsPointInTri(Bottom, hexTopLeft, obCenter, hexTopRight)){
+                return true;
+            }
+            if (IsPointInTri(Left, obCenter, hexTopRight, hexRight)){
+                return true;
+            }
+            if (IsPointInTri(Top, obCenter, hexTopRight, hexRight)){
+                return true;
+            }
+            if (IsPointInTri(Right, obCenter, hexTopRight, hexRight)){
+                return true;
+            }
+            if (IsPointInTri(Bottom, obCenter, hexTopRight, hexRight)){
+                return true;
+            }
+            if (IsPointInTri(Left, obCenter, hexBottomRight, hexRight)){
+                return true;
+            }
+            if (IsPointInTri(Top, obCenter, hexBottomRight, hexRight)){
+                return true;
+            }
+            if (IsPointInTri(Right, obCenter, hexBottomRight, hexRight)){
+                return true;
+            }
+            if (IsPointInTri(Bottom, obCenter, hexBottomRight, hexRight)){
+                return true;
+            }
+            if (IsPointInTri(Left, hexBottomLeft, obCenter, hexBottomRight)){
+                return true;
+            }
+            if (IsPointInTri(Top, hexBottomLeft, obCenter, hexBottomRight)){
+                return true;
+            }
+            if (IsPointInTri(Right, hexBottomLeft, obCenter, hexBottomRight)){
+                return true;
+            }
+            if (IsPointInTri(Bottom, hexBottomLeft, obCenter, hexBottomRight)){
+                return true;
+            }
+            if (IsPointInTri(Left, hexLeft, hexBottomLeft, obCenter)){
+                return true;
+            }
+            if (IsPointInTri(Top, hexLeft, hexBottomLeft, obCenter)){
+                return true;
+            }
+            if (IsPointInTri(Right, hexLeft, hexBottomLeft, obCenter)){
+                return true;
+            }
+            if (IsPointInTri(Bottom, hexLeft, hexBottomLeft, obCenter)){
+                return true;
+            }
+
+            // is GameObject inside ClassObject
+            if (IsPointInTri(hexLeft, Left, Top, Right)){
+                return true;
+            }
+            if (IsPointInTri(hexTopLeft, Left, Top, Right)){
+                return true;
+            }
+            if (IsPointInTri(hexTopRight, Left, Top, Right)){
+                return true;
+            }
+            if (IsPointInTri(hexRight, Left, Top, Right)){
+                return true;
+            }
+            if (IsPointInTri(hexBottomRight, Left, Top, Right)){
+                return true;
+            }
+            if (IsPointInTri(hexBottomLeft, Left, Top, Right)){
+                return true;
+            }
+            if (IsPointInTri(hexLeft, Left, Bottom, Right)){
+                return true;
+            }
+            if (IsPointInTri(hexTopLeft, Left, Bottom, Right)){
+                return true;
+            }
+            if (IsPointInTri(hexTopRight, Left, Bottom, Right)){
+                return true;
+            }
+            if (IsPointInTri(hexRight, Left, Bottom, Right)){
+                return true;
+            }
+            if (IsPointInTri(hexBottomRight, Left, Bottom, Right)){
+                return true;
+            }
+            if (IsPointInTri(hexBottomLeft, Left, Bottom, Right)){
                 return true;
             }
         }

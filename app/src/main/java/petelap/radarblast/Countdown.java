@@ -14,6 +14,7 @@ public class Countdown {
     public Countdown() {
         done = false;
         timeLeftInMillis = START_TIME_IN_MILLIS;
+        timeLeftInSeconds = (int)timeLeftInMillis / 1000;
     }
 
     public void startTimer(){

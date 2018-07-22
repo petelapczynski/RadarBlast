@@ -9,6 +9,8 @@ import java.util.ArrayList;
  * Created by Pete on 3/25/2018.
  */
 
+// TODO have some way to manage scenes better for Levels on GamePlayScene(), maybe from a json file?
+
 public class SceneManager {
     private ArrayList<IScene> scenes;
     public static int ACTIVE_SCENE;

@@ -40,7 +40,7 @@ public class GamePlayMenu implements IScene  {
         menuPoint = new Point(0,0);
         gameObjects = new ArrayList<>();
         explosions = new ArrayList<>();
-        obstacleQueue = new ObstacleQueue(25);
+        obstacleQueue = new ObstacleQueue(10);
         SelectedObject = obstacleQueue.getItem();
         newItemTime = System.currentTimeMillis();
 
@@ -160,7 +160,7 @@ public class GamePlayMenu implements IScene  {
         for(IGameObject gob: gameObjects){
             if(!gob.InGameArea()) {
                 popped.add(gob);
-                explosions.add(new ParticleExplosion((int) gob.getSize(), gob.getSize(), gob.getCenter().x, gob.getCenter().y, gob.getType()));
+                explosions.add(new ParticleExplosion((int) gob.getSize(), gob.getSize(), gob.getCenter(), gob.getType()));
             }
         }
         if (!popped.isEmpty()){
@@ -183,12 +183,12 @@ public class GamePlayMenu implements IScene  {
         SelectedObject = obstacleQueue.getItem();
         if(SelectedObject == null) {
             // Populate more items in queue
-            for(int i=0; i<25; i++) {
+            for(int i=0; i<10; i++) {
                 obstacleQueue.addItem();
             }
             SelectedObject = obstacleQueue.getItem();
         }
-        if (System.currentTimeMillis() - newItemTime >= 1000) {
+        if (System.currentTimeMillis() - newItemTime >= 2000) {
             menuPoint = new Point(Common.randomInt(250, Constants.SCREEN_WIDTH - 250), Common.randomInt(250, Constants.SCREEN_HEIGHT - 250));
             //addingShape = true;
             IGameObject newObject = SelectedObject.NewInstance();

@@ -2,7 +2,6 @@ package petelap.radarblast;
 
 import android.graphics.Canvas;
 import java.util.ArrayList;
-import java.util.Random;
 
 /**
  * Created by Pete on 3/23/2018.
@@ -41,6 +40,9 @@ public class ObstacleManager {
                 case "Rhombus":
                     if (ob.CollideRhombus(gob.getCenter(), gob.getSize() )) {return true;}
                     break;
+                case "Hexagon":
+                    if (ob.CollideHexagon(gob.getCenter(), gob.getSize() )) {return true;}
+                    break;
             }
         }
         return false;
@@ -50,9 +52,8 @@ public class ObstacleManager {
         // Create obstacles to avoid
         for(int i = 1; i <= obstacleCount; i++) {
             // Random between = random.nextInt(high - low+1) + low;
-            Random random = new Random();
-            int startX = random.nextInt((Constants.SCREEN_WIDTH - (int)obstacleHeight) - (int)obstacleHeight) + (int)obstacleHeight;
-            int startY = random.nextInt((Constants.SCREEN_HEIGHT - (int)obstacleHeight) - (Constants.HEADER_HEIGHT + (int)obstacleHeight)) + (Constants.HEADER_HEIGHT + (int)obstacleHeight);
+            int startX = Common.randomInt((int)obstacleHeight, (int)(Constants.SCREEN_WIDTH - obstacleHeight));
+            int startY = Common.randomInt((int)(Constants.HEADER_HEIGHT + obstacleHeight), (int)(Constants.SCREEN_HEIGHT - obstacleHeight));
             obstacles.add( new Obstacle(obstacleHeight, startX, startY, color) );
         }
     }

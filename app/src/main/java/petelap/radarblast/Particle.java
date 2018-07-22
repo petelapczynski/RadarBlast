@@ -3,6 +3,7 @@ package petelap.radarblast;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.graphics.Point;
 
 
 public class Particle {
@@ -23,9 +24,11 @@ public class Particle {
     private Paint paint;
     private float size;
     private String type;
+    private Point center;
 
 
-    public Particle(int x, int y, int color, String type) {
+    public Particle(Point start, int x, int y, int color, String type) {
+        center = start;
         this.x = x;
         this.y = y;
         this.color = color;
@@ -34,19 +37,32 @@ public class Particle {
         this.type = type;
         state = Particle.STATE_ALIVE;
 
-        size = Common.randomFlt(3,MAX_DIMENSION);
+        size = Common.randomFlt(5,MAX_DIMENSION);
 
         lifetime = DEFAULT_LIFETIME;
         age = 0;
 
         xv = Common.randomFlt(MAX_SPEED * -1,MAX_SPEED );
         yv = Common.randomFlt(MAX_SPEED * -1,MAX_SPEED );
-//        // smooth out diag speed
+        // smooth out diag speed
 //        if (xv * xv + yv * yv > MAX_SPEED * MAX_SPEED) {
 //            xv *= 0.7;
 //            yv *= 0.7;
 //        }
 
+        // Explode from center point
+        if (x <= center.x && xv > 0.0f) {
+            xv *= -1;
+        }
+        if (x > center.x && xv < 0.0f) {
+            xv *= -1;
+        }
+        if (y <= center.y && yv > 0.0f) {
+            yv *= -1;
+        }
+        if (y > center.y && yv < 0.0f) {
+            yv *= -1;
+        }
     }
 
     public int getState() {
@@ -57,6 +73,16 @@ public class Particle {
         if (state != STATE_DEAD) {
             x += xv;
             y += yv;
+
+            // Bounce off walls
+            if(x < 0 || x > Constants.SCREEN_WIDTH){
+                xv *= -1;
+                x += xv + xv;
+            }
+            if(y < Constants.HEADER_HEIGHT || y > Constants.SCREEN_HEIGHT){
+                yv *= -1;
+                y += yv + yv;
+            }
 
             // extract alpha
             int a = color >>> 24;
@@ -81,7 +107,7 @@ public class Particle {
         if(type == "Square") {
             canvas.drawRect(x-size,y-size,x+size,y+size,paint);
         }
-        if(type == "TriangleUp" || type == "TriangleDown" || type == "Rhombus"){
+        if(type == "TriangleUp" || type == "TriangleDown" || type == "Rhombus" || type == "Hexagon"){
             Path path = new Path();
             path.setFillType(Path.FillType.EVEN_ODD);
             if(type == "TriangleUp"){
@@ -101,6 +127,15 @@ public class Particle {
                 path.lineTo(x, y - size);
                 path.lineTo(x + (int)(size * .75), y);
                 path.lineTo(x, y + size);
+                path.close();
+            }
+            if(type == "Hexagon"){
+                path.moveTo(x - size, y);
+                path.lineTo(x - (int)(size * .5), y - size);
+                path.lineTo(x + (int)(size * .5), y - size);
+                path.lineTo(x + size, y);
+                path.lineTo(x + (int)(size * .5), y + size);
+                path.lineTo(x - (int)(size * .5), y + size);
                 path.close();
             }
             canvas.drawPath(path, paint);

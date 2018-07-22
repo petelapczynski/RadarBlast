@@ -10,7 +10,9 @@ import android.view.MotionEvent;
 import java.util.ArrayList;
 
 /**
- * Created by Pete on 5/13/2018. */
+ * Created by Pete on 5/13/2018.
+ * Blast Game
+ * */
 
 public class GamePlayScene1 implements IScene  {
     private ArrayList<IGameObject> gameObjects;
@@ -20,8 +22,9 @@ public class GamePlayScene1 implements IScene  {
     private ObstacleQueue obstacleQueue;
     private IGameObject SelectedObject;
     private long newItemTime;
-    private int speed = 2;
+    private int speed;
     private int score;
+    private int multiplier;
     private Countdown countdown;
     private boolean gameStart;
     private boolean gameOver;
@@ -32,10 +35,12 @@ public class GamePlayScene1 implements IScene  {
         menuPoint = new Point(0,0);
         gameObjects = new ArrayList<>();
         explosions = new ArrayList<>();
-        obstacleQueue = new ObstacleQueue(25);
+        obstacleQueue = new ObstacleQueue(10);
         SelectedObject = obstacleQueue.getItem();
         newItemTime = System.currentTimeMillis();
         score = 0;
+        speed = 2;
+        multiplier = 1;
         countdown = new Countdown();
         gameStart = false;
         gameOver = false;
@@ -50,6 +55,8 @@ public class GamePlayScene1 implements IScene  {
         SelectedObject = obstacleQueue.getItem();
         newItemTime = System.currentTimeMillis();
         score = 0;
+        speed = 2;
+        multiplier = 1;
         countdown = new Countdown();
         gameStart = false;
         gameOver = false;
@@ -112,11 +119,13 @@ public class GamePlayScene1 implements IScene  {
 
         if(!gameStart) {
             drawCenterText(canvas, Color.WHITE, 100, Constants.SCREEN_HEIGHT/2,"Click to Start!");
+            drawCenterText(canvas, Color.WHITE, 100, Constants.SCREEN_HEIGHT/2 + 100,"High Score: " + Constants.HIGH_SCORE);
         }
 
         if(gameOver) {
             drawCenterText(canvas, Color.WHITE, 100, Constants.SCREEN_HEIGHT/2,"Game Over!");
             drawCenterText(canvas, Color.WHITE, 100, Constants.SCREEN_HEIGHT/2 + 100,"Click to Reset");
+            drawCenterText(canvas, Color.WHITE, 100, Constants.SCREEN_HEIGHT/2 + 200,"High Score: " + Constants.HIGH_SCORE);
         }
 
     }
@@ -151,7 +160,7 @@ public class GamePlayScene1 implements IScene  {
                 if (currPop) {
                     gobPop.pop();
                     calcScore(gobPop);
-                    explosions.add(new ParticleExplosion( (int)gobPop.getSize(), gobPop.getSize(), gobPop.getCenter().x, gobPop.getCenter().y, gobPop.getType() ));
+                    explosions.add(new ParticleExplosion( (int)gobPop.getSize(), gobPop.getSize(), gobPop.getCenter(), gobPop.getType() ));
                     gameObjects.remove(gobPop);
 
                     //if (speed < 10) {
@@ -193,7 +202,7 @@ public class GamePlayScene1 implements IScene  {
             SelectedObject = obstacleQueue.getItem();
             if(SelectedObject == null) {
                 // Populate more items in queue
-                for(int i=0; i<25; i++) {
+                for(int i=0; i<10; i++) {
                     obstacleQueue.addItem();
                 }
                 SelectedObject = obstacleQueue.getItem();
@@ -214,6 +223,11 @@ public class GamePlayScene1 implements IScene  {
                 if(countdown.IsFinished()) {
                     gameOver = true;
                     gameOverTime = System.currentTimeMillis();
+
+                    //Set High Score
+                    if (score > Constants.HIGH_SCORE) {
+                        Constants.HIGH_SCORE = score;
+                    }
                 }
             }
         }
@@ -227,7 +241,12 @@ public class GamePlayScene1 implements IScene  {
         if(add < 1){
             add = 1;
         }
-        score += add;
+
+        if (speed > 2) {
+            score += (add + speed) * multiplier;
+        } else {
+            score += add * multiplier;
+        }
     }
 
     private void drawCenterText(Canvas canvas, int color, float size, int vHeight, String text) {

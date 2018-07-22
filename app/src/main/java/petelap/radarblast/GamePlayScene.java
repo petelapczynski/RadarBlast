@@ -9,7 +9,9 @@ import android.view.MotionEvent;
 import java.util.ArrayList;
 
 /**
- * Created by Pete on 3/25/2018. */
+ * Created by Pete on 3/25/2018.
+ * Area Game
+ * */
 
 public class GamePlayScene implements IScene {
     private ArrayList<IGameObject> gameObjects;
@@ -31,7 +33,7 @@ public class GamePlayScene implements IScene {
         playerPoint = new Point(0, 0);
         gameObjects = new ArrayList<>();
         explosions = new ArrayList<>();
-        obstacleManager = new ObstacleManager( Common.randomInt(0,3), Common.randomInt(100, 200), Color.GREEN);
+        obstacleManager = new ObstacleManager( Common.randomInt(0,3), Common.randomInt(100, 200), Color.rgb(0,128,0));
         obstacleQueue = new ObstacleQueue(Common.randomInt(5,10));
         SelectedObject = obstacleQueue.getItem();
         score = 0;
@@ -45,8 +47,8 @@ public class GamePlayScene implements IScene {
         playerPoint = new Point(0, 0);
         gameObjects = new ArrayList<>();
 
-        obstacleManager = new ObstacleManager( Common.randomInt(0,3), Common.randomInt(100, 200), Color.GREEN);
-        //obstacleManager = new ObstacleManager(1, 100, Color.GREEN);
+        obstacleManager = new ObstacleManager( Common.randomInt(0,3), Common.randomInt(100, 200), Color.rgb(0,128,0));
+        //obstacleManager = new ObstacleManager(1, 100, Color.rgb(0,128,0));
 
         obstacleQueue = new ObstacleQueue(Common.randomInt(5,10));
 
@@ -250,6 +252,12 @@ public class GamePlayScene implements IScene {
                                     gobPop = gob;
                                 }
                                 break;
+                            case "Hexagon":
+                                if ( gob.CollideHexagon(currentObject.getCenter(), currentObject.getSize() )) {
+                                    currPop = true;
+                                    gobPop = gob;
+                                }
+                                break;
                         }
                     }
                 }
@@ -257,11 +265,11 @@ public class GamePlayScene implements IScene {
                 // If hit other object or hit edge -> pop object
                 if (currPop) {
                     currentObject.pop();
-                    explosions.add(new ParticleExplosion( (int)currentObject.getSize(), currentObject.getSize(), currentObject.getCenter().x, currentObject.getCenter().y, currentObject.getType() ));
+                    explosions.add(new ParticleExplosion( (int)currentObject.getSize(), currentObject.getSize(), currentObject.getCenter(), currentObject.getType() ));
                     gameObjects.remove(currentObject);
 
                     gobPop.pop();
-                    explosions.add(new ParticleExplosion( (int)gobPop.getSize(), gobPop.getSize(), gobPop.getCenter().x, gobPop.getCenter().y, gobPop.getType() ));
+                    explosions.add(new ParticleExplosion( (int)gobPop.getSize(), gobPop.getSize(), gobPop.getCenter(), gobPop.getType() ));
                     gameObjects.remove(gobPop);
 
                     addingShape = false;
@@ -270,7 +278,7 @@ public class GamePlayScene implements IScene {
                 } else {
                     if (!currentObject.InGameArea()) {
                         currentObject.pop();
-                        explosions.add(new ParticleExplosion( (int)currentObject.getSize(), currentObject.getSize(), currentObject.getCenter().x, currentObject.getCenter().y, currentObject.getType() ));
+                        explosions.add(new ParticleExplosion( (int)currentObject.getSize(), currentObject.getSize(), currentObject.getCenter(), currentObject.getType() ));
                         gameObjects.remove(currentObject);
 
                         addingShape = false;

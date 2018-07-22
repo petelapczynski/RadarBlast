@@ -356,4 +356,108 @@ public class ObstacleCircle implements IGameObject {
         }
         return false;
     }
+
+    @Override
+    public boolean CollideHexagon(Point obCenter, float obSize) {
+        float hexWidth = obSize * 2.0f;
+        float hexHeight = (float)(Math.sqrt((hexWidth*hexWidth) - (hexWidth/2.0f)*(hexWidth/2.0f)));
+        float hexSize = hexWidth / 2.0f;
+
+        Point hexLeft = new Point((int)(obCenter.x - hexSize), obCenter.y );
+        Point hexTopLeft = new Point(obCenter.x - (int)(0.5f * hexSize), (int)(obCenter.y - (hexHeight/2.0f)));
+        Point hexTopRight = new Point(obCenter.x + (int)(0.5f * hexSize), (int)(obCenter.y - (hexHeight/2.0f)));
+        Point hexRight = new Point((int)(obCenter.x + hexSize), obCenter.y );
+        Point hexBottomRight = new Point(obCenter.x + (int)(0.5f * hexSize), (int)(obCenter.y + (hexHeight/2.0f)));
+        Point hexBottomLeft = new Point(obCenter.x - (int)(0.5f * hexSize), (int)(obCenter.y + (hexHeight/2.0f)));
+
+        RectF hRect = new RectF(obCenter.x - obSize, obCenter.y - (hexHeight / 2.0f), obCenter.x + obSize, obCenter.y + (hexHeight / 2.0f) );
+        RectF cRect = new RectF(center.x - radius, center.y - radius, center.x + radius, center.y + radius);
+        float radSq = radius * radius;
+
+        // check bounding box collision first, then if inside create a list of points, for each line
+        // points on a line slope: m = (y1 - y2) / (x1-x2); b = y1 - x1 * m; Loop for x: y = mx + b;
+        // points in circle: (x - CircleX)^2 + (y - CircleY)^2 <= Radius^2
+        if ( hRect.left <= cRect.right && hRect.right >= cRect.left && hRect.top <= cRect.bottom && hRect.bottom >= cRect.top) {
+            // First check 6 points and top and bottom center
+            if ( (hexLeft.x - center.x)*(hexLeft.x - center.x) + (hexLeft.y - center.y)*(hexLeft.y - center.y) <= radSq ) {
+                return true;
+            }
+            if ( (hexTopLeft.x - center.x)*(hexTopLeft.x - center.x) + (hexTopLeft.y - center.y)*(hexTopLeft.y - center.y) <= radSq ) {
+                return true;
+            }
+            if ( (hexTopRight.x - center.x)*(hexTopRight.x - center.x) + (hexTopRight.y - center.y)*(hexTopRight.y - center.y) <= radSq ) {
+                return true;
+            }
+            if ( (hexRight.x - center.x)*(hexRight.x - center.x) + (hexRight.y - center.y)*(hexRight.y - center.y) <= radSq ) {
+                return true;
+            }
+            if ( (hexBottomRight.x - center.x)*(hexBottomRight.x - center.x) + (hexBottomRight.y - center.y)*(hexBottomRight.y - center.y) <= radSq ) {
+                return true;
+            }
+            if ( (hexBottomLeft.x - center.x)*(hexBottomLeft.x - center.x) + (hexBottomLeft.y - center.y)*(hexBottomLeft.y - center.y) <= radSq ) {
+                return true;
+            }
+            if ( (obCenter.x - center.x)*(obCenter.x - center.x) + (hexTopLeft.y - center.y)*(hexTopLeft.y - center.y) <= radSq ) {
+                return true;
+            }
+            if ( (obCenter.x - center.x)*(obCenter.x - center.x) + (hexBottomLeft.y - center.y)*(hexBottomLeft.y - center.y) <= radSq ) {
+                return true;
+            }
+
+            float m;
+            float b;
+            float x;
+            float y;
+
+            //top left
+            if (obCenter.x >= center.x && obCenter.y >= center.y) {
+                m = (hexLeft.y - hexTopLeft.y) / (hexLeft.x - hexTopLeft.x);
+                b = hexLeft.y - hexLeft.x * m;
+                for (int i = hexLeft.x; i <= hexTopLeft.x; i++) {
+                    x = (float) i;
+                    y = m * x + b;
+                    if ((x - center.x) * (x - center.x) + (y - center.y) * (y - center.y) <= radSq) {
+                        return true;
+                    }
+                }
+            }
+            //top right
+            if (obCenter.x <= center.x && obCenter.y >= center.y) {
+                m = (hexTopRight.y - hexRight.y) / (hexTopRight.x - hexRight.x);
+                b = hexTopRight.y - hexTopRight.x * m;
+                for (int i = hexTopRight.x; i <= hexRight.x; i++) {
+                    x = (float) i;
+                    y = m * x + b;
+                    if ((x - center.x) * (x - center.x) + (y - center.y) * (y - center.y) <= radSq) {
+                        return true;
+                    }
+                }
+            }
+            //bottom left
+            if (obCenter.x >= center.x && obCenter.y <= center.y) {
+                m = (hexLeft.y - hexBottomLeft.y) / (hexLeft.x - hexBottomLeft.x);
+                b = hexLeft.y - hexLeft.x * m;
+                for (int i = hexLeft.x; i <= hexBottomLeft.x; i++) {
+                    x = (float) i;
+                    y = m * x + b;
+                    if ((x - center.x) * (x - center.x) + (y - center.y) * (y - center.y) <= radSq) {
+                        return true;
+                    }
+                }
+            }
+            //bottom right
+            if (obCenter.x <= center.x && obCenter.y <= center.y) {
+                m = (hexBottomRight.y - hexRight.y) / (hexBottomRight.x - hexRight.x);
+                b = hexBottomRight.y - hexBottomRight.x * m;
+                for (int i = hexBottomRight.x; i <= hexRight.x; i++) {
+                    x = (float) i;
+                    y = m * x + b;
+                    if ((x - center.x) * (x - center.x) + (y - center.y) * (y - center.y) <= radSq) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
 }

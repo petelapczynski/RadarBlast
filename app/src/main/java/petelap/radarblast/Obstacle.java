@@ -55,7 +55,7 @@ public class Obstacle implements IGameObject {
 
     @Override
     public IGameObject NewInstance() {
-        return new Obstacle(0,0,0, Color.GREEN);
+        return new Obstacle(0,0,0, Color.rgb(0,128,0));
     }
 
     @Override
@@ -320,6 +320,110 @@ public class Obstacle implements IGameObject {
                 m = (rRect.bottom - obCenter.y) / (obCenter.x - rRect.right);
                 b = rRect.bottom - obCenter.x * m;
                 for (int i = obCenter.x; i <= rRect.right; i++) {
+                    x = (float) i;
+                    y = m * x + b;
+                    if (rectangle.contains(x, y)) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public boolean CollideHexagon(Point obCenter, float obSize) {
+        float hexWidth = obSize * 2.0f;
+        float hexHeight = (float)(Math.sqrt((hexWidth*hexWidth) - (hexWidth/2.0f)*(hexWidth/2.0f)));
+
+        Point hexLeft = new Point((int)(obCenter.x - obSize), obCenter.y );
+        Point hexTopLeft = new Point(obCenter.x - (int)(obSize/2.0f), obCenter.y - (int)(hexHeight/2.0f));
+        Point hexTopRight = new Point(obCenter.x + (int)(obSize/2.0f), obCenter.y - (int)(hexHeight/2.0f));
+        Point hexRight = new Point((int)(obCenter.x + obSize), obCenter.y );
+        Point hexBottomRight = new Point(obCenter.x + (int)(obSize/2.0f),obCenter.y + (int)(hexHeight/2.0f));
+        Point hexBottomLeft = new Point(obCenter.x - (int)(obSize/2.0f), obCenter.y + (int)(hexHeight/2.0f));
+
+
+        RectF hRect = new RectF(obCenter.x - obSize, obCenter.y - (hexHeight / 2.0f), obCenter.x + obSize, obCenter.y + (hexHeight / 2.0f) );
+        // First check triangle points and center
+        if (rectangle.contains((obCenter.x - obSize), obCenter.y) ) {
+            return true;
+        }
+        if (rectangle.contains(obCenter.x - (obSize/2.0f), obCenter.y - (hexHeight/2.0f)) ) {
+            return true;
+        }
+        if (rectangle.contains(obCenter.x + (obSize/2.0f), obCenter.y - (hexHeight/2.0f)) ) {
+            return true;
+        }
+        if (rectangle.contains(obCenter.x + obSize, obCenter.y) ) {
+            return true;
+        }
+        if (rectangle.contains(obCenter.x + (obSize/2.0f), obCenter.y + (hexHeight/2.0f)) ) {
+            return true;
+        }
+        if (rectangle.contains(obCenter.x - (obSize/2.0f), obCenter.y + (hexHeight/2.0f)) ) {
+            return true;
+        }
+        if (rectangle.contains(obCenter.x, obCenter.y - (hexHeight/2.0f)) ) {
+            return true;
+        }
+        if (rectangle.contains(obCenter.x, obCenter.y + (hexHeight/2.0f)) ) {
+            return true;
+        }
+
+        // check bounding box collision first, then if inside create a list of points, for each line
+        // points on a line slope: m = (y1 - y2) / (x1-x2); b = y1 - x1 * m; Loop for x: y = mx + b;
+        if ( hRect.left <= rectangle.right && hRect.right >= rectangle.left && hRect.top <= rectangle.bottom && hRect.bottom >= rectangle.top) {
+            float m;
+            float b;
+            float x;
+            float y;
+
+            //top left
+            if (obCenter.x >= rectangle.left && obCenter.y >= center.y) {
+                //m = (hexLeft.y - hexTopLeft.y) / (hexLeft.x - hexTopLeft.x);
+                //b = hexLeft.y - hexLeft.x * m;
+                m = (obCenter.y - (obCenter.y - (hexHeight/2.0f))) / ((obCenter.x - obSize) - (obCenter.x - (obSize/2.0f)));
+                b = obCenter.y - (obCenter.x - obSize) * m;
+                for (int i = hexLeft.x; i <= hexTopLeft.x; i++) {
+                    x = (float) i;
+                    y = m * x + b;
+                    if (rectangle.contains(x, y)) {
+                        return true;
+                    }
+                }
+            }
+            //top right
+            if (obCenter.x <= rectangle.right && obCenter.y >= center.y) {
+                m = ((obCenter.y - (hexHeight/2.0f)) - obCenter.y) / ((obCenter.x + (obSize/2.0f)) - (obCenter.x + obSize));
+                b = (obCenter.y - (hexHeight/2.0f)) - (obCenter.x + (obSize/2.0f)) * m;
+                for (int i = hexTopRight.x; i <= hexRight.x; i++) {
+                    x = (float) i;
+                    y = m * x + b;
+                    if (rectangle.contains(x, y)) {
+                        return true;
+                    }
+                }
+            }
+            //bottom left
+            if (obCenter.x >= rectangle.left && obCenter.y <= center.y) {
+                //m = (hexLeft.y - hexBottomLeft.y) / (hexLeft.x - hexBottomLeft.x);
+                //b = hexLeft.y - hexLeft.x * m;
+                m = (obCenter.y - (obCenter.y + (hexHeight/2.0f))) / ((obCenter.x - obSize) - (obCenter.x - (obSize/2.0f)));
+                b = obCenter.y - (obCenter.x - obSize) * m;
+                for (int i = hexLeft.x; i <= hexBottomLeft.x; i++) {
+                    x = (float) i;
+                    y = m * x + b;
+                    if (rectangle.contains(x, y)) {
+                        return true;
+                    }
+                }
+            }
+            //bottom right
+            if (obCenter.x <= rectangle.right && obCenter.y <= center.y) {
+                m = ((obCenter.y + (hexHeight/2.0f)) - obCenter.y) / ((obCenter.x + (obSize/2.0f)) - (obCenter.x + obSize));
+                b = (obCenter.y + (hexHeight/2.0f)) - (obCenter.x + (obSize/2.0f)) * m;
+                for (int i = hexBottomRight.x; i <= hexRight.x; i++) {
                     x = (float) i;
                     y = m * x + b;
                     if (rectangle.contains(x, y)) {

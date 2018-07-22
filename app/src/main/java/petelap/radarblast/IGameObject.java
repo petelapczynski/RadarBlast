@@ -29,4 +29,5 @@ public interface IGameObject {
     boolean CollideTriangleUp(Point obCenter, float obSize);
     boolean CollideTriangleDown(Point obCenter, float obSize);
     boolean CollideRhombus(Point obCenter, float obSize);
+    boolean CollideHexagon(Point obCenter, float obSize);
 }

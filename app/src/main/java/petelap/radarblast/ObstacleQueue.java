@@ -42,7 +42,7 @@ public class ObstacleQueue {
     public IGameObject getItem(){
         if (!queue.isEmpty()) {
             String item = queue.get(0);
-            // C = Circle, S = Square, T = TriangleUp, I = TriangleDown, R = Rhombus
+            // C = Circle, S = Square, T = TriangleUp, I = TriangleDown, R = Rhombus, H = Hexagon
             switch (item) {
                 case "C":
                     // Circle
@@ -59,6 +59,9 @@ public class ObstacleQueue {
                 case "R":
                     // Rhombus
                     return ObstacleRhombus.GetInstance();
+                case "H":
+                    // Hexagon
+                    return ObstacleHexagon.GetInstance();
             }
         }
         return null;
@@ -149,13 +152,32 @@ public class ObstacleQueue {
                     paint.setColor(Color.BLACK);
                     canvas.drawPath(path, paint);
                     break;
+                case "H":
+                    // Hexagon
+                    path = new Path();
+                    path.setFillType(Path.FillType.EVEN_ODD);
+                    path.moveTo(point.x - size, point.y);
+                    path.lineTo(point.x - (int)(size * .5), point.y - size);
+                    path.lineTo(point.x + (int)(size * .5), point.y - size);
+                    path.lineTo(point.x + size, point.y);
+                    path.lineTo(point.x + (int)(size * .5), point.y + size);
+                    path.lineTo(point.x - (int)(size * .5), point.y + size);
+                    path.close();
+                    paint.setStyle(Paint.Style.FILL);
+                    paint.setARGB(255,0,255,0);
+                    canvas.drawPath(path, paint);
+                    paint.setStyle(Paint.Style.STROKE);
+                    paint.setStrokeWidth(3);
+                    paint.setColor(Color.BLACK);
+                    canvas.drawPath(path, paint);
+                    break;
             }
         }
     }
 
     private String randomObj() {
         // Random between, inclusive of high = random.nextInt(high - low +1) + low;
-        int randomNum = Common.randomInt(1,5);
+        int randomNum = Common.randomInt(1,6);
         switch (randomNum) {
             case 1:
                 // Circle
@@ -172,32 +194,11 @@ public class ObstacleQueue {
             case 5:
                 // Rhombus
                 return "R";
+            case 6:
+                // Hexagon
+                return "H";
         }
         return "";
     }
-
-//    private void drawTriangle(Point center, int width, int height, boolean inverted, Paint paint, Canvas canvas){
-//        Point Left;
-//        Point Center;
-//        Point Right;
-//        if(inverted) {
-//            Left = new Point(center.x - (width/2), center.y - (height/2) );
-//            Center = new Point(center.x, center.y + (height/2) );
-//            Right = new Point(center.x + (width/2), center.y - (height/2) );
-//        } else {
-//            Left = new Point(center.x - (width/2), center.y + (height/2) );
-//            Center = new Point(center.x, center.y - (height/2) );
-//            Right = new Point(center.x + (width/2), center.y + (height/2) );
-//        }
-//
-//        Path path = new Path();
-//        path.setFillType(Path.FillType.EVEN_ODD);
-//        path.moveTo(Left.x, Left.y);
-//        path.lineTo(Center.x, Center.y);
-//        path.lineTo(Right.x, Right.y);
-//        path.close();
-//
-//        canvas.drawPath(path, paint);
-//    }
 
 }
