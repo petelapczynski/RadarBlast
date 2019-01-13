@@ -2,97 +2,93 @@ package petelap.radarblast;
 
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Point;
+import android.graphics.PointF;
 
 import java.util.ArrayList;
 import java.util.Random;
 
 public class ParticleExplosion {
-    public static final int STATE_ALIVE = 0;
-    public static final int STATE_DEAD = 1;
-
+    private static final int STATE_ALIVE = 0;
+    private static final int STATE_DEAD = 1;
     private ArrayList<Particle> particles;
-    private int x, y;
+    private float x, y;
     private int state;
-    private int count;
-    private Random rnd;
 
-    public ParticleExplosion(int particleCount, float size, Point start, String type) {
-        //Log.d(TAG, "Explosion created at " + x + "," + y);
+    public ParticleExplosion(int particleCount, float size, PointF center, String type, boolean bounce) {
         this.state = STATE_ALIVE;
-        //this.x = x;
-        //this.y = y;
-        this.count = particleCount;
-        int s = (int)size;
-        float width;
-        float height;
         double r1;
         double r2;
         this.particles = new ArrayList<>();
-        Point Left, Center, Right;
         int color = 0;
 
         //Random x,y within shape. size is 1/2 of the object
         for (int i=0; i < particleCount; i++) {
             switch (type) {
                 case "Circle":
+                case "Hexagon":
+                case "SpecialDouble":
+                case "SpecialFrenzy":
+                case "SpecialTime":
+                case "SpecialSpike":
+                case "MenuButton":
                     float radius = Common.randomFlt(0, size); //between 0 and the radius of the circle
-                    double angle = Common.randomDbl(0,360); // between 0 and 360 (degrees)
-                    x = (int)(start.x + radius * Math.cos(angle) );
-                    y = (int)(start.y + radius * Math.sin(angle) );
-                    color = Color.BLUE;
+                    double angle = Common.randomDbl(0, 360); // between 0 and 360 (degrees)
+
+                    x = (float)(center.x + radius * Math.cos(angle));
+                    y = (float)(center.y + radius * Math.sin(angle));
+                    switch (type) {
+                        case "Circle":
+                            color = Color.parseColor(Common.getPreferenceString("color_Circle"));
+                            break;
+                        case "Hexagon":
+                            color = Color.parseColor(Common.getPreferenceString("color_Hexagon"));
+                            break;
+                        case "SpecialDouble":
+                            color = Color.rgb(72, 0, 128);
+                            break;
+                        case "SpecialFrenzy":
+                            color = Color.rgb(250, 237, 100);
+                            break;
+                        case "SpecialTime":
+                            color = Color.rgb(117, 117, 117);
+                            break;
+                        case "SpecialSpike":
+                            color = Color.rgb(185, 125, 25);
+                            break;
+                        case "MenuButton":
+                            color = Color.rgb(211, 211, 211);
+                            break;
+                    }
+
                     break;
-                case "Square":
-                    x = Common.randomInt(start.x - s, start.x + s );
-                    y = Common.randomInt(start.y - s, start.y + s );
-                    color = Color.RED;
+                case "Square": {
+                    x = Common.randomFlt(center.x - size, center.x + size);
+                    y = Common.randomFlt(center.y - size, center.y + size);
+                    color = Color.parseColor(Common.getPreferenceString("color_Square"));
                     break;
+                }
+                case "Rectangle": {
+                    x = Common.randomFlt(center.x - size, center.x + size);
+                    y = Common.randomFlt(center.y - (size * 0.618f), center.y + (size * 0.618f));
+                    color = Color.parseColor(Common.getPreferenceString("color_Rectangle"));
+                    break;
+                }
                 case "TriangleUp":
-                    width = size * 2.0f;
-                    //height = (float)(Math.sqrt((width*width) - (width/2.0f)*(width/2.0f)));
-                    height = width * 0.866f;
-
-                    Left = new Point((int)(start.x - width/2.0f), (int)(start.y + (height/2.0f)));
-                    Center = new Point(start.x, (int)(start.y - (height/2.0f)));
-                    Right = new Point((int)(start.x + width/2.0f), (int)(start.y + (height/2.0f)));
-
-                    rnd = new Random();
-                    r1 = rnd.nextDouble();
-                    rnd = new Random();
-                    r2 = rnd.nextDouble();
-
-                    x = (int)((1 - Math.sqrt(r1)) * Left.x + (Math.sqrt(r1) * (1 - r2)) * Center.x + (Math.sqrt(r1) * r2) * Right.x);
-                    y = (int)((1 - Math.sqrt(r1)) * Left.y + (Math.sqrt(r1) * (1 - r2)) * Center.y + (Math.sqrt(r1) * r2) * Right.y);
-                    color = Color.YELLOW;
-                    break;
-                case "TriangleDown":
-                    width = size * 2.0f;
-                    //height = (float)(Math.sqrt((width*width) - (width/2.0f)*(width/2.0f)));
-                    height = width * 0.866f;
-
-                    Left = new Point((int)(start.x - width/2.0f), (int)(start.y - (height/2.0f)));
-                    Center = new Point(start.x, (int)(start.y + (height/2.0f)));
-                    Right = new Point((int)(start.x + width/2.0f), (int)(start.y - (height/2.0f)));
-
-                    rnd = new Random();
-                    r1 = rnd.nextDouble();
-                    rnd = new Random();
-                    r2 = rnd.nextDouble();
-
-                    x = (int)((1 - Math.sqrt(r1)) * Left.x + (Math.sqrt(r1) * (1 - r2)) * Center.x + (Math.sqrt(r1) * r2) * Right.x);
-                    y = (int)((1 - Math.sqrt(r1)) * Left.y + (Math.sqrt(r1) * (1 - r2)) * Center.y + (Math.sqrt(r1) * r2) * Right.y);
-                    color = Color.YELLOW;
-                    break;
-                case "Rhombus":
-                    width = size * 2.0f;
-                    height = width * 1.732f;
-
-                    Left = new Point((int)(start.x - width/2.0f), start.y);
-                    Right = new Point((int)(start.x + width/2.0f), start.y);
-                    if ( (i & 1) == 0 ) {
-                        Center = new Point(start.x, (int)(start.y - (height/2.0f)));
+                case "TriangleDown": {
+                    float width = size * 2.0f;
+                    float height = width * 0.866f;
+                    PointF Left;
+                    PointF Center;
+                    PointF Right;
+                    Random rnd;
+                    if (type.equals("TriangleUp")) {
+                        Left = new PointF((center.x - width / 2.0f), (center.y + (height / 2.0f)));
+                        Center = new PointF(center.x, (center.y - (height / 2.0f)));
+                        Right = new PointF((center.x + width / 2.0f), (center.y + (height / 2.0f)));
                     } else {
-                        Center = new Point(start.x, (int)(start.y + (height/2.0f)));
+                        Left = new PointF((center.x - width / 2.0f), (center.y - (height / 2.0f)));
+                        Center = new PointF(center.x, (center.y + (height / 2.0f)));
+                        Right = new PointF((center.x + width / 2.0f), (center.y - (height / 2.0f)));
                     }
 
                     rnd = new Random();
@@ -100,20 +96,37 @@ public class ParticleExplosion {
                     rnd = new Random();
                     r2 = rnd.nextDouble();
 
-                    x = (int)((1 - Math.sqrt(r1)) * Left.x + (Math.sqrt(r1) * (1 - r2)) * Center.x + (Math.sqrt(r1) * r2) * Right.x);
-                    y = (int)((1 - Math.sqrt(r1)) * Left.y + (Math.sqrt(r1) * (1 - r2)) * Center.y + (Math.sqrt(r1) * r2) * Right.y);
-                    color = Color.rgb(255,140,0);
+                    x = (float)((1f - Math.sqrt(r1)) * Left.x + (Math.sqrt(r1) * (1 - r2)) * Center.x + (Math.sqrt(r1) * r2) * Right.x);
+                    y = (float)((1f - Math.sqrt(r1)) * Left.y + (Math.sqrt(r1) * (1 - r2)) * Center.y + (Math.sqrt(r1) * r2) * Right.y);
+                    color = Color.parseColor(Common.getPreferenceString("color_Triangle"));
                     break;
-                case "Hexagon":
-                    float hexRadius = Common.randomFlt(0, size); //between 0 and the radius of the circle
-                    double hexAngle = Common.randomDbl(0,360); // between 0 and 360 (degrees)
-                    x = (int)(start.x + hexRadius * Math.cos(hexAngle) );
-                    y = (int)(start.y + hexRadius * Math.sin(hexAngle) );
-                    color = Color.rgb(0,255,0);
-                    break;
-            }
+                }
+                case "Rhombus": {
+                    float width = size * 2.0f;
+                    float height = width * 1.732f;
 
-            Particle p = new Particle(start, x, y, color, type);
+                    PointF Left = new PointF((center.x - width / 2.0f), center.y);
+                    PointF Right = new PointF((center.x + width / 2.0f), center.y);
+                    PointF Center;
+                    if ((i & 1) == 0) {
+                        Center = new PointF(center.x, (center.y - (height / 2.0f)));
+                    } else {
+                        Center = new PointF(center.x, (center.y + (height / 2.0f)));
+                    }
+                    Random rnd;
+                    rnd = new Random();
+                    r1 = rnd.nextDouble();
+                    rnd = new Random();
+                    r2 = rnd.nextDouble();
+
+                    x = (float) ((1f - Math.sqrt(r1)) * Left.x + (Math.sqrt(r1) * (1 - r2)) * Center.x + (Math.sqrt(r1) * r2) * Right.x);
+                    y = (float) ((1f - Math.sqrt(r1)) * Left.y + (Math.sqrt(r1) * (1 - r2)) * Center.y + (Math.sqrt(r1) * r2) * Right.y);
+                    color = Color.parseColor(Common.getPreferenceString("color_Rhombus"));
+                    break;
+                }
+            }
+            // Add particle
+            Particle p = new Particle(center, x, y, color, type, bounce);
             particles.add(p);
         }
     }
@@ -138,13 +151,10 @@ public class ParticleExplosion {
 
     public void draw(Canvas canvas) {
         for(Particle p: particles) {
-            if(p.getState() == STATE_ALIVE) {
-                p.draw(canvas);
-            }
+            p.draw(canvas);
         }
     }
 
     public int getState() {
         return state;
-    }
-}
+    }}

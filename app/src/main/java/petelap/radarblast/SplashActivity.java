@@ -1,5 +1,4 @@
 package petelap.radarblast;
-//Tutorial followed - https://github.com/cstew/Splash
 
 import android.content.Intent;
 import android.os.Bundle;

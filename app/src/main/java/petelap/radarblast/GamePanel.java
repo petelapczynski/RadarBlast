@@ -6,21 +6,14 @@ import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
-/**
- * Created by Pete on 3/23/2018.
- */
-
 public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
     private MainThread thread;
     private SceneManager sceneManager;
 
     public GamePanel( Context context){
         super(context);
-
         getHolder().addCallback(this);
-
         thread = new MainThread(getHolder(), this);
-
         sceneManager = new SceneManager();
         setFocusable(true);
     }
@@ -28,7 +21,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
     @Override
     public void surfaceCreated(SurfaceHolder holder){
         thread = new MainThread(getHolder(), this);
-        Constants.INIT_TIME = System.currentTimeMillis();
+        // Constants.INIT_TIME = System.currentTimeMillis();
         thread.setRunning(true);
         thread.start();
     }
@@ -40,6 +33,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
             try {
                 thread.setRunning(false);
                 thread.join();
+                thread = null;
             } catch (Exception e) { e.printStackTrace(); }
             retry = false;
         }
@@ -57,6 +51,12 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
         //return super.onTouchEvent(event);
     }
 
+//    @Override
+//    public boolean performClick(){
+//        super.performClick();
+//        return true;
+//    }
+
     public void update(){
         sceneManager.update();
     }
@@ -66,6 +66,4 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
         super.draw(canvas);
         sceneManager.draw(canvas);
     }
-
 }
-

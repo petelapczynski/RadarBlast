@@ -1,0 +1,434 @@
+[
+  {
+    "Number": 0,
+    "Name": "Level 0",
+    "Desc": "Random Shapes!",
+    "GameObjects":"",
+    "LevelObjects":[
+    ]
+  },
+  {
+    "Number": 1,
+    "Name": "Level 1",
+    "Desc": "Try some Squares",
+    "GameObjects":"SSSSSSSSSS",
+    "LevelObjects":[
+    ]
+  },
+  {
+    "Number": 2,
+    "Name": "Level 2",
+    "Desc": "Try some Rectangles",
+    "GameObjects": "EEEEEEEEEE",
+    "LevelObjects":[
+    ]
+  },
+  {
+    "Number": 3,
+    "Name": "Level 3",
+    "Desc": "Try some Circles",
+    "GameObjects": "CCCCCCCCCC",
+    "LevelObjects":[
+    ]
+  },
+  {
+    "Number": 4,
+    "Name": "Level 4",
+    "Desc": "Try some Triangles",
+    "GameObjects": "TITITITITI",
+    "LevelObjects":[
+    ]
+  },
+  {
+    "Number": 5,
+    "Name": "Level 5",
+    "Desc": "Try some Rhombuses",
+    "GameObjects": "RRRRRRRRRR",
+    "LevelObjects":[
+    ]
+  },
+  {
+    "Number": 6,
+    "Name": "Level 6",
+    "Desc": "Try some Hexagons",
+    "GameObjects": "HHHHHHHHHH",
+    "LevelObjects":[
+    ]
+  },
+  {
+    "Number": 7,
+    "Name": "Level 7",
+    "Desc": "Don't touch the Obstacle",
+    "GameObjects":"SSSSSSSSSS",
+    "LevelObjects":[
+      {
+        "Height": 100,
+        "Width":100,
+        "PosX": 50,
+        "PosY": 50
+      }
+    ]
+  },
+  {
+    "Number": 8,
+    "Name": "Level 8",
+    "Desc": "Round and round we go",
+    "GameObjects": "CCCCCCCCCC",
+    "LevelObjects":[
+      {
+        "Height": 50,
+        "Width":50,
+        "PosX": 25,
+        "PosY": 50
+      },
+      {
+        "Height": 50,
+        "Width":50,
+        "PosX": 75,
+        "PosY": 50
+      }
+    ]
+  },
+  {
+    "Number": 9,
+    "Name": "Level 9",
+    "Desc": "Three sides, Three Obstacles",
+    "GameObjects": "TITITI",
+    "LevelObjects":[
+      {
+        "Height": 50,
+        "Width":50,
+        "PosX": 50,
+        "PosY": 25
+      },
+      {
+        "Height": 50,
+        "Width":50,
+        "PosX": 50,
+        "PosY": 50
+      },
+      {
+        "Height": 50,
+        "Width":50,
+        "PosX": 50,
+        "PosY": 75
+      }
+    ]
+  },
+  {
+    "Number": 10,
+    "Name": "Level 10",
+    "Desc": "Four sides, four Obstacles",
+    "GameObjects": "RRRRRR",
+    "LevelObjects":[
+      {
+        "Height": 50,
+        "Width":50,
+        "PosX": 33,
+        "PosY": 33
+      },
+      {
+        "Height": 50,
+        "Width":50,
+        "PosX": 66,
+        "PosY": 33
+      },
+      {
+        "Height": 50,
+        "Width":50,
+        "PosX": 33,
+        "PosY": 66
+      },
+      {
+        "Height": 50,
+        "Width":50,
+        "PosX": 66,
+        "PosY": 66
+      }
+    ]
+  },
+  {
+    "Number": 11,
+    "Name": "Level 11",
+    "Desc": "Six sides, shapes, and Obstacles",
+    "GameObjects": "HHHHHH",
+    "LevelObjects":[
+      {
+        "Height": 50,
+        "Width":50,
+        "PosX": 50,
+        "PosY": 25
+      },
+      {
+        "Height": 50,
+        "Width":50,
+        "PosX": 33,
+        "PosY": 25
+      },
+
+      {
+        "Height": 50,
+        "Width":50,
+        "PosX": 66,
+        "PosY": 25
+      },
+      {
+        "Height": 50,
+        "Width":50,
+        "PosX": 50,
+        "PosY": 75
+      },
+      {
+        "Height": 50,
+        "Width":50,
+        "PosX": 33,
+        "PosY": 75
+      },
+      {
+        "Height": 50,
+        "Width":50,
+        "PosX": 66,
+        "PosY": 75
+      }
+    ]
+  },
+  {
+    "Number": 12,
+    "Name": "Level 12",
+    "Desc": "One of each",
+    "GameObjects": "SCTIRH",
+    "LevelObjects":[
+      {
+        "Height": 400,
+        "Width":400,
+        "PosX": 50,
+        "PosY": 50
+      }
+    ]
+  },
+  {
+    "Number": 13,
+    "Name": "Level 13",
+    "Desc": "'N' is for Next",
+    "GameObjects": "CCCCCC",
+    "LevelObjects":[
+      {
+        "Height": 50,
+        "Width":50,
+        "PosX": 33,
+        "PosY": 33
+      },
+      {
+        "Height": 50,
+        "Width":50,
+        "PosX": 33,
+        "PosY": 36
+      },
+      {
+        "Height": 50,
+        "Width":50,
+        "PosX": 33,
+        "PosY": 39
+      },
+      {
+        "Height": 50,
+        "Width":50,
+        "PosX": 33,
+        "PosY": 42
+      },
+      {
+        "Height": 50,
+        "Width":50,
+        "PosX": 33,
+        "PosY": 45
+      },
+      {
+        "Height": 50,
+        "Width":50,
+        "PosX": 33,
+        "PosY": 48
+      },
+      {
+        "Height": 50,
+        "Width":50,
+        "PosX": 33,
+        "PosY": 51
+      },
+      {
+        "Height": 50,
+        "Width":50,
+        "PosX": 33,
+        "PosY": 54
+      },
+      {
+        "Height": 50,
+        "Width":50,
+        "PosX": 33,
+        "PosY": 57
+      },
+      {
+        "Height": 50,
+        "Width":50,
+        "PosX": 33,
+        "PosY": 60
+      },
+      {
+        "Height": 50,
+        "Width":50,
+        "PosX": 33,
+        "PosY": 63
+      },
+      {
+        "Height": 50,
+        "Width":50,
+        "PosX": 33,
+        "PosY": 66
+      },
+      {
+        "Height": 50,
+        "Width":50,
+        "PosX": 66,
+        "PosY": 33
+      },
+      {
+        "Height": 50,
+        "Width":50,
+        "PosX": 66,
+        "PosY": 36
+      },
+      {
+        "Height": 50,
+        "Width":50,
+        "PosX": 66,
+        "PosY": 39
+      },
+      {
+        "Height": 50,
+        "Width":50,
+        "PosX": 66,
+        "PosY": 42
+      },
+      {
+        "Height": 50,
+        "Width":50,
+        "PosX": 66,
+        "PosY": 45
+      },
+      {
+        "Height": 50,
+        "Width":50,
+        "PosX": 66,
+        "PosY": 48
+      },
+      {
+        "Height": 50,
+        "Width":50,
+        "PosX": 66,
+        "PosY": 51
+      },
+      {
+        "Height": 50,
+        "Width":50,
+        "PosX": 66,
+        "PosY": 54
+      },
+      {
+        "Height": 50,
+        "Width":50,
+        "PosX": 66,
+        "PosY": 57
+      },
+      {
+        "Height": 50,
+        "Width":50,
+        "PosX": 66,
+        "PosY": 60
+      },
+      {
+        "Height": 50,
+        "Width":50,
+        "PosX": 66,
+        "PosY": 63
+      },
+      {
+        "Height": 50,
+        "Width":50,
+        "PosX": 66,
+        "PosY": 66
+      },
+      {
+        "Height": 50,
+        "Width":50,
+        "PosX": 33,
+        "PosY": 33
+      },
+      {
+        "Height": 50,
+        "Width":50,
+        "PosX": 36,
+        "PosY": 36
+      },
+      {
+        "Height": 50,
+        "Width":50,
+        "PosX": 39,
+        "PosY": 39
+      },
+      {
+        "Height": 50,
+        "Width":50,
+        "PosX": 42,
+        "PosY": 42
+      },
+      {
+        "Height": 50,
+        "Width":50,
+        "PosX": 45,
+        "PosY": 45
+      },
+      {
+        "Height": 50,
+        "Width":50,
+        "PosX": 48,
+        "PosY": 48
+      },
+      {
+        "Height": 50,
+        "Width":50,
+        "PosX": 51,
+        "PosY": 51
+      },
+      {
+        "Height": 50,
+        "Width":50,
+        "PosX": 54,
+        "PosY": 54
+      },
+      {
+        "Height": 50,
+        "Width":50,
+        "PosX": 57,
+        "PosY": 57
+      },
+      {
+        "Height": 50,
+        "Width":50,
+        "PosX": 60,
+        "PosY": 60
+      },
+      {
+        "Height": 50,
+        "Width":50,
+        "PosX": 63,
+        "PosY": 63
+      },
+      {
+        "Height": 50,
+        "Width":50,
+        "PosX": 66,
+        "PosY": 66
+      }
+    ]
+  }
+
+]

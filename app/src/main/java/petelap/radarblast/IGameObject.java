@@ -1,33 +1,30 @@
 package petelap.radarblast;
 
 import android.graphics.Canvas;
-import android.graphics.Point;
+import android.graphics.Paint;
+import android.graphics.PointF;
+import android.graphics.RectF;
 
-/**
- * Created by Pete on 3/23/2018.
- */
+import java.util.ArrayList;
 
 public interface IGameObject {
     void draw(Canvas canvas);
-    void update(Point playerPoint);
+    void update(PointF playerPoint);
     void grow(float speed);
+    void setPaint(Paint ovrPaint);
     IGameObject NewInstance();
     boolean InGameArea();
-    boolean pointInside(Point playerPoint);
+    boolean pointInside(PointF playerPoint);
     void pop();
     float getArea();
-
     // Center of object
-    Point getCenter();
+    PointF getCenter();
     // Half the object width
     float getSize();
     // Type of object
     String getType();
-    // obstacleCollide
-    boolean CollideCircle(Point obCenter, float obSize);
-    boolean CollideSquare(Point obCenter, float obSize);
-    boolean CollideTriangleUp(Point obCenter, float obSize);
-    boolean CollideTriangleDown(Point obCenter, float obSize);
-    boolean CollideRhombus(Point obCenter, float obSize);
-    boolean CollideHexagon(Point obCenter, float obSize);
+    // Bounding box
+    RectF getBoundsRect();
+    // Bounding Points
+    ArrayList<PointF> getPoints();
 }

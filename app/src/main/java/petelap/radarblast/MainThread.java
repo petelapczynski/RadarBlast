@@ -3,10 +3,6 @@ package petelap.radarblast;
 import android.graphics.Canvas;
 import android.view.SurfaceHolder;
 
-/**
- * Created by Pete on 3/23/2018.
- */
-
 public class MainThread extends Thread {
     private static final int MAX_FPS = 30;
     //private double averageFPS;
@@ -69,7 +65,6 @@ public class MainThread extends Thread {
                 //totalTime = 0;
                 //System.out.println(averageFPS);
             //}
-
         }
     }
 }

@@ -1,0 +1,27 @@
+[
+    {
+      "Number": 1,
+      "Name": "AAA",
+      "Score": 50
+    },
+    {
+      "Number": 2,
+      "Name": "BBB",
+      "Score": 40
+    },
+    {
+      "Number": 3,
+      "Name": "CCC",
+      "Score": 30
+    },
+    {
+      "Number": 4,
+      "Name": "DDD",
+      "Score": 20
+    },
+    {
+      "Number": 5,
+      "Name": "EEE",
+      "Score": 10
+    }
+]

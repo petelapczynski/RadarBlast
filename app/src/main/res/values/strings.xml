@@ -1,3 +1,139 @@
 <resources>
     <string name="app_name">Radar Blast</string>
+    <string name="title_activity_settings">Settings</string>
+
+    <!-- Strings related to Settings -->
+    <string name="category_std">Standard Game Options</string>
+    <string name="category_gameobj">Custom Game Options</string>
+    <string name="category_about">About the Game</string>
+    <string name="category_music">Music and Sounds</string>
+
+    <string name="username_Title">User Name</string>
+    <string name="username_Summary">Tap to change your user name</string>
+    <string name="username_DialogTitle">Enter User Name</string>
+
+    <string name="background_Title">Background</string>
+    <string name="background_Summary">Tap to change game play background</string>
+    <string name="background_DialogTitle">Choose Background</string>
+    <string-array name="background_list_titles">
+        <item>Chalk</item>
+        <item>Gray Vert</item>
+        <item>Grid</item>
+        <item>Grid Light</item>
+        <item>Grid Dark</item>
+        <item>Image URL</item>
+    </string-array>
+    <string-array name="background_list_values">
+        <item>bg_chalk</item>
+        <item>bg_gray</item>
+        <item>bg_grid</item>
+        <item>bg_gridlt</item>
+        <item>bg_griddrk</item>
+        <item>bg_url</item>
+    </string-array>
+
+    <string name="music_Title">Game Music</string>
+    <string name="music_Summary">Tap to turn music on or off</string>
+
+    <string name="sound_Title">Game Sounds</string>
+    <string name="sound_Summary">Tap to turn sounds on or off</string>
+
+    <string name="gradient_Title">Gradient Shape Colors</string>
+    <string name="gradient_Summary">Use gradients for shapes</string>
+
+    <string name="particles_Title">Shape Particle Count</string>
+    <string-array name="particles_list_titles">
+        <item>Super-Low</item>
+        <item>Low</item>
+        <item>Medium</item>
+        <item>High</item>
+        <item>Super-High</item>
+    </string-array>
+    <string-array name="particles_list_values">
+        <item>16</item>
+        <item>12</item>
+        <item>8</item>
+        <item>4</item>
+        <item>1</item>
+    </string-array>
+
+    <string name="color_Obj_Title">Obstacle</string>
+    <string name="color_Square_Title">Square</string>
+    <string name="color_Rectangle_Title">Rectangle</string>
+    <string name="color_Circle_Title">Circle</string>
+    <string name="color_Triangle_Title">Triangle</string>
+    <string name="color_Rhombus_Title">Rhombus</string>
+    <string name="color_Hexagon_Title">Hexagon</string>
+    <string name="color_Title">Select a Color</string>
+    <string-array name="color_list_titles">
+        <item>white</item>
+        <item>yellow</item>
+        <item>fuchsia</item>
+        <item>red</item>
+        <item>silver</item>
+        <item>gray</item>
+        <item>olive</item>
+        <item>purple</item>
+        <item>maroon</item>
+        <item>aqua</item>
+        <item>lime</item>
+        <item>teal</item>
+        <item>green</item>
+        <item>blue</item>
+        <item>navy</item>
+        <item>black</item>
+        <item>darkorange</item>
+    </string-array>
+    <string-array name="color_list_values">
+        <item>#FFFFFF</item>
+        <item>#FFFF00</item>
+        <item>#FF00FF</item>
+        <item>#FF0000</item>
+        <item>#C0C0C0</item>
+        <item>#808080</item>
+        <item>#808000</item>
+        <item>#800080</item>
+        <item>#800000</item>
+        <item>#00FFFF</item>
+        <item>#00FF00</item>
+        <item>#008080</item>
+        <item>#008000</item>
+        <item>#0000FF</item>
+        <item>#000080</item>
+        <item>#000000</item>
+        <item>#FF8C00</item>
+    </string-array>
+
+    <string name="about_Title">About</string>
+    <string name="about_Summary">View credits and details about the Game and the Developer</string>
+
+    <string name="colors_Title">Shape Colors</string>
+    <string name="colors_Summary">Change Colors for Game Shapes</string>
+
+    <string name="about_developer_Title_1">About the Game</string>
+    <string name="about_developer_Title_2">About the Developer</string>
+    <string name="about_developer_Summary_1">The general concept came to me after a night of playing old school arcade games with my brother. They were simple to play, but hard to master. It inspired me to want to create a simple, fun, old school arcade style 2D game.</string>
+    <string name="about_developer_Summary_2">As my first game development project, it was a lot of fun and hard work. A special thanks to my wife and son for ideas and testing, and my brother Paul for hours of code discussion\'s. - Pete Lapczynski.</string>
+    <string name="about_credits_Title">Credits and References</string>
+    <string name="about_credits_Summary">A special thanks to some people below who helped save me a lot of time with great tutorials and resources to understand basic Android/Java 2D game concepts.</string>
+
+    <string name="category_android">Android and Java</string>
+    <string name="about_credits_GameLoop">Game Loop\n\n\'Retro Chicken\' for simple but informative tutorials about basic game design, game loops, and coding java in Android.\n\nhttps://www.youtube.com/channel/UCTSRzzCcBtKMye3TfKM-k5A</string>
+    <string name="about_credits_GameLoop_URL">https://www.youtube.com/channel/UCTSRzzCcBtKMye3TfKM-k5A</string>
+    <string name="about_credits_JSON">JSON Parsing\n\n\'Francesco Azzola\' for a well written JSON parsing guide.\n\nhttps://www.survivingwithandroid.com/2013/10/parse-json-data-in-android.html</string>
+    <string name="about_credits_JSON_URL">https://www.survivingwithandroid.com/2013/10/parse-json-data-in-android.html</string>
+    <string name="about_credits_Splash">Splash Screen\n\n\'Chris Stewart (cstrew)\' for an explanation on Android splash screens done right.\n\nhttps://github.com/cstew/Splash</string>
+    <string name="about_credits_Splash_URL">https://github.com/cstew/Splash</string>
+    <string name="about_credits_OnlineConvert">\'Online-Convert\' for a simple to use audio format converter.\n\nhttps://audio.online-convert.com/convert-to-ogg</string>
+    <string name="about_credits_OnlineConvert_URL">https://audio.online-convert.com/convert-to-ogg</string>
+    <string name="about_credits_Music1">\'imdaddrmaster\' for game music.\n\nhttps://soundcloud.com/imdaddrmaster</string>
+    <string name="about_credits_Music1_URL">https://soundcloud.com/imdaddrmaster</string>
+
+    <string name="reset_Title">Reset Settings</string>
+
+    <string name="pictureURL_Title">Picture URL</string>
+    <string name="pictureURL_Summary">Tap to change the Image URL for the Picture Game</string>
+    <string name="pictureURL_DialogTitle">Enter an Image URL for Picture Game</string>
+    <string name="pictureURL_Default">https://picsum.photos/360/640/?random</string>
+    <string name="action_settings">Settings</string>
 </resources>

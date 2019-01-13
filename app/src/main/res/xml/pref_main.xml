@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:key="main_screen">
+    <!-- NOTE: EditTextPreference accepts EditText attributes. -->
+    <!-- NOTE: Hide buttons to simplify the UI. Users can touch outside the dialog to dismiss it. -->
+    <Preference
+        android:key="version"
+        android:singleLine="false"
+        android:summary="@string/about_version_Summary"
+        android:title="@string/about_version_Title" />
+    <PreferenceCategory android:title="@string/category_std">
+        <EditTextPreference
+            android:defaultValue="_"
+            android:dialogTitle="@string/username_DialogTitle"
+            android:inputType="text"
+            android:key="username"
+            android:singleLine="true"
+            android:summary="@string/username_Summary"
+            android:title="@string/username_Title" />
+        <ListPreference
+            android:defaultValue="bg_gray"
+            android:dialogTitle="@string/background_DialogTitle"
+            android:entries="@array/background_list_titles"
+            android:entryValues="@array/background_list_values"
+            android:key="background"
+            android:summary="@string/background_Summary"
+            android:title="@string/background_Title" />
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="music"
+            android:summary="@string/music_Summary"
+            android:title="@string/music_Title" />
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="sound"
+            android:summary="@string/sound_Summary"
+            android:title="@string/sound_Title" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="@string/category_gameobj">
+        <ListPreference
+            android:defaultValue="12"
+            android:dialogTitle="@string/particles_Title"
+            android:entries="@array/particles_list_titles"
+            android:entryValues="@array/particles_list_values"
+            android:key="particles"
+            android:title="@string/particles_Title" />
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="gradient"
+            android:summary="@string/gradient_Summary"
+            android:title="@string/gradient_Title" />
+        <PreferenceScreen
+            android:key="color_screen"
+            android:title="@string/colors_Title"
+            android:summary="@string/colors_Summary">
+            <ListPreference
+                android:defaultValue="#008000"
+                android:dialogTitle="@string/color_Title"
+                android:entries="@array/color_list_titles"
+                android:entryValues="@array/color_list_values"
+                android:key="color_Obj"
+                android:title="@string/color_Obj_Title" />
+            <ListPreference
+                android:defaultValue="#FF0000"
+                android:dialogTitle="@string/color_Title"
+                android:entries="@array/color_list_titles"
+                android:entryValues="@array/color_list_values"
+                android:key="color_Square"
+                android:title="@string/color_Square_Title" />
+            <ListPreference
+                android:defaultValue="#800080"
+                android:dialogTitle="@string/color_Title"
+                android:entries="@array/color_list_titles"
+                android:entryValues="@array/color_list_values"
+                android:key="color_Rectangle"
+                android:title="@string/color_Rectangle_Title" />
+            <ListPreference
+                android:defaultValue="#0000FF"
+                android:dialogTitle="@string/color_Title"
+                android:entries="@array/color_list_titles"
+                android:entryValues="@array/color_list_values"
+                android:key="color_Circle"
+                android:title="@string/color_Circle_Title" />
+            <ListPreference
+                android:defaultValue="#FFFF00"
+                android:dialogTitle="@string/color_Title"
+                android:entries="@array/color_list_titles"
+                android:entryValues="@array/color_list_values"
+                android:key="color_Triangle"
+                android:title="@string/color_Triangle_Title" />
+            <ListPreference
+                android:defaultValue="#FF8C00"
+                android:dialogTitle="@string/color_Title"
+                android:entries="@array/color_list_titles"
+                android:entryValues="@array/color_list_values"
+                android:key="color_Rhombus"
+                android:title="@string/color_Rhombus_Title" />
+            <ListPreference
+                android:defaultValue="#00FF00"
+                android:dialogTitle="@string/color_Title"
+                android:entries="@array/color_list_titles"
+                android:entryValues="@array/color_list_values"
+                android:key="color_Hexagon"
+                android:title="@string/color_Hexagon_Title" />
+            <EditTextPreference
+                android:defaultValue="@string/pictureURL_Default"
+                android:dialogTitle="@string/pictureURL_DialogTitle"
+                android:inputType="text"
+                android:key="pictureURL"
+                android:singleLine="true"
+                android:summary="@string/pictureURL_Summary"
+                android:title="@string/pictureURL_Title" />
+        </PreferenceScreen>
+    </PreferenceCategory>
+    <PreferenceCategory android:title="@string/reset_Title">
+        <Preference android:title="@string/reset_Title"
+            android:summary=""
+            android:key="restoreDefaultSettings"
+            android:id="@+id/reset" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="@string/category_about">
+        <PreferenceScreen
+            android:key="about_screen"
+            android:title="@string/about_Title"
+            android:summary="@string/about_Summary">
+            <Preference
+                android:key="about_Developer_1"
+                android:singleLine="false"
+                android:summary="@string/about_developer_Summary_1"
+                android:title="@string/about_developer_Title_1" />
+            <Preference
+                android:key="about_Developer_2"
+                android:singleLine="false"
+                android:summary="@string/about_developer_Summary_2"
+                android:title="@string/about_developer_Title_2" />
+            <Preference
+                android:key="about_Resources"
+                android:singleLine="false"
+                android:autoLink="web"
+                android:summary="@string/about_credits_Summary"
+                android:title="@string/about_credits_Title" />
+            <Preference android:title="@string/category_android" />
+            <Preference
+            android:summary="@string/about_credits_GameLoop">
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:data="@string/about_credits_GameLoop_URL" />
+            </Preference>
+            <Preference
+                android:summary="@string/about_credits_JSON">
+                <intent
+                    android:action="android.intent.action.VIEW"
+                    android:data="@string/about_credits_JSON_URL" />
+            </Preference>
+            <Preference
+                android:summary="@string/about_credits_Splash">
+                <intent
+                    android:action="android.intent.action.VIEW"
+                    android:data="@string/about_credits_Splash_URL" />
+            </Preference>
+            <Preference android:title="@string/category_music" />
+            <Preference
+                android:summary="@string/about_credits_OnlineConvert">
+                <intent
+                    android:action="android.intent.action.VIEW"
+                    android:data="@string/about_credits_OnlineConvert_URL" />
+            </Preference>
+            <Preference
+                android:summary="@string/about_credits_Music1">
+                <intent
+                    android:action="android.intent.action.VIEW"
+                    android:data="@string/about_credits_Music1_URL" />
+            </Preference>
+        </PreferenceScreen>
+    </PreferenceCategory>
+</PreferenceScreen>

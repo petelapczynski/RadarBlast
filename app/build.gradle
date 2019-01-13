@@ -1,6 +1,8 @@
 apply plugin: 'com.android.application'
 
 android {
+    compileSdkVersion 26
+    buildToolsVersion '28.0.3'
     signingConfigs {
         config {
             Properties properties = new Properties()
@@ -10,35 +12,55 @@ android {
             storePassword properties.getProperty('storePassword')
             keyPassword properties.getProperty('keyPassword')
         }
+
     }
-    compileSdkVersion 23
-    buildToolsVersion '27.0.3'
     defaultConfig {
         applicationId "petelap.radarblast"
         minSdkVersion 23
-        targetSdkVersion 23
+        targetSdkVersion 26
         versionCode 1
-        versionName "1.0"
+        versionName "BetaRelease"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         signingConfig signingConfigs.config
+        flavorDimensions "default"
     }
     buildTypes {
         release {
-            minifyEnabled true
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.config
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'),
+                    'proguard-rules.pro'
+            buildConfigField 'String', "appID", App_release_appID
+            buildConfigField 'String', "unitID", App_release_unitID
+            resValue 'string', "resappID", App_release_appID
         }
         debug {
             signingConfig signingConfigs.config
+            applicationIdSuffix ".debug"
+            versionNameSuffix "-debug"
+            buildConfigField 'String', "appID", App_debug_appID
+            buildConfigField 'String', "unitID", App_debug_unitID
+            resValue 'string', "resappID", App_debug_appID
         }
     }
-
+    productFlavors {
+        free {
+            applicationId "petelap.radarblast.androidproductflavors.free"
+            manifestPlaceholders = [ appLabel: "Radar Blast" ]
+        }
+        paid {
+            applicationId "petelap.radarblast.androidproductflavors.paid"
+            manifestPlaceholders = [ appLabel: "Radar Blast" ]
+        }
+    }
 }
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation 'com.android.support:appcompat-v7:23.4.0'
-    implementation 'com.android.support.constraint:constraint-layout:1.1.0'
+    implementation 'com.android.support:appcompat-v7:26.1.0'
+    implementation 'com.android.support.constraint:constraint-layout:1.1.3'
+    implementation 'com.android.support:support-v4:26.1.0'
+    implementation 'com.google.android.gms:play-services-ads:17.1.2'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'

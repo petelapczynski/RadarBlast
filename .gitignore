@@ -25,6 +25,7 @@ gen/
 # Local configuration file (sdk path, etc)
 local.properties
 keystore.properties
+gradle.properties
 
 # Windows thumbnail db
 Thumbs.db

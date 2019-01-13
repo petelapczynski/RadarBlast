@@ -1,98 +1,141 @@
 package petelap.radarblast;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Point;
+import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.preference.PreferenceManager;
 import android.view.MotionEvent;
+import android.widget.EditText;
 
 import java.util.ArrayList;
 
-/**
- * Created by Pete on 5/13/2018. */
+/*** Main Menu ***/
 
-public class GamePlayMenu implements IScene  {
-    private ArrayList<IGameObject> gameObjects;
-    private ArrayList<ParticleExplosion> explosions;
-    private Point menuPoint;
-    private ObstacleQueue obstacleQueue;
-    private IGameObject SelectedObject;
+public class GamePlayMenu extends GamePlayBase implements IScene  {
     private long newItemTime;
-    private int speed = 2;
-    private Paint paint;
-    private Paint bpaint;
+    private final float bFirstY = Constants.SCREEN_HEIGHT/4;
+    private final float bGap = 35f;
 
-    private final float bLeft = Constants.SCREEN_WIDTH/2 - 275;
-    private final float bRight = Constants.SCREEN_WIDTH/2 + 275;
-    private final float bFirstY = Constants.SCREEN_HEIGHT/2 - 200;
-    private final float bHeight = 150f;
-    private final float bGap = 50f;
-
-    private RectF bStart = new RectF(bLeft, bFirstY, bRight, bFirstY + bHeight);
-    private RectF bLevel = new RectF(bLeft, bFirstY + (bHeight + bGap)*1, bRight, bFirstY + bHeight + (bHeight + bGap)*1);
-    private RectF bTutorial = new RectF(bLeft, bFirstY + (bHeight + bGap)*2, bRight, bFirstY + bHeight + (bHeight + bGap)*2);
-    private RectF bOptions = new RectF(bLeft, bFirstY + (bHeight + bGap)*3, bRight, bFirstY + bHeight + (bHeight + bGap)*3);
-    private RectF bExit = new RectF(bLeft, bFirstY + (bHeight + bGap)*4, bRight, bFirstY + bHeight + (bHeight + bGap)*4);
+    private RectF bArea = new RectF(bLeft, bFirstY, bRight, bFirstY + bHeight);
+    private RectF bBlast = new RectF(bLeft, bArea.bottom + bGap, bRight, bArea.bottom + bHeight + + bGap);
+    private RectF bPicture = new RectF(bLeft, bBlast.bottom + bGap, bRight, bBlast.bottom + bHeight + bGap);
+    private RectF bLaser = new RectF(bLeft, bPicture.bottom + bGap, bRight, bPicture.bottom + bHeight + bGap);
+    private RectF bTutorial = new RectF(bLeft, bLaser.bottom + bGap, bRight, bLaser.bottom + bHeight + bGap);
+    private RectF bOptions = new RectF(bLeft, bTutorial.bottom + bGap, bRight, bTutorial.bottom + bHeight + bGap);
+    private RectF bExit = new RectF(bLeft, bOptions.bottom + bGap, bRight, bOptions.bottom + bHeight + bGap);
 
     public GamePlayMenu() {
-        menuPoint = new Point(0,0);
+        playerPoint = new PointF(0,0);
         gameObjects = new ArrayList<>();
         explosions = new ArrayList<>();
         obstacleQueue = new ObstacleQueue(10);
         SelectedObject = obstacleQueue.getItem();
         newItemTime = System.currentTimeMillis();
+        partCount = Common.getPreferenceInteger("particles");
+        speed = 1;
 
         //Button paint
         paint = new Paint();
         paint.setStyle(Paint.Style.FILL);
         paint.setColor(Color.GRAY);
         //Border paint
-        bpaint = new Paint();
-        bpaint.setStyle(Paint.Style.STROKE);
-        bpaint.setStrokeWidth(3);
-        bpaint.setColor(Color.BLACK);
+        bPaint = new Paint();
+        bPaint.setStyle(Paint.Style.STROKE);
+        bPaint.setStrokeWidth(3);
+        bPaint.setColor(Color.BLACK);
 
+        //Background
+        bg = new Background(0,Constants.HEADER_HEIGHT,Constants.SCREEN_WIDTH, Constants.SCREEN_HEIGHT);
+
+        //Game Sounds
+        SoundManager.setGameMusic("BLAST");
+        SoundManager.playMusic();
     }
 
     @Override
     public void terminate() {
-
+        //Constants.SOUND_MANAGER.stop();
     }
 
     @Override
     public void receiveTouch(MotionEvent event) {
         switch (event.getAction()) {
 
-            case MotionEvent.ACTION_DOWN:
+            case MotionEvent.ACTION_UP:
                 //System.out.println("MouseDown X:" + event.getX() + ", Y:" + event.getY() );
+                playerPoint.x = event.getX();
+                playerPoint.y = event.getY();
 
-                //Button: Start Area
-                if( bStart.contains(event.getX(), event.getY()) ) {
-                    SceneManager.changeScene("AREA");
+                //Change Name
+                if(playerPoint.y < 200) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(Constants.CONTEXT);
+                    builder.setTitle("Welcome to Radar Blast!");
+                    builder.setMessage("Enter your name or initials.");
+                    builder.setCancelable(true);
+                    final EditText input = new EditText(Constants.CONTEXT);
+                    builder.setView(input);
+                    builder.setPositiveButton("Submit", new DialogInterface.OnClickListener(){
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            String txt = input.getText().toString();
+                            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(Constants.CONTEXT);
+                            SharedPreferences.Editor editor = prefs.edit();
+                            editor.putString("username", txt.trim());
+                            editor.apply();
+                            dialogInterface.cancel();
+
+                        }
+                    });
+                    builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener(){
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            //Do nothing
+                        }
+                    });
+                    AlertDialog alertDialog = builder.create();
+                    alertDialog.show();
+                }
+
+                //Button: Start Area - Level Select
+                if( bArea.contains(event.getX(), event.getY()) ) {
+                    SceneManager.changeScene("AREA_LEVELS");
                     return;
                 }
                 //Button: Start Blast
-                if( bLevel.contains(event.getX(), event.getY()) ) {
+                if( bBlast.contains(event.getX(), event.getY()) ) {
                     SceneManager.changeScene("BLAST");
+                    return;
+                }
+                //Button: Start Picture
+                if( bPicture.contains(event.getX(), event.getY()) ) {
+                    SceneManager.changeScene("PICTURE");
+                    return;
+                }
+                //Button: Start Laser - Level Select
+                if( bLaser.contains(event.getX(), event.getY()) ) {
+                    SceneManager.changeScene("LASER_LEVELS");
                     return;
                 }
                 //Button: How to Play
                 if( bTutorial.contains(event.getX(), event.getY()) ) {
-                    //SceneManager.changeScene("");
+                    SceneManager.changeScene("HOW_TO");
                     return;
                 }
                 //Button: Options
                 if( bOptions.contains(event.getX(), event.getY()) ) {
-                    //SceneManager.changeScene("");
+                    SceneManager.changeScene("OPTIONS");
                     return;
                 }
                 //Button: Exit
                 if( bExit.contains(event.getX(), event.getY()) ) {
-                    //SceneManager.changeScene("");
-                    //return;
-                    System.exit(0);
+                    SceneManager.changeScene("EXIT");
+                    return;
                 }
 
                 break;
@@ -102,7 +145,7 @@ public class GamePlayMenu implements IScene  {
     @Override
     public void draw(Canvas canvas) {
         // Canvas
-        canvas.drawColor(Color.DKGRAY);
+        bg.draw(canvas);
 
         //Game Objects
         for(IGameObject obj : gameObjects){
@@ -114,34 +157,48 @@ public class GamePlayMenu implements IScene  {
            if (pe.getState() == 0) { pe.draw(canvas); }
         }
 
+        // User Name
+        if (!Common.getPreferenceString("username").equals("_") && Common.getPreferenceString("username").length() > 0) {
+            drawCenterText(canvas, Color.WHITE, 50, 100, "Welcome " + Common.getPreferenceString("username"), false);
+        }
+
         //Logo
-        drawCenterText(canvas, Color.WHITE, 150, Constants.SCREEN_HEIGHT/4, "Radar Blast");
+        drawCenterText(canvas, Color.WHITE, 200, Constants.SCREEN_HEIGHT/4 - 150, "Radar Blast", true);
 
         //Button: Start Area
-        canvas.drawRoundRect( bStart, 25,25, paint);
-        canvas.drawRoundRect( bStart, 25,25, bpaint);
-        drawCenterText(canvas, Color.WHITE, 75,(int)bStart.centerY(), "Area Game");
+        canvas.drawRoundRect( bArea, 25,25, paint);
+        canvas.drawRoundRect( bArea, 25,25, bPaint);
+        drawCenterText(canvas, Color.WHITE, 75,(int)bArea.centerY(), "Area Game", false);
 
-        //Button: Start Pop
-        canvas.drawRoundRect( bLevel, 25,25, paint);
-        canvas.drawRoundRect( bLevel, 25,25, bpaint);
-        drawCenterText(canvas, Color.WHITE, 75,(int)bLevel.centerY(), "Blast Game");
+        //Button: Start Blast
+        canvas.drawRoundRect( bBlast, 25,25, paint);
+        canvas.drawRoundRect( bBlast, 25,25, bPaint);
+        drawCenterText(canvas, Color.WHITE, 75,(int)bBlast.centerY(), "Blast Game", false);
+
+        //Button: Start Picture
+        canvas.drawRoundRect( bPicture, 25,25, paint);
+        canvas.drawRoundRect( bPicture, 25,25, bPaint);
+        drawCenterText(canvas, Color.WHITE, 75,(int)bPicture.centerY(), "Picture Game", false);
+
+        //Button: Start Laser
+        canvas.drawRoundRect( bLaser, 25,25, paint);
+        canvas.drawRoundRect( bLaser, 25,25, bPaint);
+        drawCenterText(canvas, Color.WHITE, 75,(int)bLaser.centerY(), "Laser Game", false);
 
         //Button: How to Play
         canvas.drawRoundRect( bTutorial, 25,25, paint);
-        canvas.drawRoundRect( bTutorial, 25,25, bpaint);
-        drawCenterText(canvas, Color.RED, 75,(int)bTutorial.centerY(), "How to Play");
+        canvas.drawRoundRect( bTutorial, 25,25, bPaint);
+        drawCenterText(canvas, Color.WHITE, 75,(int)bTutorial.centerY(), "How to Play", false);
 
         //Button: Options
         canvas.drawRoundRect( bOptions, 25,25, paint);
-        canvas.drawRoundRect( bOptions, 25,25, bpaint);
-        drawCenterText(canvas, Color.RED, 75,(int)bOptions.centerY(), "Options");
+        canvas.drawRoundRect( bOptions, 25,25, bPaint);
+        drawCenterText(canvas, Color.WHITE, 75,(int)bOptions.centerY(), "Options", false);
 
         //Button: Exit
         canvas.drawRoundRect( bExit, 25,25, paint);
-        canvas.drawRoundRect( bExit, 25,25, bpaint);
-        drawCenterText(canvas, Color.WHITE, 75,(int)bExit.centerY(), "Exit");
-
+        canvas.drawRoundRect( bExit, 25,25, bPaint);
+        drawCenterText(canvas, Color.WHITE, 75,(int)bExit.centerY(), "Exit", false);
     }
 
     @Override
@@ -149,6 +206,29 @@ public class GamePlayMenu implements IScene  {
         //IGameObject currentObject = new Obstacle(0,0,0,0);
         ArrayList<IGameObject> popped = new ArrayList<>();
         ArrayList<ParticleExplosion> expDone = new ArrayList<>();
+
+        // Handle PlayerPoint click
+        if (playerPoint.x != 0 && playerPoint.y != 0) {
+            boolean currPop = false;
+            IGameObject gobPop = new Obstacle(0, 0, 0, 0, 0);
+
+            for (IGameObject gob : gameObjects) {
+                if (gob.pointInside(playerPoint)) {
+                    currPop = true;
+                    gob.pop();
+                    gobPop = gob;
+                }
+            }
+
+            if (currPop) {
+                gobPop.pop();
+                explosions.add(new ParticleExplosion((int) gobPop.getSize()/partCount, gobPop.getSize(), gobPop.getCenter(), gobPop.getType(), true));
+                gameObjects.remove(gobPop);
+                speed += 1;
+                //gameSounds.playSound("POP");
+                SoundManager.playSound("POP");
+            }
+        }
 
         //Update obstacles
         for(IGameObject gob: gameObjects){
@@ -160,7 +240,9 @@ public class GamePlayMenu implements IScene  {
         for(IGameObject gob: gameObjects){
             if(!gob.InGameArea()) {
                 popped.add(gob);
-                explosions.add(new ParticleExplosion((int) gob.getSize(), gob.getSize(), gob.getCenter(), gob.getType()));
+                explosions.add(new ParticleExplosion((int) gob.getSize()/partCount, gob.getSize(), gob.getCenter(), gob.getType(), true));
+                //gameSounds.playSound("POP");
+                SoundManager.playSound("POP");
             }
         }
         if (!popped.isEmpty()){
@@ -189,18 +271,18 @@ public class GamePlayMenu implements IScene  {
             SelectedObject = obstacleQueue.getItem();
         }
         if (System.currentTimeMillis() - newItemTime >= 2000) {
-            menuPoint = new Point(Common.randomInt(250, Constants.SCREEN_WIDTH - 250), Common.randomInt(250, Constants.SCREEN_HEIGHT - 250));
+            playerPoint = new PointF(Common.randomFlt(250f, Constants.SCREEN_WIDTH - 250f), Common.randomFlt(250f, Constants.SCREEN_HEIGHT - 250f));
             //addingShape = true;
             IGameObject newObject = SelectedObject.NewInstance();
-            newObject.update(menuPoint);
+            newObject.update(playerPoint);
             gameObjects.add(newObject);
             obstacleQueue.removeItem();
             SelectedObject = obstacleQueue.getItem();
             newItemTime = System.currentTimeMillis();
         }
-
+        playerPoint = new PointF(0,0);
     }
-    private void drawCenterText(Canvas canvas, int color, float size, int vHeight, String text) {
+    private void drawCenterText(Canvas canvas, int color, float size, int vHeight, String text, boolean outline) {
         Rect r = new Rect();
         Paint txtPaint = new Paint();
         txtPaint.setTextAlign(Paint.Align.LEFT);
@@ -211,11 +293,13 @@ public class GamePlayMenu implements IScene  {
         int cWidth = r.width();
         txtPaint.getTextBounds(text, 0, text.length(), r);
         float x = cWidth / 2f - r.width() / 2f - r.left;
-        float y =  vHeight + r.height() / 2f;
+        float y = vHeight + r.height() / 2f - r.bottom;
         canvas.drawText(text, x, y, txtPaint);
+        if (outline) {
+            txtPaint.setStyle(Paint.Style.STROKE);
+            txtPaint.setStrokeWidth(5);
+            txtPaint.setColor(Color.BLACK);
+            canvas.drawText(text, x, y, txtPaint);
+        }
     }
 }
-
-
-
-
