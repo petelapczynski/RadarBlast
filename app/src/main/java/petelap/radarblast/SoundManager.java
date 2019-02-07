@@ -7,9 +7,13 @@ import android.media.SoundPool;
 public class SoundManager {
     private static SoundPool soundPool;
     private static MediaPlayer bgMusic;
-    private static int soundID_pop_low;
-    private static int soundID_pop_med;
-    private static int soundID_pop_high;
+    private static int soundID_pop_1;
+    private static int soundID_pop_2;
+    private static int soundID_pop_3;
+    private static int soundID_pop_4;
+    private static int soundID_pop_5;
+    private static int soundID_pop_6;
+    private static int soundID_pop_7;
     private static int soundID_spike;
     private static boolean bMusic;
     private static boolean bSound;
@@ -22,7 +26,7 @@ public class SoundManager {
 
         if(bMusic){
             //Set Music
-            bgMusic = MediaPlayer.create(Constants.CONTEXT,R.raw.music_1);
+            bgMusic = MediaPlayer.create(Constants.CONTEXT,R.raw.music_menu);
             bgMusic.setLooping(true);
         }
         if(bSound){
@@ -37,20 +41,32 @@ public class SoundManager {
             soundPoolBuilder.setMaxStreams(5);
             soundPool = soundPoolBuilder.build();
             //Load sounds
-            soundID_pop_low = soundPool.load(Constants.CONTEXT,R.raw.pop_low,1);
-            soundID_pop_med = soundPool.load(Constants.CONTEXT,R.raw.pop_med,1);
-            soundID_pop_high = soundPool.load(Constants.CONTEXT,R.raw.pop_high,1);
+            soundID_pop_1 = soundPool.load(Constants.CONTEXT,R.raw.pop_1,1);
+            soundID_pop_2 = soundPool.load(Constants.CONTEXT,R.raw.pop_2,1);
+            soundID_pop_3 = soundPool.load(Constants.CONTEXT,R.raw.pop_3,1);
+            soundID_pop_4 = soundPool.load(Constants.CONTEXT,R.raw.pop_4,1);
+            soundID_pop_5 = soundPool.load(Constants.CONTEXT,R.raw.pop_5,1);
+            soundID_pop_6 = soundPool.load(Constants.CONTEXT,R.raw.pop_6,1);
+            soundID_pop_7 = soundPool.load(Constants.CONTEXT,R.raw.pop_7,1);
             soundID_spike = soundPool.load(Constants.CONTEXT,R.raw.bomb,1);
         }
     }
 
     public static void setGameMusic(String GameMode){
         if(bMusic){
-            if(GameMode.equals("AREA")){
-                bgMusic = MediaPlayer.create(Constants.CONTEXT,R.raw.music_1);
-
-            } else if (GameMode.equals("BLAST")){
-                bgMusic = MediaPlayer.create(Constants.CONTEXT,R.raw.music_2);
+            switch (GameMode) {
+                case "MENU":
+                    bgMusic = MediaPlayer.create(Constants.CONTEXT, R.raw.music_menu);
+                    break;
+                case "AREA":
+                    bgMusic = MediaPlayer.create(Constants.CONTEXT, R.raw.music_area);
+                    break;
+                case "BLAST":
+                    bgMusic = MediaPlayer.create(Constants.CONTEXT, R.raw.music_blast);
+                    break;
+                case "LASER":
+                    bgMusic = MediaPlayer.create(Constants.CONTEXT, R.raw.music_laser);
+                    break;
             }
             bgMusic.setLooping(true);
         }
@@ -68,17 +84,31 @@ public class SoundManager {
         if(bSound){
             switch (Sound) {
                 case "POP":
-                    int soundID = Common.randomInt(1,3);
+                    int soundID = Common.randomInt(1,7);
                     switch (soundID) {
                         case 1:
-                            soundPool.play(soundID_pop_low,1.0f,1.0f,1,0,1);
+                            soundPool.play(soundID_pop_1,1.0f,1.0f,1,0,1);
                             break;
                         case 2:
-                            soundPool.play(soundID_pop_med,1.0f,1.0f,1,0,1);
+                            soundPool.play(soundID_pop_2,1.0f,1.0f,1,0,1);
                             break;
                         case 3:
+                            soundPool.play(soundID_pop_3,1.0f,1.0f,1,0,1);
+                            break;
+                        case 4:
+                            soundPool.play(soundID_pop_4,1.0f,1.0f,1,0,1);
+                            break;
+                        case 5:
+                            soundPool.play(soundID_pop_5,1.0f,1.0f,1,0,1);
+                            break;
+                        case 6:
+                            soundPool.play(soundID_pop_6,1.0f,1.0f,1,0,1);
+                            break;
+                        case 7:
+                            soundPool.play(soundID_pop_7,1.0f,1.0f,1,0,1);
+                            break;
                         default:
-                            soundPool.play(soundID_pop_high,1.0f,1.0f,1,0,1);
+                            soundPool.play(soundID_pop_4,1.0f,1.0f,1,0,1);
                             break;
                     }
                     break;

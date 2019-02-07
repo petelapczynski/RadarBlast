@@ -16,10 +16,10 @@ public class GamePlayArea extends GamePlayBase implements IScene {
     private ObstacleManager obstacleManager;
     private Levels.Level lvl;
 
-    private final float bFirstY = Constants.SCREEN_HEIGHT/2;
+    private final float bFirstY = Constants.SCREEN_HEIGHT/2f;
     private final float bGap = 50f;
 
-    private RectF bStartLevel = new RectF(bLeft, (Constants.SCREEN_HEIGHT / 2) + bGap, bRight, (Constants.SCREEN_HEIGHT / 2) + bGap + bHeight);
+    private RectF bStartLevel = new RectF(bLeft, (Constants.SCREEN_HEIGHT / 2f) + bGap, bRight, (Constants.SCREEN_HEIGHT / 2f) + bGap + bHeight);
     private RectF bLevelGS = new RectF(bLeft, bStartLevel.bottom + bGap, bRight, bStartLevel.bottom + bGap + bHeight);
 
     private RectF bReplay = new RectF(bLeft, bFirstY, bRight, bFirstY + bHeight);
@@ -110,7 +110,6 @@ public class GamePlayArea extends GamePlayBase implements IScene {
             obstacleQueue = new ObstacleQueue(0);
             obstacleQueue.addItem(lvl.getGameObjects());
         }
-        obstacleQueue.addItem(lvl.getGameObjects());
         SelectedObject = obstacleQueue.getItem();
         score = 0;
         speed = 1;
@@ -275,7 +274,7 @@ public class GamePlayArea extends GamePlayBase implements IScene {
                 vHeight += 50;
                 for (Highscores.Highscore hs: SceneManager.highscores.getHighscores()) {
                     vHeight += 100;
-                    canvas.drawText(hs.getNumber() + ": " + hs.getScore() + " - " + hs.getName(), Constants.SCREEN_WIDTH/3, vHeight, txtPaint);
+                    canvas.drawText(hs.getNumber() + ": " + hs.getScore() + " - " + hs.getName(), Constants.SCREEN_WIDTH/3f, vHeight, txtPaint);
                 }
 
                 //Button: Replay Level
@@ -303,92 +302,94 @@ public class GamePlayArea extends GamePlayBase implements IScene {
 
     @Override
     public void update() {
-        IGameObject currentObject = new Obstacle(0,0,0,0,0);
+        if (Constants.GAME_STATUS.equals("GAMELOOP")) {
+            IGameObject currentObject = new Obstacle(0,0,0,0,0);
 
-        if(gameObjects.size() > 0){
-            currentObject = gameObjects.get(gameObjects.size() - 1);
-        }
+            if(gameObjects.size() > 0){
+                currentObject = gameObjects.get(gameObjects.size() - 1);
+            }
 
-        if(!gameOver) {
-            //Update obstacles
+            if(!gameOver) {
+                //Update obstacles
 
-            // If addingShape -> Grow object
-            if (addingShape){
-                if (addShape) {
-                    explosions.add(new ParticleExplosion( 5, 75.0f, new PointF(Constants.SCREEN_WIDTH - 100f, Constants.HEADER_HEIGHT / 2f), currentObject.getType(), false ));
-                    addShape = false;
-                }
-                //handle moving shape
-                if(objectMoving) {
-                    currentObject.update(movePoint);
-                    objectMoving = false;
-                    movePoint = new PointF(0,0);
-                }
-                currentObject.grow(speed);
-                if(System.currentTimeMillis() - objectTime >= 300) {
-                    speed += 1;
-                    objectTime = System.currentTimeMillis();
-                }
+                // If addingShape -> Grow object
+                if (addingShape){
+                    if (addShape) {
+                        explosions.add(new ParticleExplosion( 5, 75.0f, new PointF(Constants.SCREEN_WIDTH - 100f, Constants.HEADER_HEIGHT / 2f), currentObject.getType(), false ));
+                        addShape = false;
+                    }
+                    //handle moving shape
+                    if(objectMoving) {
+                        currentObject.update(movePoint);
+                        objectMoving = false;
+                        movePoint = new PointF(0,0);
+                    }
+                    currentObject.grow(speed);
+                    if(System.currentTimeMillis() - objectTime >= 300) {
+                        speed += 1;
+                        objectTime = System.currentTimeMillis();
+                    }
 
-                // If hit obstacle -> game over
-                if(obstacleManager.obstacleManagerCollide(currentObject)) {
-                    bHighScore = true;
-                }
+                    // If hit obstacle -> game over
+                    if(obstacleManager.obstacleManagerCollide(currentObject)) {
+                        bHighScore = true;
+                    }
 
-                // If current hits another game object -> pop object
-                boolean currPop = false;
-                IGameObject gobPop = new Obstacle(0, 0,0,0,0);
+                    // If current hits another game object -> pop object
+                    boolean currPop = false;
+                    IGameObject gobPop = new Obstacle(0, 0,0,0,0);
 
-                for(IGameObject gob: gameObjects) {
-                    if( !gob.equals(currentObject) ) {
-                        if (CollisionManager.GameObjectCollide(currentObject,gob)) {
-                            currPop = true;
-                            gobPop = gob;
+                    for(IGameObject gob: gameObjects) {
+                        if( !gob.equals(currentObject) ) {
+                            if (CollisionManager.GameObjectCollide(currentObject,gob)) {
+                                currPop = true;
+                                gobPop = gob;
+                            }
                         }
                     }
-                }
 
-                // If hit other object or hit edge -> pop object
-                if (currPop) {
-                    currentObject.pop();
-                    explosions.add(new ParticleExplosion( (int)currentObject.getSize()/partCount, currentObject.getSize(), currentObject.getCenter(), currentObject.getType(), true ));
-                    gameObjects.remove(currentObject);
-                    //gameSounds.playSound("POP");
-                    SoundManager.playSound("POP");
-
-                    gobPop.pop();
-                    explosions.add(new ParticleExplosion( (int)gobPop.getSize()/partCount, gobPop.getSize(), gobPop.getCenter(), gobPop.getType(), true ));
-                    gameObjects.remove(gobPop);
-                    //gameSounds.playSound("POP");
-                    SoundManager.playSound("POP");
-                    addingShape = false;
-                    objectPop = true;
-                    objectTime = System.currentTimeMillis();
-                } else {
-                    if (!currentObject.InGameArea()) {
+                    // If hit other object or hit edge -> pop object
+                    if (currPop) {
                         currentObject.pop();
                         explosions.add(new ParticleExplosion( (int)currentObject.getSize()/partCount, currentObject.getSize(), currentObject.getCenter(), currentObject.getType(), true ));
                         gameObjects.remove(currentObject);
                         //gameSounds.playSound("POP");
                         SoundManager.playSound("POP");
+
+                        gobPop.pop();
+                        explosions.add(new ParticleExplosion( (int)gobPop.getSize()/partCount, gobPop.getSize(), gobPop.getCenter(), gobPop.getType(), true ));
+                        gameObjects.remove(gobPop);
+                        //gameSounds.playSound("POP");
+                        SoundManager.playSound("POP");
                         addingShape = false;
                         objectPop = true;
                         objectTime = System.currentTimeMillis();
+                    } else {
+                        if (!currentObject.InGameArea()) {
+                            currentObject.pop();
+                            explosions.add(new ParticleExplosion( (int)currentObject.getSize()/partCount, currentObject.getSize(), currentObject.getCenter(), currentObject.getType(), true ));
+                            gameObjects.remove(currentObject);
+                            //gameSounds.playSound("POP");
+                            SoundManager.playSound("POP");
+                            addingShape = false;
+                            objectPop = true;
+                            objectTime = System.currentTimeMillis();
+                        }
+                    }
+
+                    // Calculate score
+                    calcScore();
+                } else {
+                    // Not GameOver. Not Adding Shape. Out of Shapes
+                    if(SelectedObject == null) {
+                        bHighScore = true;
                     }
                 }
 
-                // Calculate score
-                calcScore();
-            } else {
-                // Not GameOver. Not Adding Shape. Out of Shapes
-                if(SelectedObject == null) {
-                    bHighScore = true;
-                }
-            }
-
-            if(objectPop){
-                if(System.currentTimeMillis() - objectTime >= 250) {
-                    objectPop = false;
+                if(objectPop){
+                    if(System.currentTimeMillis() - objectTime >= 250) {
+                        objectPop = false;
+                    }
                 }
             }
         }

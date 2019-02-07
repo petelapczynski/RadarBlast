@@ -21,7 +21,7 @@ public class GamePlayLevelSelect extends GamePlayBase implements IScene {
     private ArrayList<Integer> gameLevelIntegers;
     private float scroll;
     private int iAnimation;
-    private RectF bMenu = new RectF(Constants.SCREEN_WIDTH/2 - 275, Constants.SCREEN_HEIGHT - 250, Constants.SCREEN_WIDTH/2 + 275, Constants.SCREEN_HEIGHT - 100);
+    private RectF bMenu = new RectF(Constants.SCREEN_WIDTH/2f - 275, Constants.SCREEN_HEIGHT - 250, Constants.SCREEN_WIDTH/2f + 275, Constants.SCREEN_HEIGHT - 100);
     private String gameMode;
 
     public GamePlayLevelSelect(String GameMode) {
@@ -59,9 +59,9 @@ public class GamePlayLevelSelect extends GamePlayBase implements IScene {
         //Level Buttons
         gameLevelButtons = new ArrayList<>();
         gameLevelIntegers = new ArrayList<>();
-        float bLeft = Constants.SCREEN_WIDTH * 25/100;
-        float bMid = Constants.SCREEN_WIDTH * 50/100;
-        float bRight = Constants.SCREEN_WIDTH * 75/100;
+        float bLeft = Constants.SCREEN_WIDTH * 0.25f;
+        float bMid = Constants.SCREEN_WIDTH * 0.5f;
+        float bRight = Constants.SCREEN_WIDTH * 0.75f;
         int c = 1;
         float y = gameStartBack.top + 150;
         for (Levels.Level lvl: SceneManager.levels.getLevels()) {
@@ -83,10 +83,6 @@ public class GamePlayLevelSelect extends GamePlayBase implements IScene {
                 y += 250;
             }
         }
-
-        //Game Sounds
-        SoundManager.setGameMusic("AREA");
-        SoundManager.playMusic();
     }
 
     @Override
@@ -96,6 +92,11 @@ public class GamePlayLevelSelect extends GamePlayBase implements IScene {
 
     @Override
     public void receiveTouch(MotionEvent event) {
+        if (bSelectedLevel) {
+            //no user input allowed
+            return;
+        }
+
         switch (event.getAction()) {
 
             case MotionEvent.ACTION_DOWN:
@@ -262,7 +263,7 @@ public class GamePlayLevelSelect extends GamePlayBase implements IScene {
         canvas.getClipBounds(r);
         int cWidth = r.width();
         txtPaint.getTextBounds(text, 0, text.length(), r);
-        float x = (cWidth / 2f - r.width() / 2f - r.left) - (Constants.SCREEN_WIDTH/2) + vWidth ;
+        float x = (cWidth / 2f - r.width() / 2f - r.left) - (Constants.SCREEN_WIDTH/2f) + vWidth ;
         float y = vHeight + r.height() / 2f - r.bottom;
         canvas.drawText(text, x, y, txtPaint);
     }

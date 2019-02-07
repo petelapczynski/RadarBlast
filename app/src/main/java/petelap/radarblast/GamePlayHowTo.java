@@ -1,9 +1,12 @@
 package petelap.radarblast;
 
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PointF;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.view.MotionEvent;
@@ -16,26 +19,34 @@ public class GamePlayHowTo extends GamePlayBase implements IScene  {
     private ArrayList<IGameObjectSpecial> gameSpecialObjects;
     private PointF menuPoint;
     private ObstacleManager obstacleManager;
+    private ObstacleSpecialLaser laserObject;
     private long newItemTime;
     private long startTime;
     private GameTimer gameTimer;
 
-    private final float bFirstY = Constants.SCREEN_HEIGHT/2 - 200;
-    private final float bGap = 50f;
+    private final float bFirstY = Constants.SCREEN_HEIGHT/2f - 200;
+    private final float bGap = 35f;
 
     private RectF bArea = new RectF(bLeft, bFirstY, bRight, bFirstY + bHeight);
     private RectF bBlast = new RectF(bLeft, bArea.bottom + bGap, bRight,  bArea.bottom + bHeight + bGap);
-    private RectF bMenu = new RectF(bLeft, bBlast.bottom + bGap, bRight, bBlast.bottom + bHeight + bGap);
-    private RectF bNext = new RectF(Constants.SCREEN_WIDTH/2 - 125, Constants.SCREEN_HEIGHT - 250, Constants.SCREEN_WIDTH/2 + 125, Constants.SCREEN_HEIGHT - 250 + bHeight);
+    private RectF bPicture = new RectF(bLeft, bBlast.bottom + bGap, bRight, bBlast.bottom + bHeight + bGap);
+    private RectF bLaser = new RectF(bLeft, bPicture.bottom + bGap, bRight, bPicture.bottom + bHeight + bGap);
+    private RectF bMenu = new RectF(bLeft, bLaser.bottom + bGap, bRight, bLaser.bottom + bHeight + bGap);
+    private RectF bNext = new RectF(Constants.SCREEN_WIDTH/2f - 125, Constants.SCREEN_HEIGHT - 250, Constants.SCREEN_WIDTH/2f + 125, Constants.SCREEN_HEIGHT - 250 + bHeight);
     private RectF bExit = new RectF(Constants.SCREEN_WIDTH - 300, Constants.SCREEN_HEIGHT - 250, Constants.SCREEN_WIDTH - 50, Constants.SCREEN_HEIGHT - 250 + bHeight);
 
     private boolean areaTutorial;
     private boolean blastTutorial;
+    private boolean pictureTutorial;
+    private boolean laserTutorial;
     private boolean bShowNext;
     private boolean bHeader;
     private boolean bAnimation;
     private int iScreen;
     private int iAnimation;
+
+    private Bitmap bitmapLayer;
+    private boolean isLayerRefresh;
 
     public GamePlayHowTo() {
         menuPoint = new PointF(0,0);
@@ -50,6 +61,8 @@ public class GamePlayHowTo extends GamePlayBase implements IScene  {
         newItemTime = System.currentTimeMillis();
         areaTutorial = false;
         blastTutorial = false;
+        pictureTutorial = false;
+        laserTutorial = false;
         bShowNext = false;
         bHeader = false;
         bAnimation = false;
@@ -74,8 +87,12 @@ public class GamePlayHowTo extends GamePlayBase implements IScene  {
 
         //Background
         bg = new Background(Color.DKGRAY,0,0,Constants.SCREEN_WIDTH,Constants.SCREEN_HEIGHT);
+        isLayerRefresh = false;
+        addingShape = false;
 
         //Game Sounds
+        SoundManager.setGameMusic("MENU");
+        SoundManager.playMusic();
     }
 
     public void reset() {
@@ -90,6 +107,8 @@ public class GamePlayHowTo extends GamePlayBase implements IScene  {
         newItemTime = System.currentTimeMillis();
         areaTutorial = false;
         blastTutorial = false;
+        pictureTutorial = false;
+        laserTutorial = false;
         bShowNext = false;
         bHeader = false;
         bAnimation = false;
@@ -97,6 +116,9 @@ public class GamePlayHowTo extends GamePlayBase implements IScene  {
         iAnimation = 0;
         partCount = Common.getPreferenceInteger("particles");
         gameTimer = new GameTimer(60000);
+        isLayerRefresh = false;
+        bg = new Background(Color.DKGRAY,0,0,Constants.SCREEN_WIDTH,Constants.SCREEN_HEIGHT);
+        addingShape = false;
     }
 
     @Override
@@ -112,7 +134,7 @@ public class GamePlayHowTo extends GamePlayBase implements IScene  {
                 menuPoint.x = event.getX();
                 menuPoint.y = event.getY();
 
-                if (!areaTutorial && !blastTutorial) {
+                if (!areaTutorial && !blastTutorial && !pictureTutorial && !laserTutorial) {
                     //Button: Start Area Tutorial
                     if( bArea.contains(menuPoint.x, menuPoint.y) ) {
                         Constants.HEADER_HEIGHT = 200;
@@ -130,6 +152,28 @@ public class GamePlayHowTo extends GamePlayBase implements IScene  {
                         iScreen = 1;
                         iAnimation = 1;
                         blastTutorial = true;
+                        bShowNext = false;
+                        bAnimation = false;
+                        startTime = System.currentTimeMillis();
+                        return;
+                    }
+                    //Button: Start Picture Tutorial
+                    if( bPicture.contains(menuPoint.x, menuPoint.y) ) {
+                        Constants.HEADER_HEIGHT = 0;
+                        iScreen = 1;
+                        iAnimation = 1;
+                        pictureTutorial = true;
+                        bShowNext = false;
+                        bAnimation = false;
+                        startTime = System.currentTimeMillis();
+                        return;
+                    }
+                    //Button: Start Laser Tutorial
+                    if( bLaser.contains(menuPoint.x, menuPoint.y) ) {
+                        Constants.HEADER_HEIGHT = 0;
+                        iScreen = 1;
+                        iAnimation = 1;
+                        laserTutorial = true;
                         bShowNext = false;
                         bAnimation = false;
                         startTime = System.currentTimeMillis();
@@ -168,12 +212,25 @@ public class GamePlayHowTo extends GamePlayBase implements IScene  {
         // Canvas
         bg.draw(canvas);
 
+        if (pictureTutorial) {
+            //Transparent shapes
+            if (isLayerRefresh) {
+                refreshLayer(canvas);
+                isLayerRefresh = false;
+            }
+            if (bitmapLayer != null) {
+                canvas.drawBitmap(bitmapLayer, 0, 0, null);
+            }
+        }
+
         // Obstacles
         obstacleManager.draw(canvas);
 
         //Game Objects
-        for(IGameObject obj : gameObjects){
-            if ( obj.InGameArea() ) { obj.draw(canvas); }
+        if (!pictureTutorial) {
+            for(IGameObject obj : gameObjects){
+                if ( obj.InGameArea() ) { obj.draw(canvas); }
+            }
         }
 
         //Game Special Objects
@@ -186,9 +243,9 @@ public class GamePlayHowTo extends GamePlayBase implements IScene  {
            if (pe.getState() == 0) { pe.draw(canvas); }
         }
 
-        if (!areaTutorial && !blastTutorial) {
+        if (!areaTutorial && !blastTutorial && !pictureTutorial && !laserTutorial) {
             //Logo
-            drawCenterText(canvas, Color.WHITE, 200, Constants.SCREEN_HEIGHT/4, "How to Play", true);
+            drawCenterText(canvas, Color.WHITE, 150, Constants.SCREEN_HEIGHT/4, "How to Play", true);
             //Button: Start Area Tutorial
             canvas.drawRoundRect( bArea, 25,25, paint);
             canvas.drawRoundRect( bArea, 25,25, bPaint);
@@ -198,6 +255,16 @@ public class GamePlayHowTo extends GamePlayBase implements IScene  {
             canvas.drawRoundRect( bBlast, 25,25, paint);
             canvas.drawRoundRect( bBlast, 25,25, bPaint);
             drawCenterText(canvas, Color.WHITE, 75,(int)bBlast.centerY(), "Blast Game", false);
+
+            //Button: Start Picture Tutorial
+            canvas.drawRoundRect( bPicture, 25,25, paint);
+            canvas.drawRoundRect( bPicture, 25,25, bPaint);
+            drawCenterText(canvas, Color.WHITE, 75,(int)bPicture.centerY(), "Picture Game", false);
+
+            //Button: Start Laser Tutorial
+            canvas.drawRoundRect( bLaser, 25,25, paint);
+            canvas.drawRoundRect( bLaser, 25,25, bPaint);
+            drawCenterText(canvas, Color.WHITE, 75,(int)bLaser.centerY(), "Laser Game", false);
 
             //Button: Back to Menu
             canvas.drawRoundRect( bMenu, 25,25, paint);
@@ -417,6 +484,193 @@ public class GamePlayHowTo extends GamePlayBase implements IScene  {
                 canvas.drawText("" + gameTimer.getTimeLeftInSeconds(), Constants.SCREEN_WIDTH - 150,150, hPaint );
             }
         }
+
+        if (pictureTutorial) {
+            /*
+            How is the 'Picture Game' played?
+
+            Great question! I'm glad you asked!
+
+            The goal is to uncover the play area
+            with shapes to reveal the picture.
+
+            Let's learn about the game shapes.
+            Each level you have a queue of shapes.
+
+            Tap the play area to start the shape.
+            It grows from the center.
+
+            Tap again to stop growing the shape.
+            A portion of the picture is revealed!
+
+            Hit the play area edge...
+            The shape will pop.
+
+            Hit part that is uncovered...
+            Both shapes pop.
+
+            Have Fun!
+            */
+            if (addingShape) {
+                for(IGameObject obj : gameObjects){
+                    if ( obj.InGameArea() && obj.equals(gameObjects.get(gameObjects.size() - 1))) {
+                        obj.draw(canvas);
+                    }
+                }
+            }
+
+            switch (iScreen) {
+                case 1:
+                    drawCenterText(canvas, Color.WHITE, 60, (int)bFirstY,"How is the 'Picture Game' played?", false);
+                    break;
+                case 2:
+                    drawCenterText(canvas, Color.WHITE, 60, (int)bFirstY,"How is the 'Picture Game' played?", false);
+                    drawCenterText(canvas, Color.WHITE, 60, (int)bFirstY + 100,"Great question! I'm glad you asked!", false);
+                    break;
+                case 3:
+                    drawCenterText(canvas, Color.WHITE, 60, (int)bFirstY,"The goal is to uncover the play area", false);
+                    drawCenterText(canvas, Color.WHITE, 60, (int)bFirstY + 100,"with shapes to reveal the picture.", false);
+                    break;
+                case 4:
+                    drawCenterText(canvas, Color.WHITE, 60, (int)bFirstY,"Let's learn about the game shapes.", false);
+                    drawCenterText(canvas, Color.WHITE, 60, (int)bFirstY + 100,"Each level you have a queue of shapes.", false);
+                    break;
+                case 5:
+                    drawCenterText(canvas, Color.WHITE, 60, (int)bFirstY,"Tap the play area to start the shape.", false);
+                    drawCenterText(canvas, Color.WHITE, 60, (int)bFirstY + 100,"It grows from the center.", false);
+                    break;
+                case 6:
+                    drawCenterText(canvas, Color.WHITE, 60, (int)bFirstY,"Tap again to stop growing the shape.", false);
+                    drawCenterText(canvas, Color.WHITE, 60, (int)bFirstY + 100,"A portion of the picture is revealed!", false);
+                    break;
+                case 7:
+                    drawCenterText(canvas, Color.WHITE, 60, (int)bFirstY,"Hit the play area edge...", false);
+                    drawCenterText(canvas, Color.WHITE, 60, (int)bFirstY + 100,"The shape will pop.", false);
+                    break;
+                case 8:
+                    drawCenterText(canvas, Color.WHITE, 60, (int)bFirstY,"Hit part that is uncovered...", false);
+                    drawCenterText(canvas, Color.WHITE, 60, (int)bFirstY + 100,"Both shapes pop.", false);
+                    break;
+                case 9:
+                    drawCenterText(canvas, Color.WHITE, 125, (int)bFirstY,"Have Fun!", false);
+                    break;
+                default:
+                    break;
+            }
+
+            if (bHeader) {
+                // Header
+                Paint hPaint = new Paint();
+                hPaint.setColor(Color.GRAY);
+                canvas.drawRect(0,0,Constants.SCREEN_WIDTH,Constants.HEADER_HEIGHT,paint);
+                // Header Queue
+                obstacleQueue.draw(canvas);
+                // Score
+                hPaint.setTextSize(100);
+                hPaint.setStyle(Paint.Style.FILL);
+                hPaint.setColor(Color.WHITE);
+                canvas.drawText("" + Math.round(score), 50,150, hPaint );
+            }
+        }
+
+        if (laserTutorial) {
+            /*
+            How is the 'Laser Game' played?
+
+            Great question! I'm glad you asked!
+
+            The goal is to keep the laser
+            inside of the play area.
+            Bounce the laser off shapes
+            to earn points.
+
+            Let's learn about the game shapes.
+            Each level you have a queue of shapes.
+            You only see the next 5 shapes.
+            The next shape it on the right.
+
+            Tap the play area to start the shape.
+            It grows from the center.
+
+            Tap again to stop growing the shape.
+            Size does matter in this game!
+
+            Hit the play area edge...
+            The shape will pop.
+
+            Hit another shape...
+            Both shapes pop.
+
+            The level ends...
+            when the laser hits the edge.
+
+            Have Fun!
+            */
+            if (iScreen >= 3) {
+                //Laser object
+                laserObject.draw(canvas);
+            }
+            switch (iScreen) {
+                case 1:
+                    drawCenterText(canvas, Color.WHITE, 60, (int)bFirstY,"How is the 'Laser Game' played?", false);
+                    break;
+                case 2:
+                    drawCenterText(canvas, Color.WHITE, 60, (int)bFirstY,"How is the 'Laser Game' played?", false);
+                    drawCenterText(canvas, Color.WHITE, 60, (int)bFirstY + 100,"Great question! I'm glad you asked!", false);
+                    break;
+                case 3:
+                    drawCenterText(canvas, Color.WHITE, 60, (int)bFirstY,"The goal is to keep the laser", false);
+                    drawCenterText(canvas, Color.WHITE, 60, (int)bFirstY + 100,"inside of the play area.", false);
+                    drawCenterText(canvas, Color.WHITE, 60, (int)bFirstY + 200,"Bounce the laser off shapes", false);
+                    drawCenterText(canvas, Color.WHITE, 60, (int)bFirstY + 300,"to earn points.", false);
+                    break;
+                case 4:
+                    drawCenterText(canvas, Color.WHITE, 60, (int)bFirstY,"Let's learn about the game shapes.", false);
+                    drawCenterText(canvas, Color.WHITE, 60, (int)bFirstY + 100,"Each level you have a queue of shapes.", false);
+                    drawCenterText(canvas, Color.WHITE, 60, (int)bFirstY + 200,"You only see the next 5 shapes.", false);
+                    drawCenterText(canvas, Color.WHITE, 60, (int)bFirstY + 300,"The next shape is on the right =>", false);
+                    break;
+                case 5:
+                    drawCenterText(canvas, Color.WHITE, 60, (int)bFirstY,"Tap the play area to start the shape.", false);
+                    drawCenterText(canvas, Color.WHITE, 60, (int)bFirstY + 100,"It grows from the center.", false);
+                    break;
+                case 6:
+                    drawCenterText(canvas, Color.WHITE, 60, (int)bFirstY,"Tap again to stop growing the shape.", false);
+                    drawCenterText(canvas, Color.WHITE, 60, (int)bFirstY + 100,"Size does matter in this game!", false);
+                    break;
+                case 7:
+                    drawCenterText(canvas, Color.WHITE, 60, (int)bFirstY,"Hit the play area edge...", false);
+                    drawCenterText(canvas, Color.WHITE, 60, (int)bFirstY + 100,"The shape will pop.", false);
+                    break;
+                case 8:
+                    drawCenterText(canvas, Color.WHITE, 60, (int)bFirstY,"Hit another shape...", false);
+                    drawCenterText(canvas, Color.WHITE, 60, (int)bFirstY + 100,"Both shapes pop.", false);
+                    break;
+                case 9:
+                    drawCenterText(canvas, Color.WHITE, 60, (int)bFirstY,"The level ends...", false);
+                    drawCenterText(canvas, Color.WHITE, 60, (int)bFirstY + 100,"when the laser hits the edge.", false);
+                    break;
+                case 10:
+                    drawCenterText(canvas, Color.WHITE, 125, (int)bFirstY,"Have Fun!", false);
+                    break;
+                default:
+                    break;
+            }
+
+            if (bHeader) {
+                // Header
+                Paint hPaint = new Paint();
+                hPaint.setColor(Color.GRAY);
+                canvas.drawRect(0,0,Constants.SCREEN_WIDTH,Constants.HEADER_HEIGHT,paint);
+                // Header Queue
+                obstacleQueue.draw(canvas);
+                // Score
+                hPaint.setTextSize(100);
+                hPaint.setStyle(Paint.Style.FILL);
+                hPaint.setColor(Color.WHITE);
+                canvas.drawText("" + Math.round(score), 50,150, hPaint );
+            }
+        }
     }
 
     @Override
@@ -474,7 +728,7 @@ public class GamePlayHowTo extends GamePlayBase implements IScene  {
             }
         }
 
-        if (!areaTutorial && !blastTutorial) {
+        if (!areaTutorial && !blastTutorial && !pictureTutorial && !laserTutorial) {
             //Staging menu before selection is chosen
             //Update obstacles
             for(IGameObject gob: gameObjects){
@@ -509,7 +763,7 @@ public class GamePlayHowTo extends GamePlayBase implements IScene  {
             explosions.removeAll(expDone);
         }
 
-        if (!areaTutorial && !blastTutorial) {
+        if (!areaTutorial && !blastTutorial && !pictureTutorial && !laserTutorial) {
             // Create next object in queue
             SelectedObject = obstacleQueue.getItem();
             if (SelectedObject == null) {
@@ -713,7 +967,6 @@ public class GamePlayHowTo extends GamePlayBase implements IScene  {
                 default:
                     break;
             }
-
         }
 
         if (blastTutorial) {
@@ -776,10 +1029,10 @@ public class GamePlayHowTo extends GamePlayBase implements IScene  {
                 case 7:
                     if (!bShowNext) {
                         if ((System.currentTimeMillis() > (startTime + 1000)) && (iAnimation == 1)) {
-                            gameSpecialObjects.add(new ObstacleSpecialDouble(Constants.SCREEN_WIDTH/2, bFirstY + 100f,85f,Color.WHITE));
+                            gameSpecialObjects.add(new ObstacleSpecialDouble(Constants.SCREEN_WIDTH/2f, bFirstY + 100f,85f,Color.WHITE));
                             iAnimation += 1;
                         } else if ((System.currentTimeMillis() > (startTime + 2000)) && (iAnimation == 2)) {
-                            gameSpecialObjects.add(new ObstacleSpecialTime(Constants.SCREEN_WIDTH/2, bFirstY + 300f,85f,Color.WHITE));
+                            gameSpecialObjects.add(new ObstacleSpecialTime(Constants.SCREEN_WIDTH/2f, bFirstY + 300f,85f,Color.WHITE));
                             iAnimation += 1;
                         } else if ((System.currentTimeMillis() > (startTime + 3000)) && (iAnimation == 3)) {
                             gameSpecialObjects.add(new ObstacleSpecialFrenzy(Constants.SCREEN_WIDTH/2f, bFirstY + 500f,85f,Color.WHITE));
@@ -844,6 +1097,403 @@ public class GamePlayHowTo extends GamePlayBase implements IScene  {
             // CountDownTimer
             if (bHeader) {
                 gameTimer.update();
+            }
+        }
+
+        if (pictureTutorial) {
+            switch (iScreen) {
+                case 1:
+                    String sURL = Common.getPreferenceString("pictureURL");
+                    bg = new Background(sURL,0,Constants.HEADER_HEIGHT,Constants.SCREEN_WIDTH,Constants.SCREEN_HEIGHT);
+                    isLayerRefresh = true;
+                    bShowNext = true;
+                    gameObjects = new ArrayList<>();
+                    break;
+                case 2:
+                    bShowNext = true;
+                    break;
+                case 3:
+                    bShowNext = true;
+                    break;
+                case 4:
+                    if (!bShowNext) {
+                        if ((System.currentTimeMillis() > startTime) && (iAnimation == 1)) {
+                            Constants.HEADER_HEIGHT = 200;
+                            obstacleQueue = null;
+                            obstacleQueue = new ObstacleQueue();
+                            bHeader = true;
+                            iAnimation += 1;
+                        } else if ((System.currentTimeMillis() > (startTime + 1000)) && (iAnimation == 2)) {
+                            obstacleQueue.addItem("C");
+                            iAnimation += 1;
+                        } else if ((System.currentTimeMillis() > (startTime + 2000)) && (iAnimation == 3)) {
+                            obstacleQueue.addItem("S");
+                            iAnimation += 1;
+                        } else if ((System.currentTimeMillis() > (startTime + 3000)) && (iAnimation == 4)) {
+                            obstacleQueue.addItem("T");
+                            iAnimation += 1;
+                        } else if ((System.currentTimeMillis() > (startTime + 4000)) && (iAnimation == 5)) {
+                            obstacleQueue.addItem("R");
+                            iAnimation += 1;
+                        } else if ((System.currentTimeMillis() > (startTime + 5000)) && (iAnimation == 6)) {
+                            obstacleQueue.addItem("HICSTRHI");
+                            SelectedObject = obstacleQueue.getItem();
+                            bShowNext = true;
+                        }
+                    }
+                    break;
+                case 5:
+                    if (!bShowNext) {
+                        if ((System.currentTimeMillis() > (startTime + 500)) && (iAnimation == 1)) {
+                            menuPoint.x = Constants.SCREEN_WIDTH/2f;
+                            menuPoint.y = Constants.SCREEN_HEIGHT * 3f / 4f;
+                            IGameObject newObject = SelectedObject.NewInstance();
+                            newObject.update(menuPoint);
+                            gameObjects.add(newObject);
+                            obstacleQueue.removeItem();
+                            SelectedObject = obstacleQueue.getItem();
+                            speed = 1;
+                            iAnimation += 1;
+                            addingShape = true;
+                            return;
+                        } else if ((System.currentTimeMillis() > (startTime + 500)) && (System.currentTimeMillis() < (startTime + 4000))) {
+                            if(gameObjects.size() > 0) {
+                                IGameObject currentObject = gameObjects.get(gameObjects.size() - 1);
+                                currentObject.grow(speed);
+                                if (speed < 3) {
+                                    speed += 1;
+                                }
+                                calcScore();
+                            }
+                        } else if (System.currentTimeMillis() > (startTime + 4000)) {
+                            isLayerRefresh = true;
+                            bShowNext = true;
+                            iScreen += 1;
+                            speed = 1;
+                            addingShape = false;
+                        }
+                    }
+                    break;
+                case 6:
+                    bShowNext = true;
+                    break;
+                case 7:
+                    if (!bShowNext) {
+                        if ((System.currentTimeMillis() > (startTime + 500)) && (iAnimation == 1)) {
+                            menuPoint.x = Constants.SCREEN_WIDTH * 4f / 5f;
+                            menuPoint.y = Constants.SCREEN_HEIGHT / 4f;
+                            IGameObject newObject = SelectedObject.NewInstance();
+                            newObject.update(menuPoint);
+                            gameObjects.add(newObject);
+                            obstacleQueue.removeItem();
+                            SelectedObject = obstacleQueue.getItem();
+                            speed = 1;
+                            iAnimation += 1;
+                            addingShape = true;
+                            return;
+                        } else if ((System.currentTimeMillis() > (startTime + 500)) ) {
+                            if (gameObjects.size() > 0) {
+                                IGameObject currentObject = gameObjects.get(gameObjects.size() - 1);
+                                if (currentObject.getType().equals("Square")) {
+                                    currentObject.grow(speed);
+                                    if (speed < 3) {
+                                        speed += 1;
+                                    }
+                                } else {
+                                    addingShape = false;
+                                    isLayerRefresh = true;
+                                    bShowNext = true;
+                                    speed = 1;
+                                }
+                                calcScore();
+                            }
+                        }
+                    }
+                    break;
+                case 8:
+                    if (!bShowNext) {
+                        if ((System.currentTimeMillis() > (startTime + 500)) && (iAnimation == 1)) {
+                            menuPoint.x = Constants.SCREEN_WIDTH / 2f;
+                            menuPoint.y = Constants.SCREEN_HEIGHT / 2f;
+                            IGameObject newObject = SelectedObject.NewInstance();
+                            newObject.update(menuPoint);
+                            gameObjects.add(newObject);
+                            obstacleQueue.removeItem();
+                            SelectedObject = obstacleQueue.getItem();
+                            speed = 1;
+                            iAnimation += 1;
+                            addingShape = true;
+                            return;
+                        } else if ((System.currentTimeMillis() > (startTime + 500)) ) {
+                            if (gameObjects.size() > 0) {
+                                IGameObject currentObject = gameObjects.get(gameObjects.size() - 1);
+                                if (currentObject.getType().equals("TriangleUp")) {
+                                    currentObject.grow(speed);
+                                    if (speed < 3) {
+                                        speed += 1;
+                                    }
+
+                                    // If current hits another game object -> pop object
+                                    boolean currPop = false;
+                                    IGameObject gobPop = new Obstacle(0, 0,0,0,0);
+
+                                    for(IGameObject gob: gameObjects) {
+                                        if( !gob.equals(currentObject) ) {
+                                            if (CollisionManager.GameObjectCollide(currentObject, gob)) {
+                                                currPop = true;
+                                                gobPop = gob;
+                                            }
+                                        }
+                                    }
+
+                                    // If hit other object or hit edge -> pop object
+                                    if (currPop) {
+                                        currentObject.pop();
+                                        explosions.add(new ParticleExplosion( (int)currentObject.getSize()/partCount, currentObject.getSize(), currentObject.getCenter(), currentObject.getType(), true ));
+                                        gameObjects.remove(currentObject);
+                                        SoundManager.playSound("POP");
+                                        gobPop.pop();
+                                        explosions.add(new ParticleExplosion( (int)gobPop.getSize()/partCount, gobPop.getSize(), gobPop.getCenter(), gobPop.getType(), true ));
+                                        gameObjects.remove(gobPop);
+                                        SoundManager.playSound("POP");
+                                        bShowNext = true;
+                                        speed = 1;
+                                        isLayerRefresh = true;
+                                        addingShape = false;
+                                    }
+                                }
+                                calcScore();
+                            }
+                        }
+                    }
+                    break;
+                case 9:
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        if (laserTutorial) {
+            if (iScreen >= 5) {
+                // Update Laser Object
+                boolean currPop = false;
+                IGameObject gobPop = new Obstacle(0, 0,0,0,0);
+                for(IGameObject gob: gameObjects) {
+                    if (CollisionManager.GameObjectSpecialCollide(gob,laserObject)) {
+                        laserObject.Collide(gob, false);
+                        laserObject.changeSpeedValue(0.25f);
+                        currPop = true;
+                        gobPop = gob;
+                        gob.pop();
+                    }
+                }
+                if (currPop) {
+                    calcScore(gobPop);
+                    explosions.add(new ParticleExplosion( (int)gobPop.getSize()/partCount, gobPop.getSize(), gobPop.getCenter(), gobPop.getType(), true ));
+                    gameObjects.remove(gobPop);
+                    SoundManager.playSound("POP");
+                }
+
+                laserObject.update();
+            }
+            switch (iScreen) {
+                case 1:
+                    bShowNext = true;
+                    gameObjects = new ArrayList<>();
+                    break;
+                case 2:
+                    bShowNext = true;
+                    break;
+                case 3:
+                    laserObject = new ObstacleSpecialLaser(Constants.SCREEN_WIDTH/2f,255f, 25f, Color.YELLOW);
+                    bShowNext = true;
+                    break;
+                case 4:
+                    if (!bShowNext) {
+                        if ((System.currentTimeMillis() > startTime) && (iAnimation == 1)) {
+                            Constants.HEADER_HEIGHT = 200;
+                            obstacleQueue = null;
+                            obstacleQueue = new ObstacleQueue();
+                            bHeader = true;
+                            iAnimation += 1;
+                        } else if ((System.currentTimeMillis() > (startTime + 1000)) && (iAnimation == 2)) {
+                            obstacleQueue.addItem("E");
+                            iAnimation += 1;
+                        } else if ((System.currentTimeMillis() > (startTime + 2000)) && (iAnimation == 3)) {
+                            obstacleQueue.addItem("C");
+                            iAnimation += 1;
+                        } else if ((System.currentTimeMillis() > (startTime + 3000)) && (iAnimation == 4)) {
+                            obstacleQueue.addItem("S");
+                            iAnimation += 1;
+                        } else if ((System.currentTimeMillis() > (startTime + 4000)) && (iAnimation == 5)) {
+                            obstacleQueue.addItem("T");
+                            iAnimation += 1;
+                        } else if ((System.currentTimeMillis() > (startTime + 5000)) && (iAnimation == 6)) {
+                            obstacleQueue.addItem("RHICSTRH");
+                            SelectedObject = obstacleQueue.getItem();
+                            bShowNext = true;
+                        }
+                    }
+                    break;
+                case 5:
+                    if (!bShowNext) {
+                        if ((System.currentTimeMillis() > (startTime + 500)) && (iAnimation == 1)) {
+                            menuPoint.x = Constants.SCREEN_WIDTH/2f;
+                            menuPoint.y = Constants.SCREEN_HEIGHT * 1f / 2f;
+                            IGameObject newObject = SelectedObject.NewInstance();
+                            newObject.update(menuPoint);
+                            gameObjects.add(newObject);
+                            obstacleQueue.removeItem();
+                            SelectedObject = obstacleQueue.getItem();
+                            speed = 1;
+                            iAnimation += 1;
+                            return;
+                        } else if (iAnimation == 2) {
+                            if (System.currentTimeMillis() < (startTime + 1000)) {
+                                if(gameObjects.size() > 0) {
+                                    IGameObject currentObject = gameObjects.get(gameObjects.size() - 1);
+                                    currentObject.grow(speed);
+                                    if (speed < 3) {
+                                        speed += 1;
+                                    }
+                                    calcScore();
+                                }
+                            } else {
+                                iAnimation += 1;
+                            }
+                        } else if (iAnimation == 3) {
+                            menuPoint.x = Constants.SCREEN_WIDTH/2f;
+                            menuPoint.y = Constants.SCREEN_HEIGHT * 3f / 4f;
+                            IGameObject newObject = SelectedObject.NewInstance();
+                            newObject.update(menuPoint);
+                            gameObjects.add(newObject);
+                            obstacleQueue.removeItem();
+                            SelectedObject = obstacleQueue.getItem();
+                            speed = 1;
+                            iAnimation += 1;
+                            return;
+                        } else if (iAnimation == 4) {
+                            if (System.currentTimeMillis() < (startTime + 4000)) {
+                                if(gameObjects.size() > 0) {
+                                    IGameObject currentObject = gameObjects.get(gameObjects.size() - 1);
+                                    currentObject.grow(speed);
+                                    if (speed < 3) {
+                                        speed += 1;
+                                    }
+                                    calcScore();
+                                }
+                            } else {
+                                iAnimation += 1;
+                            }
+                        } else if (iAnimation == 5) {
+                            bShowNext = true;
+                            iScreen += 1;
+                            speed = 1;
+                        }
+                    }
+                    break;
+                case 6:
+                    bShowNext = true;
+                    break;
+                case 7:
+                    if (!bShowNext) {
+                        if ((System.currentTimeMillis() > (startTime + 500)) && (iAnimation == 1)) {
+                            menuPoint.x = Constants.SCREEN_WIDTH * 4f / 5f;
+                            menuPoint.y = Constants.SCREEN_HEIGHT / 2f;
+                            IGameObject newObject = SelectedObject.NewInstance();
+                            newObject.update(menuPoint);
+                            gameObjects.add(newObject);
+                            obstacleQueue.removeItem();
+                            SelectedObject = obstacleQueue.getItem();
+                            speed = 1;
+                            iAnimation += 1;
+                            return;
+                        } else if ((System.currentTimeMillis() > (startTime + 500)) ) {
+                            if (gameObjects.size() > 0) {
+                                IGameObject currentObject = gameObjects.get(gameObjects.size() - 1);
+                                if (currentObject.getType().equals("Square")) {
+                                    currentObject.grow(speed);
+                                    if (speed < 3) {
+                                        speed += 1;
+                                    }
+                                } else {
+                                    bShowNext = true;
+                                    speed = 1;
+                                }
+                                calcScore();
+                            } else {
+                                bShowNext = true;
+                            }
+                        }
+                    }
+                    break;
+                case 8:
+                    if (!bShowNext) {
+                        if ((System.currentTimeMillis() > (startTime + 500)) && (iAnimation == 1)) {
+                            menuPoint.x = Constants.SCREEN_WIDTH / 2f;
+                            menuPoint.y = Constants.SCREEN_HEIGHT / 2f;
+                            IGameObject newObject = SelectedObject.NewInstance();
+                            newObject.update(menuPoint);
+                            gameObjects.add(newObject);
+                            obstacleQueue.removeItem();
+                            SelectedObject = obstacleQueue.getItem();
+                            speed = 1;
+                            iAnimation += 1;
+                            return;
+                        } else if ((System.currentTimeMillis() > (startTime + 500)) ) {
+                            if (gameObjects.size() > 0) {
+                                IGameObject currentObject = gameObjects.get(gameObjects.size() - 1);
+                                if (currentObject.getType().equals("TriangleUp")) {
+                                    currentObject.grow(speed);
+                                    if (speed < 3) {
+                                        speed += 1;
+                                    }
+
+                                    // If current hits another game object -> pop object
+                                    boolean currPop = false;
+                                    IGameObject gobPop = new Obstacle(0, 0,0,0,0);
+
+                                    for(IGameObject gob: gameObjects) {
+                                        if( !gob.equals(currentObject) ) {
+                                            if (CollisionManager.GameObjectCollide(currentObject, gob)) {
+                                                currPop = true;
+                                                gobPop = gob;
+                                            }
+                                        }
+                                    }
+
+                                    // If hit other object or hit edge -> pop object
+                                    if (currPop) {
+                                        currentObject.pop();
+                                        explosions.add(new ParticleExplosion( (int)currentObject.getSize()/partCount, currentObject.getSize(), currentObject.getCenter(), currentObject.getType(), true ));
+                                        gameObjects.remove(currentObject);
+                                        //gameSounds.playSound("POP");
+                                        SoundManager.playSound("POP");
+
+                                        gobPop.pop();
+                                        explosions.add(new ParticleExplosion( (int)gobPop.getSize()/partCount, gobPop.getSize(), gobPop.getCenter(), gobPop.getType(), true ));
+                                        gameObjects.remove(gobPop);
+                                        //gameSounds.playSound("POP");
+                                        SoundManager.playSound("POP");
+                                        bShowNext = true;
+                                        speed = 1;
+                                    }
+                                }
+                                calcScore();
+                            } else {
+                                bShowNext = true;
+                            }
+                        }
+                    }
+                    break;
+                case 9:
+                    bShowNext = true;
+                    break;
+                case 10:
+                    break;
+                default:
+                    break;
             }
         }
 
@@ -918,6 +1568,24 @@ public class GamePlayHowTo extends GamePlayBase implements IScene  {
             txtPaint.setStrokeWidth(5);
             txtPaint.setColor(Color.BLACK);
             canvas.drawText(text, x, y, txtPaint);
+        }
+    }
+
+    private void refreshLayer(Canvas canvas) {
+        bitmapLayer = Bitmap.createBitmap(canvas.getWidth(), canvas.getHeight(), Bitmap.Config.ARGB_8888);
+        Canvas temp = new Canvas(bitmapLayer);
+
+        Paint paint = new Paint();
+        paint.setColor(Color.BLACK);
+        paint.setAlpha(240);
+        temp.drawRect(0,Constants.HEADER_HEIGHT,Constants.SCREEN_WIDTH, Constants.SCREEN_HEIGHT, paint);
+
+        paint.setColor(Color.TRANSPARENT);
+        paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.CLEAR));
+
+        for(IGameObject gob: gameObjects){
+            gob.setPaint(paint);
+            gob.draw(temp);
         }
     }
 }

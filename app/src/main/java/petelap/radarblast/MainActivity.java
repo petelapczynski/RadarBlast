@@ -109,6 +109,7 @@ public class MainActivity extends Activity {
     @Override
     public void onBackPressed(){
         // On back button, Alert to prompt Main Menu
+        Constants.GAME_STATUS = "PAUSED";
         final AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
         builder.setMessage("Return to Game Menu?");
         builder.setCancelable(true);
@@ -123,6 +124,7 @@ public class MainActivity extends Activity {
         builder.setNegativeButton("No", new DialogInterface.OnClickListener(){
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
+                Constants.GAME_STATUS = "GAMELOOP";
                 dialogInterface.dismiss();
             }
         });

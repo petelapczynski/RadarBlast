@@ -16,10 +16,10 @@ public class GamePlayLaser extends GamePlayBase implements IScene {
     private ObstacleSpecialLaser laserObject;
     private Levels.Level lvl;
 
-    private final float bFirstY = Constants.SCREEN_HEIGHT/2;
+    private final float bFirstY = Constants.SCREEN_HEIGHT/2f;
     private final float bGap = 50f;
 
-    private RectF bStartLevel = new RectF(bLeft, (Constants.SCREEN_HEIGHT / 2) + bGap, bRight, (Constants.SCREEN_HEIGHT / 2) + bGap + bHeight);
+    private RectF bStartLevel = new RectF(bLeft, (Constants.SCREEN_HEIGHT / 2f) + bGap, bRight, (Constants.SCREEN_HEIGHT / 2f) + bGap + bHeight);
     private RectF bLevelGS = new RectF(bLeft, bStartLevel.bottom + bGap, bRight, bStartLevel.bottom + bGap + bHeight);
 
     private RectF bReplay = new RectF(bLeft, bFirstY, bRight, bFirstY + bHeight);
@@ -33,7 +33,7 @@ public class GamePlayLaser extends GamePlayBase implements IScene {
         playerPoint = new PointF(0, 0);
         movePoint = new PointF(0,0);
         gameObjects = new ArrayList<>();
-        laserObject = new ObstacleSpecialLaser(Constants.SCREEN_WIDTH / 2, Constants.HEADER_HEIGHT + 55,25f, Color.YELLOW);
+        laserObject = new ObstacleSpecialLaser(Constants.SCREEN_WIDTH / 2f, Constants.HEADER_HEIGHT + 55f,25f, Color.YELLOW);
         explosions = new ArrayList<>();
         //obstacleQueue = new ObstacleQueue(Common.randomInt(5,10));
         // Setup objects from level
@@ -88,7 +88,7 @@ public class GamePlayLaser extends GamePlayBase implements IScene {
         overlayPaint.setARGB(75,0,0,0);
 
         //Game Sounds
-        SoundManager.setGameMusic("AREA");
+        SoundManager.setGameMusic("LASER");
     }
 
     private void reset(Levels.Level level) {
@@ -101,7 +101,7 @@ public class GamePlayLaser extends GamePlayBase implements IScene {
         objectMoving = false;
         playerPoint = new PointF(0, 0);
         movePoint = new PointF(0,0);
-        laserObject = new ObstacleSpecialLaser(Constants.SCREEN_WIDTH / 2, Constants.HEADER_HEIGHT + 55,25f, Color.YELLOW);
+        laserObject = new ObstacleSpecialLaser(Constants.SCREEN_WIDTH / 2f, Constants.HEADER_HEIGHT + 55,25f, Color.YELLOW);
         gameObjects = new ArrayList<>();
         // Setup objects from level
         if (lvl.getNumber() == 0) {
@@ -278,7 +278,7 @@ public class GamePlayLaser extends GamePlayBase implements IScene {
                 vHeight += 50;
                 for (Highscores.Highscore hs: SceneManager.highscores.getHighscores()) {
                     vHeight += 100;
-                    canvas.drawText(hs.getNumber() + ": " + hs.getScore() + " - " + hs.getName(), Constants.SCREEN_WIDTH/3, vHeight, txtPaint);
+                    canvas.drawText(hs.getNumber() + ": " + hs.getScore() + " - " + hs.getName(), Constants.SCREEN_WIDTH/3f, vHeight, txtPaint);
                 }
 
                 //Button: Replay Level
@@ -306,156 +306,154 @@ public class GamePlayLaser extends GamePlayBase implements IScene {
 
     @Override
     public void update() {
-        IGameObject currentObject = new Obstacle(0,0,0,0,0);
+        if (Constants.GAME_STATUS.equals("GAMELOOP")) {
+            IGameObject currentObject = new Obstacle(0,0,0,0,0);
 
-        if(obstacleQueue.getCount() <= 5) {
-            if (SceneManager.level.getNumber() == 0) {
-                obstacleQueue.addItem();
-            } else {
-                obstacleQueue.addItem(lvl.getGameObjects());
+            if(obstacleQueue.getCount() <= 5) {
+                if (SceneManager.level.getNumber() == 0) {
+                    obstacleQueue.addItem();
+                } else {
+                    obstacleQueue.addItem(lvl.getGameObjects());
+                }
             }
-        }
 
-        if(gameObjects.size() > 0){
-            currentObject = gameObjects.get(gameObjects.size() - 1);
-        }
+            if(gameObjects.size() > 0){
+                currentObject = gameObjects.get(gameObjects.size() - 1);
+            }
 
-        if(!gameOver && gameStart) {
-            //Update obstacles
-            boolean currPop = false;
-            IGameObject gobPop = new Obstacle(0, 0,0,0,0);
+            if(!gameOver && gameStart) {
+                //Update obstacles
+                boolean currPop = false;
+                IGameObject gobPop = new Obstacle(0, 0,0,0,0);
 
-            // If addingShape -> Grow object
-            if (addingShape){
-                //handle moving shape
-                if(objectMoving) {
-                    currentObject.update(movePoint);
-                    objectMoving = false;
-                    movePoint = new PointF(0,0);
-                }
-                if (addShape) {
-                    explosions.add(new ParticleExplosion( 5, 75.0f, new PointF(Constants.SCREEN_WIDTH - 100f, Constants.HEADER_HEIGHT / 2f), currentObject.getType(), false ));
-                    addShape = false;
-                }
-                currentObject.grow(speed);
-                if(System.currentTimeMillis() - objectTime >= 300) {
-                    speed += 1;
-                    objectTime = System.currentTimeMillis();
-                }
+                // If addingShape -> Grow object
+                if (addingShape){
+                    //handle moving shape
+                    if(objectMoving) {
+                        currentObject.update(movePoint);
+                        objectMoving = false;
+                        movePoint = new PointF(0,0);
+                    }
+                    if (addShape) {
+                        explosions.add(new ParticleExplosion( 5, 75.0f, new PointF(Constants.SCREEN_WIDTH - 100f, Constants.HEADER_HEIGHT / 2f), currentObject.getType(), false ));
+                        addShape = false;
+                    }
+                    currentObject.grow(speed);
+                    if(System.currentTimeMillis() - objectTime >= 300) {
+                        speed += 1;
+                        objectTime = System.currentTimeMillis();
+                    }
 
-                // If current hits another game object -> pop object
-                for(IGameObject gob: gameObjects) {
-                    if( !gob.equals(currentObject) ) {
-                        if (CollisionManager.GameObjectCollide(currentObject,gob)) {
-                            currPop = true;
-                            gobPop = gob;
+                    // If current hits another game object -> pop object
+                    for(IGameObject gob: gameObjects) {
+                        if( !gob.equals(currentObject) ) {
+                            if (CollisionManager.GameObjectCollide(currentObject,gob)) {
+                                currPop = true;
+                                gobPop = gob;
+                            }
                         }
                     }
-                }
 
-                // If hit other object or hit edge -> pop object
-                if (currPop) {
-                    currentObject.pop();
-                    explosions.add(new ParticleExplosion( (int)currentObject.getSize()/partCount, currentObject.getSize(), currentObject.getCenter(), currentObject.getType(), true ));
-                    gameObjects.remove(currentObject);
-                    //gameSounds.playSound("POP");
-                    SoundManager.playSound("POP");
-
-                    gobPop.pop();
-                    explosions.add(new ParticleExplosion( (int)gobPop.getSize()/partCount, gobPop.getSize(), gobPop.getCenter(), gobPop.getType(), true ));
-                    gameObjects.remove(gobPop);
-                    //gameSounds.playSound("POP");
-                    SoundManager.playSound("POP");
-                    addingShape = false;
-                    objectPop = true;
-                    objectTime = System.currentTimeMillis();
-                } else {
-                    if (!currentObject.InGameArea()) {
+                    // If hit other object or hit edge -> pop object
+                    if (currPop) {
                         currentObject.pop();
                         explosions.add(new ParticleExplosion( (int)currentObject.getSize()/partCount, currentObject.getSize(), currentObject.getCenter(), currentObject.getType(), true ));
                         gameObjects.remove(currentObject);
                         //gameSounds.playSound("POP");
                         SoundManager.playSound("POP");
+
+                        gobPop.pop();
+                        explosions.add(new ParticleExplosion( (int)gobPop.getSize()/partCount, gobPop.getSize(), gobPop.getCenter(), gobPop.getType(), true ));
+                        gameObjects.remove(gobPop);
+                        //gameSounds.playSound("POP");
+                        SoundManager.playSound("POP");
                         addingShape = false;
                         objectPop = true;
                         objectTime = System.currentTimeMillis();
-                    }
-                }
-            }
-
-            if(objectPop){
-                if(System.currentTimeMillis() - objectTime >= 50) {
-                    objectPop = false;
-                }
-            }
-
-            // Update Laser Object
-            currPop = false;
-            for(IGameObject gob: gameObjects) {
-                //if (gob.CollideCircle(laserObject.getCenter(), laserObject.getSize())) {
-                if (CollisionManager.GameObjectSpecialCollide(gob,laserObject)) {
-                    if (gameObjects.get(gameObjects.size() - 1) == gob) {
-                        //hit growing object
-                        laserObject.Collide(gob.getCenter(), gob.getSize(), gob.getType(), true);
                     } else {
-                        //hit static growing object
-                        laserObject.Collide(gob.getCenter(), gob.getSize(), gob.getType(), false);
-                    }
-                    laserObject.changeSpeedValue(0.25f);
-                    currPop = true;
-                    gobPop = gob;
-                    gob.pop();
-
-                    if (gob.equals(currentObject)) {
-                        addingShape = false;
+                        if (!currentObject.InGameArea()) {
+                            currentObject.pop();
+                            explosions.add(new ParticleExplosion( (int)currentObject.getSize()/partCount, currentObject.getSize(), currentObject.getCenter(), currentObject.getType(), true ));
+                            gameObjects.remove(currentObject);
+                            //gameSounds.playSound("POP");
+                            SoundManager.playSound("POP");
+                            addingShape = false;
+                            objectPop = true;
+                            objectTime = System.currentTimeMillis();
+                        }
                     }
                 }
-            }
-            if (currPop) {
-                calcScore(gobPop);
-                explosions.add(new ParticleExplosion( (int)gobPop.getSize()/partCount, gobPop.getSize(), gobPop.getCenter(), gobPop.getType(), true ));
-                gameObjects.remove(gobPop);
-                //gameSounds.playSound("POP");
-                SoundManager.playSound("POP");
+
+                if(objectPop){
+                    if(System.currentTimeMillis() - objectTime >= 50) {
+                        objectPop = false;
+                    }
+                }
+
+                // Update Laser Object
+                currPop = false;
+                for(IGameObject gob: gameObjects) {
+                    if (CollisionManager.GameObjectSpecialCollide(gob,laserObject)) {
+                        if (gameObjects.get(gameObjects.size() - 1) == gob) {
+                            //hit growing object
+                            laserObject.Collide(gob, true);
+                        } else {
+                            //hit static object
+                            laserObject.Collide(gob, false);
+                        }
+                        laserObject.changeSpeedValue(0.25f);
+                        currPop = true;
+                        gobPop = gob;
+                        gob.pop();
+
+                        if (gob.equals(currentObject)) {
+                            addingShape = false;
+                        }
+                    }
+                }
+                if (currPop) {
+                    calcScore(gobPop);
+                    explosions.add(new ParticleExplosion( (int)gobPop.getSize()/partCount, gobPop.getSize(), gobPop.getCenter(), gobPop.getType(), true ));
+                    gameObjects.remove(gobPop);
+                    //gameSounds.playSound("POP");
+                    SoundManager.playSound("POP");
+                }
+
+                if (laserObject.InGameArea()) {
+                    laserObject.update();
+                } else {
+                    laserObject.pop();
+                    bHighScore = true;
+                }
             }
 
-            if (laserObject.InGameArea()) {
-                laserObject.update();
-            } else {
-                laserObject.pop();
-                bHighScore = true;
+            //Explosions
+            ArrayList<ParticleExplosion> expDone = new ArrayList<>();
+            for(ParticleExplosion pe : explosions) {
+                if (pe.getState() == 0) {
+                    pe.update();
+                } else {
+                    expDone.add(pe);
+                }
             }
-        }
-
-        //Explosions
-        ArrayList<ParticleExplosion> expDone = new ArrayList<>();
-        for(ParticleExplosion pe : explosions) {
-            if (pe.getState() == 0) {
-                pe.update();
-            } else {
-                expDone.add(pe);
+            if (!expDone.isEmpty()) {
+                explosions.removeAll(expDone);
             }
-        }
-        if (!expDone.isEmpty()) {
-            explosions.removeAll(expDone);
-        }
 
-        if (bHighScore) {
-            bHighScore = false;
-            gameOver = true;
-            gameOverTime = System.currentTimeMillis();
-            //calcScore();
-            //Set High Score
-            if (Math.round(score) > SceneManager.highscores.getMinHighscore() ) {
-                SceneManager.highscores.updateHighscores(Math.round(score), Common.getPreferenceString("username"));
-                SceneManager.saveScores();
+            if (bHighScore) {
+                bHighScore = false;
+                gameOver = true;
+                gameOverTime = System.currentTimeMillis();
+                //calcScore();
+                //Set High Score
+                if (Math.round(score) > SceneManager.highscores.getMinHighscore() ) {
+                    SceneManager.highscores.updateHighscores(Math.round(score), Common.getPreferenceString("username"));
+                    SceneManager.saveScores();
+                }
             }
         }
     }
 
-//    private void calcScore() {
-//        score = laserObject.getDistance() / (Constants.SCREEN_HEIGHT - Constants.HEADER_HEIGHT);
-//    }
     private void calcScore(IGameObject gob) {
         float grayArea = (Constants.SCREEN_WIDTH * Constants.SCREEN_HEIGHT );
         float coveredArea = gob.getArea();

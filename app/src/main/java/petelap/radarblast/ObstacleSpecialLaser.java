@@ -13,7 +13,6 @@ import java.util.ArrayList;
 public class ObstacleSpecialLaser extends ObstacleSpecials implements IGameObjectSpecial {
     private Vector2D v;
     private float speed;
-    //private float distance;
     private Paint paint;
     private Paint bPaint;
     private ArrayList<PointF> points;
@@ -27,7 +26,7 @@ public class ObstacleSpecialLaser extends ObstacleSpecials implements IGameObjec
         type = "SpecialLaser";
         InGameArea = true;
         pop = false;
-        v = new Vector2D(0,1);
+        v = new Vector2D(0f,1f);
         speed = 2;
         //distance = 0;
         points = new ArrayList<>();
@@ -166,10 +165,6 @@ public class ObstacleSpecialLaser extends ObstacleSpecials implements IGameObjec
         v = bouncedVector.normalize();
     }
 
-    //public float getDistance(){
-    //    return distance;
-    //}
-
     public void changeSpeedPercent(float percent){
         speed = (percent/100f * speed) + speed;
         if (speed > 25f) {
@@ -180,303 +175,327 @@ public class ObstacleSpecialLaser extends ObstacleSpecials implements IGameObjec
         speed += fixed;
     }
 
-    public void Collide(PointF obCenter, float obSize, String obType, boolean isGrowing) {
-        RectF obRect;
-        float obWidth;
-        float obHeight;
+    public void Collide(IGameObject obj, boolean isGrowing) {
         Vector2D circleLine;
+        PointF objCenter = obj.getCenter();
+        RectF objRect = obj.getBoundsRect();
 
         if (isGrowing) {
             changeSpeedPercent(10);
         }
 
-        switch( obType ){
+        switch( obj.getType() ){
             case "Circle":
-                circleLine = new Vector2D(obCenter.x - center.x, obCenter.y - center.y);
+                circleLine = new Vector2D(objCenter.x - center.x, objCenter.y - center.y);
                 circleLine.rotate(90f);
-                bounce(obCenter.x,obCenter.y,obCenter.x + circleLine.x, obCenter.y + circleLine.y);
-                break;
-            case "Square":
-                obRect = new RectF(obCenter.x - obSize,obCenter.y - obSize,obCenter.x + obSize, obCenter.y + obSize);
-                if (center.y < obRect.top && center.x >= obRect.left && center.x <= obRect.right) {
-                    //Top
-                    bounce(obRect.left, obRect.top, obRect.right, obRect.top);
-                    return;
-                } else if (center.y > obRect.bottom && center.x >= obRect.left && center.x <= obRect.right)  {
-                    //Bottom
-                    bounce(obRect.left, obRect.bottom, obRect.right, obRect.bottom);
-                    return;
-                } else if (center.x < obRect.left && center.y >= obRect.top && center.y <= obRect.bottom) {
-                    //Left
-                    bounce(obRect.left, obRect.top, obRect.left , obRect.bottom);
-                    if (v.x == 0) {v.x = -1.0f; v.normalize();}
-                    return;
-                } else if (center.x > obRect.right && center.y >= obRect.top && center.y <= obRect.bottom) {
-                    //Right
-                    bounce(obRect.right, obRect.top, obRect.right, obRect.bottom);
-                    if (v.x == 0) {v.x = 1.0f; v.normalize();}
-                    return;
-                } else {
-                    //Corner
-                    if (center.x < obCenter.x && center.y < obCenter.y) {
-                        circleLine = new Vector2D(obRect.left - center.x, obRect.top - center.y);
-                        circleLine.rotate(90f);
-                        bounce(obRect.left,obRect.top,obRect.left + circleLine.x, obRect.top + circleLine.y);
-                    } else if (center.x > obCenter.x && center.y < obCenter.y) {
-                        circleLine = new Vector2D(obRect.right - center.x, obRect.top - center.y);
-                        circleLine.rotate(90f);
-                        bounce(obRect.right,obRect.top,obRect.right + circleLine.x, obRect.top + circleLine.y);
-                    } else if (center.x < obCenter.x && center.y > obCenter.y) {
-                        circleLine = new Vector2D(obRect.left - center.x, obRect.bottom - center.y);
-                        circleLine.rotate(90f);
-                        bounce(obRect.left,obRect.bottom,obRect.left + circleLine.x, obRect.bottom + circleLine.y);
-                    } else if (center.x > obCenter.x && center.y > obCenter.y) {
-                        circleLine = new Vector2D(obRect.right - center.x, obRect.bottom - center.y);
-                        circleLine.rotate(90f);
-                        bounce(obRect.right,obRect.bottom,obRect.right + circleLine.x, obRect.bottom + circleLine.y);
-                    } else {
-                        circleLine = new Vector2D(obCenter.x - center.x, obCenter.y - center.y);
-                        circleLine.rotate(90f);
-                        bounce(obCenter.x,obCenter.y,obCenter.x + circleLine.x, obCenter.y + circleLine.y);
+                bounce(objCenter.x,objCenter.y,objCenter.x + circleLine.x, objCenter.y + circleLine.y);
+
+                if (isGrowing) {
+                    if (center.y < objRect.top && rect.right >= objRect.left && rect.left <= objRect.right) {
+                        //Top
+                        if (v.y >= 0) {
+                            v.y *= -1.0f;
+                        }
+                    } else if (center.y > objRect.bottom && rect.right >= objRect.left && rect.left <= objRect.right) {
+                        //Bottom
+                        if (v.y <= 0) {
+                            v.y *= -1.0f;
+                        }
+                    } else if (center.x < objRect.left && rect.bottom >= objRect.top && rect.top <= objRect.bottom) {
+                        //Left
+                        if (v.x >= 0) {
+                            v.x *= -1.0f;
+                        }
+                    } else if (center.x > objRect.right && rect.bottom >= objRect.top && rect.top <= objRect.bottom) {
+                        //Right
+                        if (v.x <= 0) {
+                            v.x *= -1.0f;
+                        }
                     }
+                    return;
                 }
                 break;
+            case "Square":
             case "Rectangle":
-                obRect = new RectF(obCenter.x - obSize, obCenter.y - (obSize * 0.618f), obCenter.x + obSize, obCenter.y + (obSize * 0.618f) );
-                if (center.y < obRect.top && center.x >= obRect.left && center.x <= obRect.right) {
+                if (center.y < objRect.top && center.x >= objRect.left && center.x <= objRect.right) {
                     //Top
-                    bounce(obRect.left, obRect.top, obRect.right, obRect.top);
+                    bounce(objRect.left, objRect.top, objRect.right, objRect.top);
+                    if (isGrowing && v.y >= 0) {
+                        v.y *= -1.0f;
+                    }
                     return;
-                } else if (center.y > obRect.bottom && center.x >= obRect.left && center.x <= obRect.right)  {
+                } else if (center.y > objRect.bottom && center.x >= objRect.left && center.x <= objRect.right)  {
                     //Bottom
-                    bounce(obRect.left, obRect.bottom, obRect.right, obRect.bottom);
+                    bounce(objRect.left, objRect.bottom, objRect.right, objRect.bottom);
+                    if (isGrowing && v.y <= 0) {
+                        v.y *= -1.0f;
+                    }
                     return;
-                } else if (center.x < obRect.left && center.y >= obRect.top && center.y <= obRect.bottom) {
+                } else if (center.x < objRect.left && center.y >= objRect.top && center.y <= objRect.bottom) {
                     //Left
-                    bounce(obRect.left, obRect.top, obRect.left , obRect.bottom);
-                    if (v.x == 0) {v.x = -1.0f; v.normalize();}
+                    bounce(objRect.left, objRect.top, objRect.left , objRect.bottom);
+                    if (isGrowing && v.x > 0) {
+                        v.x *= -1.0f;
+                    } else if (isGrowing && v.x == 0) {
+                        v.x = -1.0f;
+                        v.normalize();
+                    }
                     return;
-                } else if (center.x > obRect.right && center.y >= obRect.top && center.y <= obRect.bottom) {
+                } else if (center.x > objRect.right && center.y >= objRect.top && center.y <= objRect.bottom) {
                     //Right
-                    bounce(obRect.right, obRect.top, obRect.right, obRect.bottom);
-                    if (v.x == 0) {v.x = 1.0f; v.normalize();}
+                    bounce(objRect.right, objRect.top, objRect.right, objRect.bottom);
+                    if (isGrowing && v.x < 0) {
+                        v.x *= -1.0f;
+                    } else if (isGrowing && v.x == 0) {
+                        v.x = 1.0f;
+                        v.normalize();
+                    }
                     return;
                 } else {
                     //Corner
-                    if (center.x < obCenter.x && center.y < obCenter.y) {
-                        circleLine = new Vector2D(obRect.left - center.x, obRect.top - center.y);
+                    if (center.x < objCenter.x && center.y < objCenter.y) {
+                        circleLine = new Vector2D(objRect.left - center.x, objRect.top - center.y);
                         circleLine.rotate(90f);
-                        bounce(obRect.left,obRect.top,obRect.left + circleLine.x, obRect.top + circleLine.y);
-                    } else if (center.x > obCenter.x && center.y < obCenter.y) {
-                        circleLine = new Vector2D(obRect.right - center.x, obRect.top - center.y);
+                        bounce(objRect.left,objRect.top,objRect.left + circleLine.x, objRect.top + circleLine.y);
+                    } else if (center.x > objCenter.x && center.y < objCenter.y) {
+                        circleLine = new Vector2D(objRect.right - center.x, objRect.top - center.y);
                         circleLine.rotate(90f);
-                        bounce(obRect.right,obRect.top,obRect.right + circleLine.x, obRect.top + circleLine.y);
-                    } else if (center.x < obCenter.x && center.y > obCenter.y) {
-                        circleLine = new Vector2D(obRect.left - center.x, obRect.bottom - center.y);
+                        bounce(objRect.right,objRect.top,objRect.right + circleLine.x, objRect.top + circleLine.y);
+                    } else if (center.x < objCenter.x && center.y > objCenter.y) {
+                        circleLine = new Vector2D(objRect.left - center.x, objRect.bottom - center.y);
                         circleLine.rotate(90f);
-                        bounce(obRect.left,obRect.bottom,obRect.left + circleLine.x, obRect.bottom + circleLine.y);
-                    } else if (center.x > obCenter.x && center.y > obCenter.y) {
-                        circleLine = new Vector2D(obRect.right - center.x, obRect.bottom - center.y);
+                        bounce(objRect.left,objRect.bottom,objRect.left + circleLine.x, objRect.bottom + circleLine.y);
+                    } else if (center.x > objCenter.x && center.y > objCenter.y) {
+                        circleLine = new Vector2D(objRect.right - center.x, objRect.bottom - center.y);
                         circleLine.rotate(90f);
-                        bounce(obRect.right,obRect.bottom,obRect.right + circleLine.x, obRect.bottom + circleLine.y);
+                        bounce(objRect.right,objRect.bottom,objRect.right + circleLine.x, objRect.bottom + circleLine.y);
                     } else {
-                        circleLine = new Vector2D(obCenter.x - center.x, obCenter.y - center.y);
+                        circleLine = new Vector2D(objCenter.x - center.x, objCenter.y - center.y);
                         circleLine.rotate(90f);
-                        bounce(obCenter.x,obCenter.y,obCenter.x + circleLine.x, obCenter.y + circleLine.y);
+                        bounce(objCenter.x,objCenter.y,objCenter.x + circleLine.x, objCenter.y + circleLine.y);
                     }
                 }
                 break;
             case "TriangleUp":
-                obWidth = obSize * 2.0f;
-                obHeight = (float)(Math.sqrt((obWidth*obWidth) - (obWidth/2.0f)*(obWidth/2.0f)));
-                obRect = new RectF(obCenter.x - obSize, obCenter.y - (obHeight / 2.0f), obCenter.x + obSize, obCenter.y + (obHeight / 2.0f) );
-
-                if ((center.y > obCenter.y) && center.x >= (obCenter.x - obWidth) && center.x <= (obCenter.x + obWidth) ) {
+                if ((center.y > objRect.bottom) && center.x >= objRect.left && center.x <= objRect.right ) {
                     //Bottom
-                    bounce(obRect.left, obRect.bottom, obRect.right, obRect.bottom);
+                    bounce(objRect.left, objRect.bottom, objRect.right, objRect.bottom);
+                    if (isGrowing && v.y <= 0) {
+                        v.y *= -1.0f;
+                    }
                     return;
-                } else if (center.x < obCenter.x && center.y >= obRect.top && center.y <= obRect.bottom) {
+                } else if (center.x < objCenter.x && center.y >= objRect.top && center.y <= objRect.bottom) {
                     //Left
-                    bounce(obRect.left, obRect.bottom, obCenter.x, obRect.top);
+                    bounce(objRect.left, objRect.bottom, objCenter.x, objRect.top);
+                    if (isGrowing && v.x >= 0) {
+                        v.x *= -1.0f;
+                    }
                     return;
-                } else if (center.x > obCenter.x && center.y >= obRect.top && center.y <= obRect.bottom) {
+                } else if (center.x > objCenter.x && center.y >= objRect.top && center.y <= objRect.bottom) {
                     //Right
-                    bounce(obRect.right, obRect.bottom, obCenter.x, obRect.top);
+                    bounce(objRect.right, objRect.bottom, objCenter.x, objRect.top);
+                    if (isGrowing && v.x <= 0) {
+                        v.x *= -1.0f;
+                    }
                     return;
                 } else {
                     //Corner
-                    if (rect.top < obRect.top) {
-                        circleLine = new Vector2D(obCenter.x - center.x, obRect.top - center.y);
+                    if (rect.top < objRect.top) {
+                        circleLine = new Vector2D(objCenter.x - center.x, objRect.top - center.y);
                         circleLine.rotate(90f);
-                        bounce(obCenter.x,obRect.top,obCenter.x + circleLine.x, obRect.top + circleLine.y);
-                    } else if (center.x < obCenter.x && center.y > obCenter.y) {
-                        circleLine = new Vector2D(obRect.left - center.x, obRect.bottom - center.y);
+                        bounce(objCenter.x,objRect.top,objCenter.x + circleLine.x, objRect.top + circleLine.y);
+                    } else if (center.x < objCenter.x && center.y > objCenter.y) {
+                        circleLine = new Vector2D(objRect.left - center.x, objRect.bottom - center.y);
                         circleLine.rotate(90f);
-                        bounce(obRect.left,obRect.bottom,obRect.left + circleLine.x, obRect.bottom + circleLine.y);
-                    } else if (center.x > obCenter.x && center.y > obCenter.y) {
-                        circleLine = new Vector2D(obRect.right - center.x, obRect.bottom - center.y);
+                        bounce(objRect.left,objRect.bottom,objRect.left + circleLine.x, objRect.bottom + circleLine.y);
+                    } else if (center.x > objCenter.x && center.y > objCenter.y) {
+                        circleLine = new Vector2D(objRect.right - center.x, objRect.bottom - center.y);
                         circleLine.rotate(90f);
-                        bounce(obRect.right,obRect.bottom,obRect.right + circleLine.x, obRect.bottom + circleLine.y);
+                        bounce(objRect.right,objRect.bottom,objRect.right + circleLine.x, objRect.bottom + circleLine.y);
                     } else {
-                        circleLine = new Vector2D(obCenter.x - center.x, obCenter.y - center.y);
+                        circleLine = new Vector2D(objCenter.x - center.x, objCenter.y - center.y);
                         circleLine.rotate(90f);
-                        bounce(obCenter.x,obCenter.y,obCenter.x + circleLine.x, obCenter.y + circleLine.y);
+                        bounce(objCenter.x,objCenter.y,objCenter.x + circleLine.x, objCenter.y + circleLine.y);
                     }
                 }
-
                 break;
             case "TriangleDown":
-                obWidth = obSize * 2.0f;
-                obHeight = (float)(Math.sqrt((obWidth*obWidth) - (obWidth/2.0f)*(obWidth/2.0f)));
-                obRect = new RectF(obCenter.x - obSize, obCenter.y - (obHeight / 2.0f), obCenter.x + obSize, obCenter.y + (obHeight / 2.0f) );
-
-                if ((center.y < obCenter.y) && center.x >= (obCenter.x - obWidth) && center.x <= (obCenter.x + obWidth) ) {
+                if ((center.y < objRect.top) && center.x >= objRect.left && center.x <= objRect.right ) {
                     //Top
-                    bounce(obRect.left, obRect.top, obRect.right, obRect.top);
+                    bounce(objRect.left, objRect.top, objRect.right, objRect.top);
+                    if (isGrowing && v.y >= 0) {
+                        v.y *= -1.0f;
+                    }
                     return;
-                } else if (center.x <= obCenter.x && center.y >= obRect.top && center.y <= obRect.bottom) {
+                } else if (center.x <= objCenter.x && center.y >= objRect.top && center.y <= objRect.bottom) {
                     //Left
-                    bounce(obRect.left, obRect.top, obCenter.x, obRect.bottom);
+                    bounce(objRect.left, objRect.top, objCenter.x, objRect.bottom);
+                    if (isGrowing && v.x >= 0) {
+                        v.x *= -1.0f;
+                    }
                     return;
-
-                } else if (center.x > obCenter.x && center.y >= obRect.top && center.y <= obRect.bottom) {
+                } else if (center.x > objCenter.x && center.y >= objRect.top && center.y <= objRect.bottom) {
                     //Right
-                    bounce(obRect.right, obRect.top, obCenter.x, obRect.bottom);
+                    bounce(objRect.right, objRect.top, objCenter.x, objRect.bottom);
+                    if (isGrowing && v.x <= 0) {
+                        v.x *= -1.0f;
+                    }
                     return;
                 } else {
                     //Corner
-                    if (rect.bottom > obRect.bottom) {
-                        circleLine = new Vector2D(obCenter.x - center.x, obRect.bottom - center.y);
+                    if (rect.bottom > objRect.bottom) {
+                        circleLine = new Vector2D(objCenter.x - center.x, objRect.bottom - center.y);
                         circleLine.rotate(90f);
-                        bounce(obCenter.x,obRect.bottom,obCenter.x + circleLine.x, obRect.bottom + circleLine.y);
-                    } else if (center.x < obCenter.x && center.y < obCenter.y) {
-                        circleLine = new Vector2D(obRect.left - center.x, obRect.top - center.y);
+                        bounce(objCenter.x,objRect.bottom,objCenter.x + circleLine.x, objRect.bottom + circleLine.y);
+                    } else if (center.x < objCenter.x && center.y < objCenter.y) {
+                        circleLine = new Vector2D(objRect.left - center.x, objRect.top - center.y);
                         circleLine.rotate(90f);
-                        bounce(obRect.left,obRect.top,obRect.left + circleLine.x, obRect.top + circleLine.y);
-                    } else if (center.x > obCenter.x && center.y < obCenter.y) {
-                        circleLine = new Vector2D(obRect.right - center.x, obRect.top - center.y);
+                        bounce(objRect.left,objRect.top,objRect.left + circleLine.x, objRect.top + circleLine.y);
+                    } else if (center.x > objCenter.x && center.y < objCenter.y) {
+                        circleLine = new Vector2D(objRect.right - center.x, objRect.top - center.y);
                         circleLine.rotate(90f);
-                        bounce(obRect.right,obRect.top,obRect.right + circleLine.x, obRect.top + circleLine.y);
+                        bounce(objRect.right,objRect.top,objRect.right + circleLine.x, objRect.top + circleLine.y);
                     } else {
-                        circleLine = new Vector2D(obCenter.x - center.x, obCenter.y - center.y);
+                        circleLine = new Vector2D(objCenter.x - center.x, objCenter.y - center.y);
                         circleLine.rotate(90f);
-                        bounce(obCenter.x,obCenter.y,obCenter.x + circleLine.x, obCenter.y + circleLine.y);
+                        bounce(objCenter.x,objCenter.y,objCenter.x + circleLine.x, objCenter.y + circleLine.y);
                     }
                 }
                 break;
             case "Rhombus":
-                obWidth = obSize * 2.0f;
-                obHeight = (float)(Math.sqrt((obWidth*obWidth) - (obWidth/2.0f)*(obWidth/2.0f))) * 2.0f;
-                obRect = new RectF(obCenter.x - obSize, obCenter.y - (obHeight / 2.0f), obCenter.x + obSize, obCenter.y + (obHeight / 2.0f) );
-
-                if (rect.right < obCenter.x && center.y <= obCenter.y ) {
+                if (rect.right < objCenter.x && center.y <= objCenter.y ) {
                     //TopLeft
-                    bounce(obRect.left, obCenter.y, obCenter.x, obRect.top);
+                    bounce(objRect.left, objCenter.y, objCenter.x, objRect.top);
+                    if (isGrowing && v.x >= 0) {
+                        v.x *= -1.0f;
+                    }
                     return;
-                } else if (rect.left > obCenter.x && center.y <= obCenter.y) {
+                } else if (rect.left > objCenter.x && center.y <= objCenter.y) {
                     //TopRight
-                    bounce(obRect.right, obCenter.y, obCenter.x, obRect.top);
+                    bounce(objRect.right, objCenter.y, objCenter.x, objRect.top);
+                    if (isGrowing && v.x <= 0) {
+                        v.x *= -1.0f;
+                    }
                     return;
-                } else if (rect.right <= obCenter.x && center.y >= obCenter.y) {
+                } else if (rect.right <= objCenter.x && center.y >= objCenter.y) {
                     //BottomLeft
-                    bounce(obRect.left, obCenter.y, obCenter.x, obRect.bottom);
+                    bounce(objRect.left, objCenter.y, objCenter.x, objRect.bottom);
+                    if (isGrowing && v.x >= 0) {
+                        v.x *= -1.0f;
+                    }
                     return;
-                } else if (rect.left > obCenter.x && center.y >= obCenter.y) {
+                } else if (rect.left > objCenter.x && center.y >= objCenter.y) {
                     //BottomRight
-                    bounce(obRect.right, obCenter.y, obCenter.x, obRect.bottom);
+                    bounce(objRect.right, objCenter.y, objCenter.x, objRect.bottom);
+                    if (isGrowing && v.x <= 0) {
+                        v.x *= -1.0f;
+                    }
                     return;
                 } else {
                     //Corner
-                    if (center.y < obRect.top) {
-                        circleLine = new Vector2D(obCenter.x - center.x, obRect.top - center.y);
+                    if (center.y < objRect.top) {
+                        circleLine = new Vector2D(objCenter.x - center.x, objRect.top - center.y);
                         circleLine.rotate(90f);
-                        bounce(obCenter.x,obRect.top,obCenter.x + circleLine.x, obRect.top + circleLine.y);
-                    } else if (center.y > obRect.bottom) {
-                        circleLine = new Vector2D(obCenter.x - center.x, obRect.bottom - center.y);
+                        bounce(objCenter.x,objRect.top,objCenter.x + circleLine.x, objRect.top + circleLine.y);
+                    } else if (center.y > objRect.bottom) {
+                        circleLine = new Vector2D(objCenter.x - center.x, objRect.bottom - center.y);
                         circleLine.rotate(90f);
-                        bounce(obCenter.x,obRect.bottom,obCenter.x + circleLine.x, obRect.bottom + circleLine.y);
-                    } else if (center.x < obRect.left) {
-                        circleLine = new Vector2D(obRect.left - center.x, obCenter.y - center.y);
+                        bounce(objCenter.x,objRect.bottom,objCenter.x + circleLine.x, objRect.bottom + circleLine.y);
+                    } else if (center.x < objRect.left) {
+                        circleLine = new Vector2D(objRect.left - center.x, objCenter.y - center.y);
                         circleLine.rotate(90f);
-                        bounce(obRect.left,obCenter.y,obRect.left + circleLine.x, obCenter.y + circleLine.y);
-                    } else if (center.x > obRect.right) {
-                        circleLine = new Vector2D(obRect.right - center.x, obCenter.y - center.y);
+                        bounce(objRect.left,objCenter.y,objRect.left + circleLine.x, objCenter.y + circleLine.y);
+                    } else if (center.x > objRect.right) {
+                        circleLine = new Vector2D(objRect.right - center.x, objCenter.y - center.y);
                         circleLine.rotate(90f);
-                        bounce(obRect.right,obCenter.y,obRect.right + circleLine.x, obCenter.y + circleLine.y);
+                        bounce(objRect.right,objCenter.y,objRect.right + circleLine.x, objCenter.y + circleLine.y);
                     } else {
-                        circleLine = new Vector2D(obCenter.x - center.x, obCenter.y - center.y);
+                        circleLine = new Vector2D(objCenter.x - center.x, objCenter.y - center.y);
                         circleLine.rotate(90f);
-                        bounce(obCenter.x,obCenter.y,obCenter.x + circleLine.x, obCenter.y + circleLine.y);
+                        bounce(objCenter.x,objCenter.y,objCenter.x + circleLine.x, objCenter.y + circleLine.y);
                     }
                 }
                 break;
             case "Hexagon":
-                obWidth = obSize * 2.0f;
-                obHeight = (float)(Math.sqrt((obWidth*obWidth) - (obSize)*(obSize)));
+                PointF hexLeft = obj.getPoints().get(0);
+                PointF hexTopLeft = obj.getPoints().get(1);
+                PointF hexTopRight = obj.getPoints().get(2);
+                PointF hexRight = obj.getPoints().get(3);
+                PointF hexBottomRight = obj.getPoints().get(4);
+                PointF hexBottomLeft = obj.getPoints().get(5);
 
-                PointF hexLeft = new PointF((obCenter.x - obSize), obCenter.y );
-                PointF hexTopLeft = new PointF(obCenter.x - (0.5f * obSize), (obCenter.y - (obHeight/2.0f)));
-                PointF hexTopRight = new PointF(obCenter.x + (0.5f * obSize), (obCenter.y - (obHeight/2.0f)));
-                PointF hexRight = new PointF((obCenter.x + obSize), obCenter.y );
-                PointF hexBottomRight = new PointF(obCenter.x + (0.5f * obSize), (obCenter.y + (obHeight/2.0f)));
-                PointF hexBottomLeft = new PointF(obCenter.x - (0.5f * obSize), (obCenter.y + (obHeight/2.0f)));
-
-                obRect = new RectF(obCenter.x - obSize, obCenter.y - (obHeight / 2.0f), obCenter.x + obSize, obCenter.y + (obHeight / 2.0f) );
-
-                if (center.y < obRect.top && center.x >= hexTopLeft.x && center.x <= hexTopRight.x) {
+                if (center.y < objRect.top && center.x >= hexTopLeft.x && center.x <= hexTopRight.x) {
                     //Top
                     bounce(hexTopLeft.x, hexTopLeft.y, hexTopRight.x, hexTopRight.y);
+                    if (isGrowing && v.y >= 0) {
+                        v.y *= -1.0f;
+                    }
                     return;
-                } else if (center.y > obRect.bottom && center.x >= hexBottomLeft.x && center.x <= hexBottomRight.x) {
+                } else if (center.y > objRect.bottom && center.x >= hexBottomLeft.x && center.x <= hexBottomRight.x) {
                     //Bottom
                     bounce(hexBottomLeft.x, hexBottomLeft.y, hexBottomRight.x, hexBottomRight.y);
+                    if (isGrowing && v.y <= 0) {
+                        v.y *= -1.0f;
+                    }
                     return;
-                } else if (center.x < obCenter.x && rect.bottom <= obCenter.y && rect.top >= obRect.top) {
+                } else if (center.x < objCenter.x && rect.bottom <= objCenter.y && rect.top >= objRect.top) {
                     //TopLeft
                     bounce(hexLeft.x, hexLeft.y, hexTopLeft.x, hexTopLeft.y);
+                    if (isGrowing && v.x >= 0) {
+                        v.x *= -1.0f;
+                    }
                     return;
-                } else if (center.x > obCenter.x && rect.bottom <= obCenter.y && rect.top >= obRect.top) {
+                } else if (center.x > objCenter.x && rect.bottom <= objCenter.y && rect.top >= objRect.top) {
                     //TopRight
                     bounce(hexRight.x, hexRight.y, hexTopRight.x, hexTopRight.y);
+                    if (isGrowing && v.x <= 0) {
+                        v.x *= -1.0f;
+                    }
                     return;
-                } else if (center.x < obCenter.x && rect.top >= obCenter.y && rect.bottom <= obRect.bottom) {
+                } else if (center.x < objCenter.x && rect.top >= objCenter.y && rect.bottom <= objRect.bottom) {
                     //BottomLeft
                     bounce(hexLeft.x, hexLeft.y, hexBottomLeft.x, hexBottomLeft.y);
+                    if (isGrowing && v.x >= 0) {
+                        v.x *= -1.0f;
+                    }
                     return;
-                } else if (center.x > obCenter.x && rect.top >= obCenter.y && rect.bottom <= obRect.bottom) {
+                } else if (center.x > objCenter.x && rect.top >= objCenter.y && rect.bottom <= objRect.bottom) {
                     //BottomRight
                     bounce(hexRight.x, hexRight.y, hexBottomRight.x, hexBottomRight.y);
+                    if (isGrowing && v.x <= 0) {
+                        v.x *= -1.0f;
+                    }
                     return;
                 } else {
                     //Corner
-                    if (center.y < obRect.top && center.x < obCenter.x) {
+                    if (center.y < objRect.top && center.x < objCenter.x) {
                         circleLine = new Vector2D(hexTopLeft.x - center.x, hexTopLeft.y - center.y);
                         circleLine.rotate(90f);
                         bounce(hexTopLeft.x,hexTopLeft.y,hexTopLeft.x + circleLine.x, hexTopLeft.y + circleLine.y);
-                    } else if (center.y < obRect.top && center.x > obCenter.x) {
+                    } else if (center.y < objRect.top && center.x > objCenter.x) {
                         circleLine = new Vector2D(hexTopRight.x - center.x, hexTopRight.y - center.y);
                         circleLine.rotate(90f);
                         bounce(hexTopRight.x,hexTopRight.y,hexTopRight.x + circleLine.x, hexTopRight.y + circleLine.y);
-                    } else if (center.y > obRect.bottom && center.x < obCenter.x) {
+                    } else if (center.y > objRect.bottom && center.x < objCenter.x) {
                         circleLine = new Vector2D(hexBottomLeft.x - center.x, hexBottomLeft.y - center.y);
                         circleLine.rotate(90f);
                         bounce(hexBottomLeft.x,hexBottomLeft.y,hexBottomLeft.x+ circleLine.x, hexBottomLeft.y + circleLine.y);
-                    } else if (center.y > obRect.bottom && center.x > obCenter.x) {
+                    } else if (center.y > objRect.bottom && center.x > objCenter.x) {
                         circleLine = new Vector2D(hexBottomRight.x - center.x, hexBottomRight.y - center.y);
                         circleLine.rotate(90f);
                         bounce(hexBottomRight.x,hexBottomRight.y,hexBottomRight.x + circleLine.x, hexBottomRight.y + circleLine.y);
-                    } else if (center.x < obRect.left) {
+                    } else if (center.x < objRect.left) {
                         circleLine = new Vector2D(hexLeft.x - center.x, hexLeft.y - center.y);
                         circleLine.rotate(90f);
                         bounce(hexLeft.x,hexLeft.y,hexLeft.x + circleLine.x, hexLeft.y + circleLine.y);
-                    } else if (center.x > obRect.right) {
+                    } else if (center.x > objRect.right) {
                         circleLine = new Vector2D(hexRight.x - center.x, hexRight.y - center.y);
                         circleLine.rotate(90f);
                         bounce(hexRight.x,hexRight.y,hexRight.x + circleLine.x, hexRight.y + circleLine.y);
                     } else {
-                        circleLine = new Vector2D(obCenter.x - center.x, obCenter.y - center.y);
+                        circleLine = new Vector2D(objCenter.x - center.x, objCenter.y - center.y);
                         circleLine.rotate(90f);
-                        bounce(obCenter.x,obCenter.y,obCenter.x + circleLine.x, obCenter.y + circleLine.y);
+                        bounce(objCenter.x,objCenter.y,objCenter.x + circleLine.x, objCenter.y + circleLine.y);
                     }
                 }
                 break;

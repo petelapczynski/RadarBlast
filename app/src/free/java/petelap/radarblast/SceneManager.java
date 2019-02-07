@@ -42,14 +42,6 @@ public class SceneManager {
                 Constants.HEADER_HEIGHT = 0;
                 scenes.add(new GamePlayMenu());
                 break;
-            case "BLAST":
-                // GamePlayBlast
-                Constants.HEADER_HEIGHT = 0;
-                LEVEL_PREFIX = "blast";
-                highscores = jsonFileHelper.getHighScores(LEVEL_PREFIX);
-                scenes.add(new GamePlayBlast());
-                adHandler();
-                break;
             case "AREA_LEVELS":
                 // GamePlayLevels
                 Constants.HEADER_HEIGHT = 0;
@@ -66,16 +58,13 @@ public class SceneManager {
                 highscores = jsonFileHelper.getHighScores(LEVEL_PREFIX);
                 scenes.add(new GamePlayArea(level));
                 break;
-            case "HOW_TO":
-                // GamePlayHowTo
+            case "BLAST":
+                // GamePlayBlast
                 Constants.HEADER_HEIGHT = 0;
-                scenes.add(new GamePlayHowTo());
-                break;
-            case "OPTIONS":
-                // pref_main.xml
-                Constants.HEADER_HEIGHT = 0;
-                Constants.GAME_STATUS = "OPTIONS";
-                Constants.CONTEXT.startActivity(new Intent(Constants.CONTEXT, SettingsActivity.class));
+                LEVEL_PREFIX = "blast";
+                highscores = jsonFileHelper.getHighScores(LEVEL_PREFIX);
+                scenes.add(new GamePlayBlast());
+                adHandler();
                 break;
             case "PICTURE":
                 // GamePlayPicture
@@ -98,6 +87,17 @@ public class SceneManager {
                 LEVEL_PREFIX = "laser_" + level;
                 highscores = jsonFileHelper.getHighScores(LEVEL_PREFIX);
                 scenes.add(new GamePlayLaser(level));
+                break;
+            case "HOW_TO":
+                // GamePlayHowTo
+                Constants.HEADER_HEIGHT = 0;
+                scenes.add(new GamePlayHowTo());
+                break;
+            case "OPTIONS":
+                // pref_main.xml
+                Constants.HEADER_HEIGHT = 0;
+                Constants.GAME_STATUS = "OPTIONS";
+                Constants.CONTEXT.startActivity(new Intent(Constants.CONTEXT, SettingsActivity.class));
                 break;
             case "EXIT":
                 Constants.GAME_STATUS = "EXIT";
@@ -140,7 +140,8 @@ public class SceneManager {
     }
 
     private static void adHandler() {
-        if (System.currentTimeMillis() >= (Constants.INIT_TIME + 60000) ) {
+        if (System.currentTimeMillis() >= (Constants.INIT_TIME + 300000) ) {
+            // 5 min Ad interval
             Constants.GAME_STATUS = "AD";
             adsManager.showAd();
             Constants.INIT_TIME = System.currentTimeMillis();

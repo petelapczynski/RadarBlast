@@ -113,7 +113,7 @@
     <string name="about_developer_Title_1">About the Game</string>
     <string name="about_developer_Title_2">About the Developer</string>
     <string name="about_developer_Summary_1">The general concept came to me after a night of playing old school arcade games with my brother. They were simple to play, but hard to master. It inspired me to want to create a simple, fun, old school arcade style 2D game.</string>
-    <string name="about_developer_Summary_2">As my first game development project, it was a lot of fun and hard work. A special thanks to my wife and son for ideas and testing, and my brother Paul for hours of code discussion\'s. - Pete Lapczynski.</string>
+    <string name="about_developer_Summary_2">As my first game development project, it was a lot of fun and hard work. A special thanks to my wife and son for ideas and testing, and my brother Paul for hours of code discussion\'s and some amazing game music. - Pete Lapczynski.</string>
     <string name="about_credits_Title">Credits and References</string>
     <string name="about_credits_Summary">A special thanks to some people below who helped save me a lot of time with great tutorials and resources to understand basic Android/Java 2D game concepts.</string>
 
@@ -126,7 +126,7 @@
     <string name="about_credits_Splash_URL">https://github.com/cstew/Splash</string>
     <string name="about_credits_OnlineConvert">\'Online-Convert\' for a simple to use audio format converter.\n\nhttps://audio.online-convert.com/convert-to-ogg</string>
     <string name="about_credits_OnlineConvert_URL">https://audio.online-convert.com/convert-to-ogg</string>
-    <string name="about_credits_Music1">\'imdaddrmaster\' for game music.\n\nhttps://soundcloud.com/imdaddrmaster</string>
+    <string name="about_credits_Music1">\'imdaddrmaster\' for game music and sounds.\n\nhttps://soundcloud.com/imdaddrmaster</string>
     <string name="about_credits_Music1_URL">https://soundcloud.com/imdaddrmaster</string>
 
     <string name="reset_Title">Reset Settings</string>

@@ -21,7 +21,7 @@ public class GamePlayPicture extends GamePlayBase implements IScene {
     private boolean isLayerRefresh;
     private Bitmap bitmapLayer;
 
-    private final float bFirstY = Constants.SCREEN_HEIGHT/2 - 50;
+    private final float bFirstY = Constants.SCREEN_HEIGHT/2f - 50;
     private final float bGap = 50f;
 
     private Paint scorePaint;
@@ -142,7 +142,7 @@ public class GamePlayPicture extends GamePlayBase implements IScene {
                             if (gob.pointInside(point)) {
                                 SelectedObject = gob.NewInstance();
                                 PointF sp = gob.getCenter();
-                                SelectedRect = new RectF(sp.x - selectedRectWidth, sp.y - (Constants.HEADER_HEIGHT/2), sp.x + selectedRectWidth, sp.y + (Constants.HEADER_HEIGHT/2));
+                                SelectedRect = new RectF(sp.x - selectedRectWidth, sp.y - (Constants.HEADER_HEIGHT/2f), sp.x + selectedRectWidth, sp.y + (Constants.HEADER_HEIGHT/2f));
                                 return;
                             }
                         }
@@ -298,116 +298,117 @@ public class GamePlayPicture extends GamePlayBase implements IScene {
 
     @Override
     public void update() {
-        IGameObject currentObject = new Obstacle(0,0,0,0,0);
+        if (Constants.GAME_STATUS.equals("GAMELOOP")) {
+            IGameObject currentObject = new Obstacle(0,0,0,0,0);
 
-        if (QueueType.equals("RANDOM")) {
-            if(obstacleQueue.getCount() <= 5) {
+            if (QueueType.equals("RANDOM")) {
+                if(obstacleQueue.getCount() <= 5) {
                     obstacleQueue.addItem();
+                }
             }
-        }
 
-        if(gameObjects.size() > 0){
-            currentObject = gameObjects.get(gameObjects.size() - 1);
-        }
+            if(gameObjects.size() > 0){
+                currentObject = gameObjects.get(gameObjects.size() - 1);
+            }
 
-        if(!gameOver) {
-            //Update obstacles
+            if(!gameOver) {
+                //Update obstacles
 
-            // If addingShape -> Grow object
-            if (addingShape){
-                if (addShape) {
-                    if (QueueType.equals("SELECT")) {
-                        for (IGameObject gob: queueObjects) {
-                            if ( gob.getType().equals(currentObject.getType()) ) {
-                                explosions.add(new ParticleExplosion( 5, 75.0f, gob.getCenter(), gob.getType(), false ));
+                // If addingShape -> Grow object
+                if (addingShape){
+                    if (addShape) {
+                        if (QueueType.equals("SELECT")) {
+                            for (IGameObject gob: queueObjects) {
+                                if ( gob.getType().equals(currentObject.getType()) ) {
+                                    explosions.add(new ParticleExplosion( 5, 75.0f, gob.getCenter(), gob.getType(), false ));
+                                }
+                            }
+                        } else if (QueueType.equals("RANDOM")) {
+                            explosions.add(new ParticleExplosion( 5, 75.0f, new PointF(Constants.SCREEN_WIDTH - 100f,Constants.HEADER_HEIGHT/2f), currentObject.getType(), false ));
+                        }
+                        addShape = false;
+                    }
+                    //handle moving shape
+                    if(objectMoving) {
+                        currentObject.update(movePoint);
+                        objectMoving = false;
+                        movePoint = new PointF(0,0);
+                    }
+
+                    currentObject.grow(speed);
+                    if(System.currentTimeMillis() - objectTime >= 300) {
+                        speed += 1;
+                        objectTime = System.currentTimeMillis();
+                    }
+
+                    // If current hits another game object -> pop object
+                    boolean currPop = false;
+                    IGameObject gobPop = new Obstacle(0, 0,0,0,0);
+
+                    for(IGameObject gob: gameObjects) {
+                        if( !gob.equals(currentObject) ) {
+                            if (CollisionManager.GameObjectCollide(currentObject, gob)) {
+                                currPop = true;
+                                gobPop = gob;
                             }
                         }
-                    } else if (QueueType.equals("RANDOM")) {
-                        explosions.add(new ParticleExplosion( 5, 75.0f, new PointF(Constants.SCREEN_WIDTH - 100f,Constants.HEADER_HEIGHT/2f), currentObject.getType(), false ));
                     }
-                    addShape = false;
-                }
-                //handle moving shape
-                if(objectMoving) {
-                    currentObject.update(movePoint);
-                    objectMoving = false;
-                    movePoint = new PointF(0,0);
-                }
 
-                currentObject.grow(speed);
-                if(System.currentTimeMillis() - objectTime >= 300) {
-                    speed += 1;
-                    objectTime = System.currentTimeMillis();
-                }
-
-                // If current hits another game object -> pop object
-                boolean currPop = false;
-                IGameObject gobPop = new Obstacle(0, 0,0,0,0);
-
-                for(IGameObject gob: gameObjects) {
-                    if( !gob.equals(currentObject) ) {
-                        if (CollisionManager.GameObjectCollide(currentObject, gob)) {
-                            currPop = true;
-                            gobPop = gob;
-                        }
-                    }
-                }
-
-                // If hit other object or hit edge -> pop object
-                if (currPop) {
-                    currentObject.pop();
-                    explosions.add(new ParticleExplosion( (int)currentObject.getSize()/partCount, currentObject.getSize(), currentObject.getCenter(), currentObject.getType(), true ));
-                    gameObjects.remove(currentObject);
-                    //gameSounds.playSound("POP");
-                    SoundManager.playSound("POP");
-                    isLayerRefresh = true;
-
-                    gobPop.pop();
-                    explosions.add(new ParticleExplosion( (int)gobPop.getSize()/partCount, gobPop.getSize(), gobPop.getCenter(), gobPop.getType(), true ));
-                    gameObjects.remove(gobPop);
-                    //gameSounds.playSound("POP");
-                    SoundManager.playSound("POP");
-                    addingShape = false;
-                    objectPop = true;
-                    objectTime = System.currentTimeMillis();
-                } else {
-                    if (!currentObject.InGameArea()) {
+                    // If hit other object or hit edge -> pop object
+                    if (currPop) {
                         currentObject.pop();
                         explosions.add(new ParticleExplosion( (int)currentObject.getSize()/partCount, currentObject.getSize(), currentObject.getCenter(), currentObject.getType(), true ));
                         gameObjects.remove(currentObject);
                         //gameSounds.playSound("POP");
                         SoundManager.playSound("POP");
                         isLayerRefresh = true;
+
+                        gobPop.pop();
+                        explosions.add(new ParticleExplosion( (int)gobPop.getSize()/partCount, gobPop.getSize(), gobPop.getCenter(), gobPop.getType(), true ));
+                        gameObjects.remove(gobPop);
+                        //gameSounds.playSound("POP");
+                        SoundManager.playSound("POP");
                         addingShape = false;
                         objectPop = true;
                         objectTime = System.currentTimeMillis();
+                    } else {
+                        if (!currentObject.InGameArea()) {
+                            currentObject.pop();
+                            explosions.add(new ParticleExplosion( (int)currentObject.getSize()/partCount, currentObject.getSize(), currentObject.getCenter(), currentObject.getType(), true ));
+                            gameObjects.remove(currentObject);
+                            //gameSounds.playSound("POP");
+                            SoundManager.playSound("POP");
+                            isLayerRefresh = true;
+                            addingShape = false;
+                            objectPop = true;
+                            objectTime = System.currentTimeMillis();
+                        }
+                    }
+
+                    // Calculate score
+                    calcScore();
+                }
+
+                if(objectPop){
+                    if(System.currentTimeMillis() - objectTime >= 250) {
+                        objectPop = false;
                     }
                 }
-
-                // Calculate score
-                calcScore();
             }
 
-            if(objectPop){
-                if(System.currentTimeMillis() - objectTime >= 250) {
-                    objectPop = false;
+            //Explosions
+            ArrayList<ParticleExplosion> expDone = new ArrayList<>();
+            for(ParticleExplosion pe : explosions) {
+                if (pe.getState() == 0) {
+                    pe.update();
+                } else {
+                    expDone.add(pe);
                 }
             }
-        }
-
-        //Explosions
-        ArrayList<ParticleExplosion> expDone = new ArrayList<>();
-        for(ParticleExplosion pe : explosions) {
-            if (pe.getState() == 0) {
-                pe.update();
-            } else {
-                expDone.add(pe);
+            if (!expDone.isEmpty()) {
+                explosions.removeAll(expDone);
             }
         }
-        if (!expDone.isEmpty()) {
-            explosions.removeAll(expDone);
-        }
-
     }
 
     private void setupQueueObjects() {

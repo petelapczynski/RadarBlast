@@ -19,7 +19,7 @@ import java.util.ArrayList;
 
 public class GamePlayMenu extends GamePlayBase implements IScene  {
     private long newItemTime;
-    private final float bFirstY = Constants.SCREEN_HEIGHT/4;
+    private final float bFirstY = Constants.SCREEN_HEIGHT/4f;
     private final float bGap = 35f;
 
     private RectF bArea = new RectF(bLeft, bFirstY, bRight, bFirstY + bHeight);
@@ -54,7 +54,7 @@ public class GamePlayMenu extends GamePlayBase implements IScene  {
         bg = new Background(0,Constants.HEADER_HEIGHT,Constants.SCREEN_WIDTH, Constants.SCREEN_HEIGHT);
 
         //Game Sounds
-        SoundManager.setGameMusic("BLAST");
+        SoundManager.setGameMusic("MENU");
         SoundManager.playMusic();
     }
 
@@ -163,7 +163,7 @@ public class GamePlayMenu extends GamePlayBase implements IScene  {
         }
 
         //Logo
-        drawCenterText(canvas, Color.WHITE, 200, Constants.SCREEN_HEIGHT/4 - 150, "Radar Blast", true);
+        drawCenterText(canvas, Color.WHITE, 150, Constants.SCREEN_HEIGHT/4 - 150, "Radar Blast", true);
 
         //Button: Start Area
         canvas.drawRoundRect( bArea, 25,25, paint);

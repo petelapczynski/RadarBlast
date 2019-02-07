@@ -93,7 +93,7 @@
     "Number": 9,
     "Name": "Level 9",
     "Desc": "Three sides, Three Obstacles",
-    "GameObjects": "TITITI",
+    "GameObjects": "TITITITITI",
     "LevelObjects":[
       {
         "Height": 50,
@@ -119,7 +119,7 @@
     "Number": 10,
     "Name": "Level 10",
     "Desc": "Four sides, four Obstacles",
-    "GameObjects": "RRRRRR",
+    "GameObjects": "RRRRRRRRRR",
     "LevelObjects":[
       {
         "Height": 50,
@@ -151,7 +151,7 @@
     "Number": 11,
     "Name": "Level 11",
     "Desc": "Six sides, shapes, and Obstacles",
-    "GameObjects": "HHHHHH",
+    "GameObjects": "HHHHHHHHHH",
     "LevelObjects":[
       {
         "Height": 50,
@@ -195,22 +195,264 @@
   {
     "Number": 12,
     "Name": "Level 12",
-    "Desc": "One of each",
-    "GameObjects": "SCTIRH",
+    "Desc": "Three of each",
+    "GameObjects": "SCTIRHESCTIRHESCTIRHE",
     "LevelObjects":[
+    ]
+  },
+  {
+    "Number": 13,
+    "Name": "Level 13",
+    "Desc": "Two of each",
+    "GameObjects": "SCTIRHESCTIRHE",
+    "LevelObjects":[
+    ]
+  },
+  {
+    "Number": 14,
+    "Name": "Level 14",
+    "Desc": "One of each",
+    "GameObjects": "SCTIRHE",
+    "LevelObjects":[
+    ]
+  },
+  {
+    "Number": 15,
+    "Name": "Level 15",
+    "Desc": "Horizontal line",
+    "GameObjects": "SESESESESE",
+    "LevelObjects": [
       {
-        "Height": 400,
-        "Width":400,
+        "Height": 100,
+        "Width": 2000,
         "PosX": 50,
         "PosY": 50
       }
     ]
   },
   {
-    "Number": 13,
-    "Name": "Level 13",
+    "Number": 16,
+    "Name": "Level 16",
+    "Desc": "Vertical line",
+    "GameObjects": "SESESESESE",
+    "LevelObjects": [
+      {
+        "Height": 2000,
+        "Width": 100,
+        "PosX": 50,
+        "PosY": 50
+      }
+    ]
+  },
+  {
+    "Number": 17,
+    "Name": "Level 17",
+    "Desc": "Pillars",
+    "GameObjects": "SESESESESESESESESESE",
+    "LevelObjects": [
+      {
+        "Height": 2000,
+        "Width": 100,
+        "PosX": 33,
+        "PosY": 50
+      },
+      {
+        "Height": 2000,
+        "Width": 100,
+        "PosX": 66,
+        "PosY": 50
+      }
+    ]
+  },
+  {
+    "Number": 18,
+    "Name": "Level 18",
+    "Desc": "Angled shapes",
+    "GameObjects": "HHHRRRRTTII",
+    "LevelObjects": [
+    ]
+  },
+  {
+    "Number": 19,
+    "Name": "Level 19",
+    "Desc": "Diamonds are forever",
+    "GameObjects": "RRRRRRRRRRRRRRRRRR",
+    "LevelObjects": [
+      {
+        "Height": 100,
+        "Width": 100,
+        "PosX": 10,
+        "PosY": 10
+      },
+      {
+        "Height": 100,
+        "Width": 100,
+        "PosX": 50,
+        "PosY": 10
+      },
+      {
+        "Height": 100,
+        "Width": 100,
+        "PosX": 90,
+        "PosY": 10
+      },
+      {
+        "Height": 100,
+        "Width": 100,
+        "PosX": 10,
+        "PosY": 90
+      },
+      {
+        "Height": 100,
+        "Width": 100,
+        "PosX": 50,
+        "PosY": 90
+      },
+      {
+        "Height": 100,
+        "Width": 100,
+        "PosX": 90,
+        "PosY": 90
+      }
+    ]
+  },
+  {
+    "Number": 20,
+    "Name": "Level 20",
+    "Desc": "Walls are closing in",
+    "GameObjects": "RRRRRRRRRTTIITTII",
+    "LevelObjects": [
+      {
+        "Height": 200,
+        "Width": 2000,
+        "PosX": 50,
+        "PosY": 10
+      },
+      {
+        "Height": 200,
+        "Width": 2000,
+        "PosX": 50,
+        "PosY": 90
+      }
+    ]
+  },
+  {
+    "Number": 21,
+    "Name": "Level 21",
+    "Desc": "Square it in",
+    "GameObjects": "SSSSSSSSSSSSSSSSSS",
+    "LevelObjects": [
+      {
+        "Height": 400,
+        "Width": 400,
+        "PosX": 50,
+        "PosY": 50
+      }
+    ]
+  },
+  {
+    "Number": 22,
+    "Name": "Level 22",
+    "Desc": "Rect it in",
+    "GameObjects": "EEEESSSSSS",
+    "LevelObjects": [
+      {
+        "Height": 400,
+        "Width": 400,
+        "PosX": 50,
+        "PosY": 50
+      }
+    ]
+  },
+  {
+    "Number": 23,
+    "Name": "Level 23",
+    "Desc": "Tri it in",
+    "GameObjects": "TITITITITITITITITITITITITITISSSSSS",
+    "LevelObjects": [
+      {
+        "Height": 400,
+        "Width": 400,
+        "PosX": 50,
+        "PosY": 50
+      }
+    ]
+  },
+  {
+    "Number": 24,
+    "Name": "Level 24",
+    "Desc": "Hex it in",
+    "GameObjects": "HHHHHHHHSSSSSS",
+    "LevelObjects": [
+      {
+        "Height": 400,
+        "Width": 400,
+        "PosX": 50,
+        "PosY": 50
+      }
+    ]
+  },
+  {
+    "Number": 25,
+    "Name": "Level 25",
+    "Desc": "Pick 10 - 1",
+    "GameObjects": "HHHHHHHHHH",
+    "LevelObjects": [
+    ]
+  },
+  {
+    "Number": 26,
+    "Name": "Level 26",
+    "Desc": "Pick 10 - 2",
+    "GameObjects": "RRRTIHRTIS",
+    "LevelObjects": [
+    ]
+  },
+  {
+    "Number": 27,
+    "Name": "Level 27",
+    "Desc": "Pick 10 - 3",
+    "GameObjects": "TSHHHHHHHR",
+    "LevelObjects": [
+    ]
+  },
+  {
+    "Number": 28,
+    "Name": "Level 28",
+    "Desc": "Pick 10 - 4",
+    "GameObjects": "ITRIRRIRTI",
+    "LevelObjects": [
+    ]
+  },
+  {
+    "Number": 29,
+    "Name": "Level 29",
+    "Desc": "Pick 10 - 5",
+    "GameObjects": "RRITIITIRR",
+    "LevelObjects": [
+    ]
+  },
+  {
+    "Number": 30,
+    "Name": "Level 30",
+    "Desc": "Pick 10 - 6",
+    "GameObjects": "IIIRRRRTTT",
+    "LevelObjects": [
+    ]
+  },
+  {
+    "Number": 31,
+    "Name": "Level 31",
+    "Desc": "The sun is out",
+    "GameObjects": "HITITIT",
+    "LevelObjects": [
+    ]
+  },
+  {
+    "Number": 32,
+    "Name": "Level 32",
     "Desc": "'N' is for Next",
-    "GameObjects": "CCCCCC",
+    "GameObjects": "CCCCCCCCCCCCCCCCCCCC",
     "LevelObjects":[
       {
         "Height": 50,

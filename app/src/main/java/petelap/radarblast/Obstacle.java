@@ -17,6 +17,21 @@ public class Obstacle extends ObstacleShapes implements IGameObject {
         width = rectWidth / 2.0f;
         center = new PointF(startX, startY);
         rect = new RectF( startX - width, startY - height, startX + width, startY + height);
+
+        //screen bounds
+        if (rect.left < 0) {
+            rect.left = 0;
+        }
+        if (rect.right > Constants.SCREEN_WIDTH) {
+            rect.right = Constants.SCREEN_WIDTH;
+        }
+        if (rect.top < Constants.HEADER_HEIGHT) {
+            rect.top = Constants.HEADER_HEIGHT;
+        }
+        if (rect.bottom > Constants.SCREEN_HEIGHT) {
+            rect.bottom = Constants.SCREEN_HEIGHT;
+        }
+
         this.color = color;
         this.color = Color.parseColor( Common.getPreferenceString("color_Obj") );
         type = "Obstacle";

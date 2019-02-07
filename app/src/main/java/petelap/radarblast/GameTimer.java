@@ -6,7 +6,6 @@ public class GameTimer {
     private boolean done;
     private boolean paused;
 
-
     public GameTimer(long totalTime) {
         timeLeftInMillis = totalTime;
         done = false;
@@ -14,7 +13,7 @@ public class GameTimer {
     }
 
     public int getTimeLeftInSeconds() {
-        return Math.round(timeLeftInMillis / 1000);
+        return Math.round(timeLeftInMillis / 1000f);
     }
 
     public long getTimeLeftInMillis () {

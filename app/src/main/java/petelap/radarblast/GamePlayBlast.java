@@ -17,7 +17,7 @@ public class GamePlayBlast extends GamePlayBase implements IScene  {
     private long newItemTime;
     private long newItemRate;
     private GameTimer gameTimer;
-
+    private boolean isGamePaused;
     private boolean isDoublePoints;
     private long expireDoublePoints;
     private boolean isFrenzy;
@@ -25,7 +25,7 @@ public class GamePlayBlast extends GamePlayBase implements IScene  {
     private boolean isFreeze;
     private long expireFreeze;
 
-    private final float bFirstY = Constants.SCREEN_HEIGHT * 7/10;
+    private final float bFirstY = Constants.SCREEN_HEIGHT * 0.7f;
     private final float bGap = 50f;
 
     private RectF bStartLevel = new RectF(bLeft, bFirstY, bRight, bFirstY + bHeight);
@@ -44,6 +44,7 @@ public class GamePlayBlast extends GamePlayBase implements IScene  {
         speed = 2;
         partCount = Common.getPreferenceInteger("particles");
         gameTimer = new GameTimer(60000);
+        isGamePaused = false;
         gameStart = false;
         gameOver = false;
         isDoublePoints = false;
@@ -88,6 +89,7 @@ public class GamePlayBlast extends GamePlayBase implements IScene  {
         speed = 2;
         partCount = Common.getPreferenceInteger("particles");
         gameTimer = new GameTimer(60000);
+        isGamePaused = false;
         gameStart = false;
         gameOver = false;
         isDoublePoints = false;
@@ -197,7 +199,7 @@ public class GamePlayBlast extends GamePlayBase implements IScene  {
             vHeight += 50;
             for (Highscores.Highscore hs: SceneManager.highscores.getHighscores()) {
                 vHeight += 100;
-                canvas.drawText(hs.getNumber() + ": " + hs.getScore() + " - " + hs.getName(), Constants.SCREEN_WIDTH/3, vHeight, txtPaint);
+                canvas.drawText(hs.getNumber() + ": " + hs.getScore() + " - " + hs.getName(), Constants.SCREEN_WIDTH/3f, vHeight, txtPaint);
             }
 
             //Button: Start Level
@@ -226,190 +228,200 @@ public class GamePlayBlast extends GamePlayBase implements IScene  {
 
     @Override
     public void update() {
+        if (Constants.GAME_STATUS.equals("PAUSED")) {
+            if (!isGamePaused) {
+                gameTimer.pauseTimer();
+                isGamePaused = true;
+            }
+        } else {
+            if (gameStart && !gameOver) {
+                if (isGamePaused) {
+                    gameTimer.startTimer();
+                    isGamePaused = false;
+                }
+                //IGameObject currentObject = new Obstacle(0,0,0,0);
+                ArrayList<IGameObject> popped = new ArrayList<>();
+                ArrayList<IGameObjectSpecial> poppedSpec = new ArrayList<>();
+                ArrayList<ParticleExplosion> expDone = new ArrayList<>();
 
-        if (gameStart && !gameOver) {
-            //IGameObject currentObject = new Obstacle(0,0,0,0);
-            ArrayList<IGameObject> popped = new ArrayList<>();
-            ArrayList<IGameObjectSpecial> poppedSpec = new ArrayList<>();
-            ArrayList<ParticleExplosion> expDone = new ArrayList<>();
+                // Handle player click
+                if (playerPoint.x != 0 && playerPoint.y != 0){
+                    boolean currPop = false;
+                    IGameObjectSpecial gobPopSpec = new ObstacleSpecialDouble(0,0,0,0);
+                    // If playerPoint is inside a game Special Object -> pop object and set Special Skill
+                    for(int i = gameSpecialObjects.size() - 1; i >= 0; i--){
+                        if ( gameSpecialObjects.get(i).pointInside(playerPoint)) {
+                            currPop = true;
+                            gameSpecialObjects.get(i).pop();
+                            gobPopSpec = gameSpecialObjects.get(i);
+                            playerPoint = new PointF(0,0);
+                        }
+                    }
 
-            // Handle player click
-            if (playerPoint.x != 0 && playerPoint.y != 0){
-                boolean currPop = false;
-                IGameObjectSpecial gobPopSpec = new ObstacleSpecialDouble(0,0,0,0);
-                // If playerPoint is inside a game Special Object -> pop object and set Special Skill
-                for(int i = gameSpecialObjects.size() - 1; i >= 0; i--){
-                    if ( gameSpecialObjects.get(i).pointInside(playerPoint)) {
-                        currPop = true;
-                        gameSpecialObjects.get(i).pop();
-                        gobPopSpec = gameSpecialObjects.get(i);
+                    if (currPop) {
+                        explosions.add(new ParticleExplosion( 10, 10, gobPopSpec.getCenter(), gobPopSpec.getType(), true ));
+                        // Set Special Skill
+                        if (gobPopSpec.getType().equals("SpecialDouble")) {
+                            isDoublePoints = true;
+                            expireDoublePoints = System.currentTimeMillis() + 5000;
+                        }
+                        if (gobPopSpec.getType().equals("SpecialFrenzy")) {
+                            isFrenzy = true;
+                            expireFrenzy = System.currentTimeMillis() + 5000;
+                        }
+                        if (gobPopSpec.getType().equals("SpecialTime")) {
+                            isFreeze = true;
+                            expireFreeze = System.currentTimeMillis() + 5000;
+                            gameTimer.pauseTimer();
+                        }
+                        if (gobPopSpec.getType().equals("SpecialSpike")) {
+                            explosions.add(new ParticleExplosion( 20, 12, gobPopSpec.getCenter(), gobPopSpec.getType(), true ));
+                            score += 5;
+                            //gameSounds.playSound("SPIKE");
+                            SoundManager.playSound("SPIKE");
+                        }
+
+                        gameSpecialObjects.remove(gobPopSpec);
                         playerPoint = new PointF(0,0);
                     }
-                }
+                    // If playerPoint is inside a game object -> pop object
+                    currPop = false;
+                    IGameObject gobPop = new Obstacle(0,0,0,0,0);
 
-                if (currPop) {
-                    explosions.add(new ParticleExplosion( 10, 10, gobPopSpec.getCenter(), gobPopSpec.getType(), true ));
-                    // Set Special Skill
-                    if (gobPopSpec.getType().equals("SpecialDouble")) {
-                        isDoublePoints = true;
-                        expireDoublePoints = System.currentTimeMillis() + 5000;
-                    }
-                    if (gobPopSpec.getType().equals("SpecialFrenzy")) {
-                        isFrenzy = true;
-                        expireFrenzy = System.currentTimeMillis() + 5000;
-                    }
-                    if (gobPopSpec.getType().equals("SpecialTime")) {
-                        isFreeze = true;
-                        expireFreeze = System.currentTimeMillis() + 5000;
-                        gameTimer.pauseTimer();
-                    }
-                    if (gobPopSpec.getType().equals("SpecialSpike")) {
-                        explosions.add(new ParticleExplosion( 20, 12, gobPopSpec.getCenter(), gobPopSpec.getType(), true ));
-                        score += 5;
-                        //gameSounds.playSound("SPIKE");
-                        SoundManager.playSound("SPIKE");
+                    for(int i = gameObjects.size() - 1; i >= 0; i--){
+                        if ( gameObjects.get(i).pointInside(playerPoint)) {
+                            currPop = true;
+                            gameObjects.get(i).pop();
+                            gobPop = gameObjects.get(i);
+                            playerPoint = new PointF(0,0);
+                        }
                     }
 
-                    gameSpecialObjects.remove(gobPopSpec);
+                    if (currPop) {
+                        gobPop.pop();
+                        calcScore(gobPop);
+                        explosions.add(new ParticleExplosion( (int)gobPop.getSize()/partCount, gobPop.getSize(), gobPop.getCenter(), gobPop.getType(), true ));
+                        gameObjects.remove(gobPop);
+                        speed += 1;
+                        //gameSounds.playSound("POP");
+                        SoundManager.playSound("POP");
+                    }
+
+                    //Reset PlayerPoint
                     playerPoint = new PointF(0,0);
                 }
-                // If playerPoint is inside a game object -> pop object
-                currPop = false;
-                IGameObject gobPop = new Obstacle(0,0,0,0,0);
 
-                for(int i = gameObjects.size() - 1; i >= 0; i--){
-                    if ( gameObjects.get(i).pointInside(playerPoint)) {
-                        currPop = true;
-                        gameObjects.get(i).pop();
-                        gobPop = gameObjects.get(i);
-                        playerPoint = new PointF(0,0);
-                    }
-                }
-
-                if (currPop) {
-                    gobPop.pop();
-                    calcScore(gobPop);
-                    explosions.add(new ParticleExplosion( (int)gobPop.getSize()/partCount, gobPop.getSize(), gobPop.getCenter(), gobPop.getType(), true ));
-                    gameObjects.remove(gobPop);
-                    speed += 1;
-                    //gameSounds.playSound("POP");
-                    SoundManager.playSound("POP");
-                }
-
-                //Reset PlayerPoint
-                playerPoint = new PointF(0,0);
-            }
-
-            // If Special Spike hits object -> pop
-            for(IGameObjectSpecial gob: gameSpecialObjects){
-                if(gob.getType().equals("SpecialSpike")) {
-                    for(IGameObject ob: gameObjects) {
-                        if (CollisionManager.GameObjectSpecialCollide(ob,gob)) {
-                            explosions.add(new ParticleExplosion( (int)ob.getSize()/partCount, ob.getSize(), ob.getCenter(), ob.getType(), true ));
-                            popped.add(ob);
-                            //gameSounds.playSound("POP");
-                            SoundManager.playSound("POP");
+                // If Special Spike hits object -> pop
+                for(IGameObjectSpecial gob: gameSpecialObjects){
+                    if(gob.getType().equals("SpecialSpike")) {
+                        for(IGameObject ob: gameObjects) {
+                            if (CollisionManager.GameObjectSpecialCollide(ob,gob)) {
+                                explosions.add(new ParticleExplosion( (int)ob.getSize()/partCount, ob.getSize(), ob.getCenter(), ob.getType(), true ));
+                                popped.add(ob);
+                                //gameSounds.playSound("POP");
+                                SoundManager.playSound("POP");
+                            }
                         }
                     }
                 }
-            }
-            if (!popped.isEmpty()){
-                gameObjects.removeAll(popped);
-                popped = new ArrayList<>();
-            }
-
-            // Update Special Objects -> If Special Objects hits edge -> pop -> else update
-            for(IGameObjectSpecial gob: gameSpecialObjects){
-                if(!gob.InGameArea() ) {
-                    poppedSpec.add(gob);
-                } else {
-                    gob.update(playerPoint);
+                if (!popped.isEmpty()){
+                    gameObjects.removeAll(popped);
+                    popped = new ArrayList<>();
                 }
-            }
-            if (!poppedSpec.isEmpty()){
-                gameSpecialObjects.removeAll(poppedSpec);
-            }
 
-            // Update obstacles -> If objects current hits edge -> pop -> else grow
-            for(IGameObject gob: gameObjects){
-                if(!gob.InGameArea()) {
-                    popped.add(gob);
-                    if(!isFrenzy) {
-                        speed = 2;
+                // Update Special Objects -> If Special Objects hits edge -> pop -> else update
+                for(IGameObjectSpecial gob: gameSpecialObjects){
+                    if(!gob.InGameArea() ) {
+                        poppedSpec.add(gob);
+                    } else {
+                        gob.update(playerPoint);
                     }
-                } else {
-                    gob.grow(speed);
                 }
-            }
-            if (!popped.isEmpty()){
-                gameObjects.removeAll(popped);
-            }
+                if (!poppedSpec.isEmpty()){
+                    gameSpecialObjects.removeAll(poppedSpec);
+                }
 
-            //Explosions
-            for(ParticleExplosion pe : explosions) {
-                if (pe.getState() == 0) {
-                    pe.update();
-                } else {
-                    expDone.add(pe);
+                // Update obstacles -> If objects current hits edge -> pop -> else grow
+                for(IGameObject gob: gameObjects){
+                    if(!gob.InGameArea()) {
+                        popped.add(gob);
+                        if(!isFrenzy) {
+                            speed = 2;
+                        }
+                    } else {
+                        gob.grow(speed);
+                    }
                 }
-            }
-            if (!expDone.isEmpty()) {
-                explosions.removeAll(expDone);
-            }
+                if (!popped.isEmpty()){
+                    gameObjects.removeAll(popped);
+                }
 
-            // Handle Specials
-            if (isDoublePoints) {
-                if(System.currentTimeMillis() >= expireDoublePoints){
-                    isDoublePoints = false;
-                    expireDoublePoints = 0;
+                //Explosions
+                for(ParticleExplosion pe : explosions) {
+                    if (pe.getState() == 0) {
+                        pe.update();
+                    } else {
+                        expDone.add(pe);
+                    }
                 }
-            }
-            if (isFrenzy) {
-                newItemRate = 500;
-                if (System.currentTimeMillis() >= expireFrenzy){
-                    newItemRate = 1000;
-                    isFrenzy = false;
-                    expireFrenzy = 0;
+                if (!expDone.isEmpty()) {
+                    explosions.removeAll(expDone);
                 }
-            }
-            if (isFreeze) {
-                if (System.currentTimeMillis() >= expireFreeze) {
-                    isFreeze = false;
-                    expireFreeze = 0;
-                    gameTimer.startTimer();
-                }
-            }
 
-            // Create next object in queue
-            SelectedObject = obstacleQueue.getItem();
-            if(SelectedObject == null) {
-                // Populate more items in queue
-                for(int i=0; i<10; i++) {
-                    obstacleQueue.addItem();
+                // Handle Specials
+                if (isDoublePoints) {
+                    if(System.currentTimeMillis() >= expireDoublePoints){
+                        isDoublePoints = false;
+                        expireDoublePoints = 0;
+                    }
                 }
+                if (isFrenzy) {
+                    newItemRate = 500;
+                    if (System.currentTimeMillis() >= expireFrenzy){
+                        newItemRate = 1000;
+                        isFrenzy = false;
+                        expireFrenzy = 0;
+                    }
+                }
+                if (isFreeze) {
+                    if (System.currentTimeMillis() >= expireFreeze) {
+                        isFreeze = false;
+                        expireFreeze = 0;
+                        gameTimer.startTimer();
+                    }
+                }
+
+                // Create next object in queue
                 SelectedObject = obstacleQueue.getItem();
-            }
-            if (System.currentTimeMillis() - newItemTime >= newItemRate) {
-                PointF newItemPoint = new PointF(Common.randomFlt(250f, Constants.SCREEN_WIDTH - 250f), Common.randomFlt(250f, Constants.SCREEN_HEIGHT - 250f));
-                //addingShape = true;
-                IGameObject newObject = SelectedObject.NewInstance();
-                newObject.update(newItemPoint);
-                gameObjects.add(newObject);
-                obstacleQueue.removeItem();
-                SelectedObject = obstacleQueue.getItem();
-                newItemTime = System.currentTimeMillis();
-            }
+                if(SelectedObject == null) {
+                    // Populate more items in queue
+                    for(int i=0; i<10; i++) {
+                        obstacleQueue.addItem();
+                    }
+                    SelectedObject = obstacleQueue.getItem();
+                }
+                if (System.currentTimeMillis() - newItemTime >= newItemRate) {
+                    PointF newItemPoint = new PointF(Common.randomFlt(250f, Constants.SCREEN_WIDTH - 250f), Common.randomFlt(250f, Constants.SCREEN_HEIGHT - 250f));
+                    //addingShape = true;
+                    IGameObject newObject = SelectedObject.NewInstance();
+                    newObject.update(newItemPoint);
+                    gameObjects.add(newObject);
+                    obstacleQueue.removeItem();
+                    SelectedObject = obstacleQueue.getItem();
+                    newItemTime = System.currentTimeMillis();
+                }
 
-            // CountDownTimer
-            gameTimer.update();
-            if(gameTimer.IsFinished()) {
-                gameOver = true;
-                gameOverTime = System.currentTimeMillis();
+                // CountDownTimer
+                gameTimer.update();
+                if(gameTimer.IsFinished()) {
+                    gameOver = true;
+                    gameOverTime = System.currentTimeMillis();
 
-                //Set High Score
-                if (Math.round(score) > SceneManager.highscores.getMinHighscore() ) {
-                    SceneManager.highscores.updateHighscores(Math.round(score), Common.getPreferenceString("username"));
-                    SceneManager.saveScores();
+                    //Set High Score
+                    if (Math.round(score) > SceneManager.highscores.getMinHighscore() ) {
+                        SceneManager.highscores.updateHighscores(Math.round(score), Common.getPreferenceString("username"));
+                        SceneManager.saveScores();
+                    }
                 }
             }
         }
