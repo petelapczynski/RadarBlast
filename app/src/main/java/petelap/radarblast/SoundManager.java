@@ -48,7 +48,7 @@ public class SoundManager {
             soundID_pop_5 = soundPool.load(Constants.CONTEXT,R.raw.pop_5,1);
             soundID_pop_6 = soundPool.load(Constants.CONTEXT,R.raw.pop_6,1);
             soundID_pop_7 = soundPool.load(Constants.CONTEXT,R.raw.pop_7,1);
-            soundID_spike = soundPool.load(Constants.CONTEXT,R.raw.bomb,1);
+            soundID_spike = soundPool.load(Constants.CONTEXT,R.raw.spike,1);
         }
     }
 
