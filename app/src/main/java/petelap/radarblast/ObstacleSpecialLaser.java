@@ -76,7 +76,7 @@ public class ObstacleSpecialLaser extends ObstacleSpecials implements IGameObjec
     }
 
     public static IGameObjectSpecial GetInstance() {
-        return new ObstacleSpecialLaser(0,0,25, Color.WHITE);
+        return new ObstacleSpecialLaser(0,0,Constants.BTN_HEIGHT / 2f, Color.WHITE);
     }
 
     @Override

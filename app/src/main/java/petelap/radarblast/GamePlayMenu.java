@@ -20,15 +20,15 @@ import java.util.ArrayList;
 public class GamePlayMenu extends GamePlayBase implements IScene  {
     private long newItemTime;
     private final float bFirstY = Constants.SCREEN_HEIGHT/4f;
-    private final float bGap = 35f;
+    private final float bGap = Constants.BTN_HEIGHT * 0.7f;
 
-    private RectF bArea = new RectF(bLeft, bFirstY, bRight, bFirstY + bHeight);
-    private RectF bBlast = new RectF(bLeft, bArea.bottom + bGap, bRight, bArea.bottom + bHeight + + bGap);
-    private RectF bPicture = new RectF(bLeft, bBlast.bottom + bGap, bRight, bBlast.bottom + bHeight + bGap);
-    private RectF bLaser = new RectF(bLeft, bPicture.bottom + bGap, bRight, bPicture.bottom + bHeight + bGap);
-    private RectF bTutorial = new RectF(bLeft, bLaser.bottom + bGap, bRight, bLaser.bottom + bHeight + bGap);
-    private RectF bOptions = new RectF(bLeft, bTutorial.bottom + bGap, bRight, bTutorial.bottom + bHeight + bGap);
-    private RectF bExit = new RectF(bLeft, bOptions.bottom + bGap, bRight, bOptions.bottom + bHeight + bGap);
+    private RectF bArea = new RectF(Constants.BTN_LEFT, bFirstY, Constants.BTN_RIGHT, bFirstY + (Constants.BTN_HEIGHT * 3));
+    private RectF bBlast = new RectF(Constants.BTN_LEFT, bArea.bottom + bGap, Constants.BTN_RIGHT, bArea.bottom + (Constants.BTN_HEIGHT * 3) + bGap);
+    private RectF bPicture = new RectF(Constants.BTN_LEFT, bBlast.bottom + bGap, Constants.BTN_RIGHT, bBlast.bottom + (Constants.BTN_HEIGHT * 3) + bGap);
+    private RectF bLaser = new RectF(Constants.BTN_LEFT, bPicture.bottom + bGap, Constants.BTN_RIGHT, bPicture.bottom + (Constants.BTN_HEIGHT * 3) + bGap);
+    private RectF bTutorial = new RectF(Constants.BTN_LEFT, bLaser.bottom + bGap, Constants.BTN_RIGHT, bLaser.bottom + (Constants.BTN_HEIGHT * 3) + bGap);
+    private RectF bOptions = new RectF(Constants.BTN_LEFT, bTutorial.bottom + bGap, Constants.BTN_RIGHT, bTutorial.bottom + (Constants.BTN_HEIGHT * 3) + bGap);
+    private RectF bExit = new RectF(Constants.BTN_LEFT, bOptions.bottom + bGap, Constants.BTN_RIGHT, bOptions.bottom + (Constants.BTN_HEIGHT * 3) + bGap);
 
     public GamePlayMenu() {
         playerPoint = new PointF(0,0);
@@ -68,12 +68,11 @@ public class GamePlayMenu extends GamePlayBase implements IScene  {
         switch (event.getAction()) {
 
             case MotionEvent.ACTION_UP:
-                //System.out.println("MouseDown X:" + event.getX() + ", Y:" + event.getY() );
                 playerPoint.x = event.getX();
                 playerPoint.y = event.getY();
 
                 //Change Name
-                if(playerPoint.y < 200) {
+                if(playerPoint.y < (Constants.BTN_HEIGHT * 4f)) {
                     AlertDialog.Builder builder = new AlertDialog.Builder(Constants.CONTEXT);
                     builder.setTitle("Welcome to Radar Blast!");
                     builder.setMessage("Enter your name or initials.");
@@ -159,46 +158,46 @@ public class GamePlayMenu extends GamePlayBase implements IScene  {
 
         // User Name
         if (!Common.getPreferenceString("username").equals("_") && Common.getPreferenceString("username").length() > 0) {
-            drawCenterText(canvas, Color.WHITE, 50, 100, "Welcome " + Common.getPreferenceString("username"), false);
+            drawCenterText(canvas, Color.WHITE, Constants.TXT_XS, (int)(Constants.BTN_HEIGHT * 2f), "Welcome " + Common.getPreferenceString("username"), false);
         }
 
         //Logo
-        drawCenterText(canvas, Color.WHITE, 150, Constants.SCREEN_HEIGHT/4 - 150, "Radar Blast", true);
+        drawCenterText(canvas, Color.WHITE, Constants.TXT_LG, Constants.SCREEN_HEIGHT/4 - (int)(Constants.BTN_HEIGHT * 3), "Radar Blast", true);
 
         //Button: Start Area
         canvas.drawRoundRect( bArea, 25,25, paint);
         canvas.drawRoundRect( bArea, 25,25, bPaint);
-        drawCenterText(canvas, Color.WHITE, 75,(int)bArea.centerY(), "Area Game", false);
+        drawCenterText(canvas, Color.WHITE, Constants.TXT_SM,(int)bArea.centerY(), "Area Game", false);
 
         //Button: Start Blast
         canvas.drawRoundRect( bBlast, 25,25, paint);
         canvas.drawRoundRect( bBlast, 25,25, bPaint);
-        drawCenterText(canvas, Color.WHITE, 75,(int)bBlast.centerY(), "Blast Game", false);
+        drawCenterText(canvas, Color.WHITE, Constants.TXT_SM,(int)bBlast.centerY(), "Blast Game", false);
 
         //Button: Start Picture
         canvas.drawRoundRect( bPicture, 25,25, paint);
         canvas.drawRoundRect( bPicture, 25,25, bPaint);
-        drawCenterText(canvas, Color.WHITE, 75,(int)bPicture.centerY(), "Picture Game", false);
+        drawCenterText(canvas, Color.WHITE, Constants.TXT_SM,(int)bPicture.centerY(), "Picture Game", false);
 
         //Button: Start Laser
         canvas.drawRoundRect( bLaser, 25,25, paint);
         canvas.drawRoundRect( bLaser, 25,25, bPaint);
-        drawCenterText(canvas, Color.WHITE, 75,(int)bLaser.centerY(), "Laser Game", false);
+        drawCenterText(canvas, Color.WHITE, Constants.TXT_SM,(int)bLaser.centerY(), "Laser Game", false);
 
         //Button: How to Play
         canvas.drawRoundRect( bTutorial, 25,25, paint);
         canvas.drawRoundRect( bTutorial, 25,25, bPaint);
-        drawCenterText(canvas, Color.WHITE, 75,(int)bTutorial.centerY(), "How to Play", false);
+        drawCenterText(canvas, Color.WHITE, Constants.TXT_SM,(int)bTutorial.centerY(), "How to Play", false);
 
         //Button: Options
         canvas.drawRoundRect( bOptions, 25,25, paint);
         canvas.drawRoundRect( bOptions, 25,25, bPaint);
-        drawCenterText(canvas, Color.WHITE, 75,(int)bOptions.centerY(), "Options", false);
+        drawCenterText(canvas, Color.WHITE, Constants.TXT_SM,(int)bOptions.centerY(), "Options", false);
 
         //Button: Exit
         canvas.drawRoundRect( bExit, 25,25, paint);
         canvas.drawRoundRect( bExit, 25,25, bPaint);
-        drawCenterText(canvas, Color.WHITE, 75,(int)bExit.centerY(), "Exit", false);
+        drawCenterText(canvas, Color.WHITE, Constants.TXT_SM,(int)bExit.centerY(), "Exit", false);
     }
 
     @Override
@@ -225,7 +224,6 @@ public class GamePlayMenu extends GamePlayBase implements IScene  {
                 explosions.add(new ParticleExplosion((int) gobPop.getSize()/partCount, gobPop.getSize(), gobPop.getCenter(), gobPop.getType(), true));
                 gameObjects.remove(gobPop);
                 speed += 1;
-                //gameSounds.playSound("POP");
                 SoundManager.playSound("POP");
             }
         }
@@ -241,7 +239,6 @@ public class GamePlayMenu extends GamePlayBase implements IScene  {
             if(!gob.InGameArea()) {
                 popped.add(gob);
                 explosions.add(new ParticleExplosion((int) gob.getSize()/partCount, gob.getSize(), gob.getCenter(), gob.getType(), true));
-                //gameSounds.playSound("POP");
                 SoundManager.playSound("POP");
             }
         }

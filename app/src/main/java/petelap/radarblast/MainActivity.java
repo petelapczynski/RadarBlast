@@ -22,10 +22,47 @@ public class MainActivity extends Activity {
         // Full screen area, no title bar
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
 
+        // Display Metrics
         DisplayMetrics dm = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(dm);
         Constants.SCREEN_WIDTH = dm.widthPixels;
         Constants.SCREEN_HEIGHT = dm.heightPixels;
+        Constants.BTN_LEFT = ( (float)dm.widthPixels / 2f) - ((float)dm.widthPixels * 0.22f);
+        Constants.BTN_RIGHT = ( (float)dm.widthPixels / 2f) + ((float)dm.widthPixels * 0.22f);
+        Constants.BTN_HEIGHT = ((float)dm.heightPixels * 0.027f);
+
+        // Font sizes
+        if (dm.density >= 4.0f) {
+            // xxxhdpi
+            Constants.TXT_LG = 150;
+            Constants.TXT_MD = 100;
+            Constants.TXT_SM = 70;
+            Constants.TXT_XS = 60;
+        } else if (dm.density >= 3.0f) {
+            // xxhdpi
+            Constants.TXT_LG = 150;
+            Constants.TXT_MD = 100;
+            Constants.TXT_SM = 70;
+            Constants.TXT_XS = 60;
+        } else if (dm.density >= 2.0f) {
+            // xhdpi
+            Constants.TXT_LG = 130;
+            Constants.TXT_MD = 80;
+            Constants.TXT_SM = 70;
+            Constants.TXT_XS = 60;
+        } else if (dm.density >= 1.5f) {
+            // hdpi
+            Constants.TXT_LG = 70;
+            Constants.TXT_MD = 50;
+            Constants.TXT_SM = 30;
+            Constants.TXT_XS = 25;
+        } else {
+            // mdpi, ldpi
+            Constants.TXT_LG = 70;
+            Constants.TXT_MD = 50;
+            Constants.TXT_SM = 30;
+            Constants.TXT_XS = 25;
+        }
 
         // Default preferences
         PreferenceManager.setDefaultValues(this, R.xml.pref_main, false);
@@ -46,7 +83,7 @@ public class MainActivity extends Activity {
         setContentView(new GamePanel(this));
 
         // Input User Name dialog box
-        if (Common.getPreferenceString("username").equals("_")) {
+        if (Common.getPreferenceString("username").equals("_") || Common.getPreferenceString("username").equals("")) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle("Welcome to Radar Blast!");
             builder.setMessage("Enter your name or initials.");

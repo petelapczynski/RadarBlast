@@ -21,7 +21,7 @@ public class GamePlayLevelSelect extends GamePlayBase implements IScene {
     private ArrayList<Integer> gameLevelIntegers;
     private float scroll;
     private int iAnimation;
-    private RectF bMenu = new RectF(Constants.SCREEN_WIDTH/2f - 275, Constants.SCREEN_HEIGHT - 250, Constants.SCREEN_WIDTH/2f + 275, Constants.SCREEN_HEIGHT - 100);
+    private RectF bMenu = new RectF(Constants.BTN_LEFT, Constants.SCREEN_HEIGHT - (Constants.BTN_HEIGHT * 5), Constants.BTN_RIGHT, Constants.SCREEN_HEIGHT - (Constants.BTN_HEIGHT * 2));
     private String gameMode;
 
     public GamePlayLevelSelect(String GameMode) {
@@ -63,24 +63,24 @@ public class GamePlayLevelSelect extends GamePlayBase implements IScene {
         float bMid = Constants.SCREEN_WIDTH * 0.5f;
         float bRight = Constants.SCREEN_WIDTH * 0.75f;
         int c = 1;
-        float y = gameStartBack.top + 150;
+        float y = gameStartBack.top + (Constants.BTN_HEIGHT * 3);
         for (Levels.Level lvl: SceneManager.levels.getLevels()) {
             switch (c) {
                 case 1:
-                    gameLevelButtons.add(new RectF(bLeft - 100, y - 100, bLeft + 100, y + 100));
+                    gameLevelButtons.add(new RectF(bLeft - (Constants.BTN_HEIGHT * 2), y - (Constants.BTN_HEIGHT * 2), bLeft + (Constants.BTN_HEIGHT * 2), y + (Constants.BTN_HEIGHT * 2)));
                     break;
                 case 2:
-                    gameLevelButtons.add(new RectF(bMid - 100, y - 100, bMid + 100, y + 100));
+                    gameLevelButtons.add(new RectF(bMid - (Constants.BTN_HEIGHT * 2), y - (Constants.BTN_HEIGHT * 2), bMid + (Constants.BTN_HEIGHT * 2), y + (Constants.BTN_HEIGHT * 2)));
                     break;
                 case 3:
-                    gameLevelButtons.add(new RectF(bRight - 100, y - 100, bRight + 100, y + 100));
+                    gameLevelButtons.add(new RectF(bRight - (Constants.BTN_HEIGHT * 2), y - (Constants.BTN_HEIGHT * 2), bRight + (Constants.BTN_HEIGHT * 2), y + (Constants.BTN_HEIGHT * 2)));
                     break;
             }
             gameLevelIntegers.add( lvl.getNumber() );
             c++;
             if (c > 3) {
                 c = 1;
-                y += 250;
+                y += (Constants.BTN_HEIGHT * 5);
             }
         }
     }
@@ -165,11 +165,13 @@ public class GamePlayLevelSelect extends GamePlayBase implements IScene {
         // Display Level Buttons
         canvas.drawRect(gameStartBack, paint);
         canvas.drawRect(gameOverlay, overlayPaint);
-        drawCenterText(canvas, Color.WHITE, 255,100,200,Constants.SCREEN_WIDTH/2,"Level Selection");
+        drawCenterText(canvas, Color.WHITE, 255,Constants.TXT_MD, (int)(Constants.BTN_HEIGHT * 4),Constants.SCREEN_WIDTH/2,"Level Selection");
+//        drawCenterText(canvas, Color.WHITE, 255,100, 200,Constants.SCREEN_WIDTH/2,"Level Selection");
 
         canvas.drawRoundRect( bMenu, 25,25, paint);
         canvas.drawRoundRect( bMenu, 25,25, bPaint);
-        drawCenterText(canvas, Color.WHITE, 255,75,(int)bMenu.centerY(), (int)bMenu.centerX(),"Start Level");
+        drawCenterText(canvas, Color.WHITE, 255,Constants.TXT_SM, (int)bMenu.centerY(), (int)bMenu.centerX(),"Start Level");
+//        drawCenterText(canvas, Color.WHITE, 255,70, (int)bMenu.centerY(), (int)bMenu.centerX(),"Start Level");
 
         // Levels
         for(int i = 0; i < gameLevelButtons.size(); i++){
@@ -177,7 +179,8 @@ public class GamePlayLevelSelect extends GamePlayBase implements IScene {
                 if (!bSelectedLevel || (i != iLevel) || (iAnimation != 3)) {
                     canvas.drawCircle(gameLevelButtons.get(i).centerX(), gameLevelButtons.get(i).centerY(),(gameLevelButtons.get(i).right - gameLevelButtons.get(i).left)/2, paint);
                     canvas.drawCircle(gameLevelButtons.get(i).centerX(), gameLevelButtons.get(i).centerY(),(gameLevelButtons.get(i).right - gameLevelButtons.get(i).left)/2, bPaint);
-                    drawCenterText(canvas,Color.WHITE, 255,75,(int)gameLevelButtons.get(i).centerY(),(int)gameLevelButtons.get(i).centerX(),gameLevelIntegers.get(i).toString());
+                    drawCenterText(canvas,Color.WHITE, 255, Constants.TXT_SM, (int)gameLevelButtons.get(i).centerY(),(int)gameLevelButtons.get(i).centerX(),gameLevelIntegers.get(i).toString());
+//                    drawCenterText(canvas,Color.WHITE, 255, 70, (int)gameLevelButtons.get(i).centerY(),(int)gameLevelButtons.get(i).centerX(),gameLevelIntegers.get(i).toString());
                 }
             } else if ((gameLevelButtons.get(i).top <= gameStartBack.top && gameLevelButtons.get(i).centerY() >= gameStartBack.top )  || (gameLevelButtons.get(i).bottom >= gameStartBack.bottom && gameLevelButtons.get(i).centerY() <= gameStartBack.bottom)) {
                 //Button paint
@@ -204,7 +207,8 @@ public class GamePlayLevelSelect extends GamePlayBase implements IScene {
 
                 canvas.drawCircle(gameLevelButtons.get(i).centerX(), gameLevelButtons.get(i).centerY(),(gameLevelButtons.get(i).right - gameLevelButtons.get(i).left)/2, p);
                 canvas.drawCircle(gameLevelButtons.get(i).centerX(), gameLevelButtons.get(i).centerY(),(gameLevelButtons.get(i).right - gameLevelButtons.get(i).left)/2, b);
-                drawCenterText(canvas,Color.WHITE, alpha,75,(int)gameLevelButtons.get(i).centerY(),(int)gameLevelButtons.get(i).centerX(),gameLevelIntegers.get(i).toString());
+                drawCenterText(canvas,Color.WHITE, alpha,Constants.TXT_SM, (int)gameLevelButtons.get(i).centerY(),(int)gameLevelButtons.get(i).centerX(),gameLevelIntegers.get(i).toString());
+//                drawCenterText(canvas,Color.WHITE, alpha,70, (int)gameLevelButtons.get(i).centerY(),(int)gameLevelButtons.get(i).centerX(),gameLevelIntegers.get(i).toString());
             }
         }
 
@@ -216,7 +220,8 @@ public class GamePlayLevelSelect extends GamePlayBase implements IScene {
         //Button: Back to Menu
         canvas.drawRoundRect( bMenu, 25,25, paint);
         canvas.drawRoundRect( bMenu, 25,25, bPaint);
-        drawCenterText(canvas, Color.WHITE, 255, 75,(int)bMenu.centerY(),(int)bMenu.centerX(), "Back to Menu");
+        drawCenterText(canvas, Color.WHITE, 255, Constants.TXT_SM, (int)bMenu.centerY(),(int)bMenu.centerX(), "Back to Menu");
+//        drawCenterText(canvas, Color.WHITE, 255, 70, (int)bMenu.centerY(),(int)bMenu.centerX(), "Back to Menu");
     }
 
     @Override

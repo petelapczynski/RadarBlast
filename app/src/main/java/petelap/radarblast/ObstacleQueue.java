@@ -30,7 +30,7 @@ public class ObstacleQueue {
         bPaint.setAntiAlias(true);
 
         point = new PointF();
-        point.y = Constants.HEADER_HEIGHT / 2;
+        point.y = Constants.HEADER_HEIGHT / 2f;
 
         bAnimation = false;
     }
@@ -50,7 +50,7 @@ public class ObstacleQueue {
         bPaint.setAntiAlias(true);
 
         point = new PointF();
-        point.y = Constants.HEADER_HEIGHT / 2;
+        point.y = Constants.HEADER_HEIGHT / 2f;
     }
 
     public void addItem(){
@@ -120,16 +120,16 @@ public class ObstacleQueue {
             if (bAnimation) {
                 if (System.currentTimeMillis() < (startTime + 400)) {
                     float complete = 1f - (System.currentTimeMillis() - startTime) / 400.0f;
-                    size = 75 - (i * 13f) - (13f * complete);
-                    point.x = Constants.SCREEN_WIDTH - 100f - (i * 200f) -  (200f * complete);
+                    size = (Constants.BTN_HEIGHT * 1.5f) - (i * (Constants.BTN_HEIGHT * 0.26f)) - ((Constants.BTN_HEIGHT * 0.26f) * complete);
+                    point.x = Constants.SCREEN_WIDTH - (Constants.SCREEN_WIDTH * 0.0926f) - (i * (Constants.SCREEN_WIDTH * 0.1852f)) -  ((Constants.SCREEN_WIDTH * 0.1852f) * complete);
                 } else {
                     bAnimation = false;
-                    size = 75f - (i*13f);
-                    point.x = Constants.SCREEN_WIDTH - 100f - (i * 200f);
+                    size = (Constants.BTN_HEIGHT * 1.5f) - (i * (Constants.BTN_HEIGHT * 0.26f));
+                    point.x = Constants.SCREEN_WIDTH - (Constants.SCREEN_WIDTH * 0.0926f) - (i * (Constants.SCREEN_WIDTH * 0.1852f));
                 }
             } else {
-                size = 75f - (i*13f);
-                point.x = Constants.SCREEN_WIDTH - 100f - (i * 200f);
+                size = (Constants.BTN_HEIGHT * 1.5f) - (i * (Constants.BTN_HEIGHT * 0.26f));
+                point.x = Constants.SCREEN_WIDTH - (Constants.SCREEN_WIDTH * 0.0926f) - (i * (Constants.SCREEN_WIDTH * 0.1852f));
             }
 
             switch(item) {

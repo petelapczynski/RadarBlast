@@ -17,15 +17,15 @@ public class GamePlayArea extends GamePlayBase implements IScene {
     private Levels.Level lvl;
 
     private final float bFirstY = Constants.SCREEN_HEIGHT/2f;
-    private final float bGap = 50f;
+    private final float bGap = Constants.BTN_HEIGHT;
 
-    private RectF bStartLevel = new RectF(bLeft, (Constants.SCREEN_HEIGHT / 2f) + bGap, bRight, (Constants.SCREEN_HEIGHT / 2f) + bGap + bHeight);
-    private RectF bLevelGS = new RectF(bLeft, bStartLevel.bottom + bGap, bRight, bStartLevel.bottom + bGap + bHeight);
+    private RectF bStartLevel = new RectF(Constants.BTN_LEFT, (Constants.SCREEN_HEIGHT / 2f) + bGap, Constants.BTN_RIGHT, (Constants.SCREEN_HEIGHT / 2f) + bGap + (Constants.BTN_HEIGHT * 3));
+    private RectF bLevelGS = new RectF(Constants.BTN_LEFT, bStartLevel.bottom + bGap, Constants.BTN_RIGHT, bStartLevel.bottom + bGap + (Constants.BTN_HEIGHT * 3));
 
-    private RectF bReplay = new RectF(bLeft, bFirstY, bRight, bFirstY + bHeight);
-    private RectF bNext = new RectF(bLeft, bReplay.bottom + bGap, bRight, bReplay.bottom + bHeight + bGap);
-    private RectF bLevelGO = new RectF(bLeft, bNext.bottom + bGap, bRight, bNext.bottom + bHeight + bGap);
-    private RectF bMenu = new RectF(bLeft, bLevelGO.bottom + bGap, bRight, bLevelGO.bottom + bHeight + bGap);
+    private RectF bReplay = new RectF(Constants.BTN_LEFT, bFirstY, Constants.BTN_RIGHT, bFirstY + (Constants.BTN_HEIGHT * 3));
+    private RectF bNext = new RectF(Constants.BTN_LEFT, bReplay.bottom + bGap, Constants.BTN_RIGHT, bReplay.bottom + (Constants.BTN_HEIGHT * 3) + bGap);
+    private RectF bLevelGO = new RectF(Constants.BTN_LEFT, bNext.bottom + bGap, Constants.BTN_RIGHT, bNext.bottom + (Constants.BTN_HEIGHT * 3) + bGap);
+    private RectF bMenu = new RectF(Constants.BTN_LEFT, bLevelGO.bottom + bGap, Constants.BTN_RIGHT, bLevelGO.bottom + (Constants.BTN_HEIGHT * 3) + bGap);
 
     public GamePlayArea(Levels.Level level) {
         lvl = level;
@@ -68,14 +68,14 @@ public class GamePlayArea extends GamePlayBase implements IScene {
         bPaint.setColor(Color.BLACK);
         //Header Paint
         hPaint = new Paint();
-        hPaint.setTextSize(100);
+        hPaint.setTextSize(Constants.TXT_MD);
         hPaint.setStyle(Paint.Style.FILL);
         hPaint.setColor(Color.WHITE);
         //Text Paint
         txtPaint = new Paint();
         txtPaint.setTextAlign(Paint.Align.LEFT);
         txtPaint.setColor(Color.WHITE);
-        txtPaint.setTextSize(75);
+        txtPaint.setTextSize(Constants.TXT_SM);
 
         //Background
         bg = new Background(0,Constants.HEADER_HEIGHT,Constants.SCREEN_WIDTH,Constants.SCREEN_HEIGHT);
@@ -176,7 +176,6 @@ public class GamePlayArea extends GamePlayBase implements IScene {
                     //Button: Start Level
                     if( bStartLevel.contains(upPoint.x, upPoint.y) ) {
                         gameStart = true;
-                        //gameSounds.playMusic();
                         SoundManager.playMusic();
                     }
                     //Button: Level Select
@@ -220,13 +219,13 @@ public class GamePlayArea extends GamePlayBase implements IScene {
         bg.draw(canvas);
 
         // Header
-        canvas.drawRect(0,0,Constants.SCREEN_WIDTH,Constants.HEADER_HEIGHT,paint);
+        canvas.drawRect(0,0, Constants.SCREEN_WIDTH, Constants.HEADER_HEIGHT,paint);
 
         // Header Queue
         obstacleQueue.draw(canvas);
 
         // Score
-        canvas.drawText("" + Math.round(score), 50,150, hPaint );
+        canvas.drawText("" + Math.round(score), Constants.BTN_HEIGHT, (Constants.BTN_HEIGHT * 3), hPaint );
 
         // Obstacles
         obstacleManager.draw(canvas);
@@ -237,18 +236,18 @@ public class GamePlayArea extends GamePlayBase implements IScene {
             canvas.drawRect(gameOverlay, overlayPaint);
 
             // Level Details
-            drawCenterText(canvas, Color.WHITE, 100,(int)gameStartBack.top + 150, lvl.getName());
-            drawCenterText(canvas, Color.WHITE, 75, (int)gameStartBack.top + 300, lvl.getDesc());
-            drawCenterText(canvas, Color.WHITE, 60, (int)gameStartBack.top + 400, "Shapes in Queue: " + obstacleQueue.getCount() ) ;
-            drawCenterText(canvas, Color.WHITE, 60, (int)gameStartBack.top + 500, "Shapes to Avoid: " + obstacleManager.getCount() );
+            drawCenterText(canvas, Color.WHITE, Constants.TXT_MD,(int)gameStartBack.top + (int)(Constants.BTN_HEIGHT * 3), lvl.getName());
+            drawCenterText(canvas, Color.WHITE, Constants.TXT_SM,(int)gameStartBack.top + (int)(Constants.BTN_HEIGHT * 6), lvl.getDesc());
+            drawCenterText(canvas, Color.WHITE, Constants.TXT_XS,(int)gameStartBack.top + (int)(Constants.BTN_HEIGHT * 8),"Shapes in Queue: " + obstacleQueue.getCount() ) ;
+            drawCenterText(canvas, Color.WHITE, Constants.TXT_XS,(int)gameStartBack.top + (int)(Constants.BTN_HEIGHT * 10),"Shapes to Avoid: " + obstacleManager.getCount() );
             //Button: Start Level
             canvas.drawRoundRect( bStartLevel, 25,25, paint);
             canvas.drawRoundRect( bStartLevel, 25,25, bPaint);
-            drawCenterText(canvas, Color.WHITE, 75,(int)bStartLevel.centerY(), "Start Level");
+            drawCenterText(canvas, Color.WHITE, Constants.TXT_SM, (int)bStartLevel.centerY(), "Start Level");
             //Button: Level Select
             canvas.drawRoundRect( bLevelGS, 25,25, paint);
             canvas.drawRoundRect( bLevelGS, 25,25, bPaint);
-            drawCenterText(canvas, Color.WHITE, 75,(int)bLevelGS.centerY(), "Level Select");
+            drawCenterText(canvas, Color.WHITE, Constants.TXT_SM, (int)bLevelGS.centerY(), "Level Select");
         } else {
             // game started
             //Game Objects
@@ -266,36 +265,36 @@ public class GamePlayArea extends GamePlayBase implements IScene {
                 canvas.drawRect(gameOverlay, overlayPaint);
 
                 int vHeight = Constants.HEADER_HEIGHT/2;
-                drawCenterText(canvas, Color.WHITE, 100, vHeight, "Game Over!");
+                drawCenterText(canvas, Color.WHITE, Constants.TXT_MD, vHeight, "Game Over!");
 
                 // High scores
-                vHeight = Constants.HEADER_HEIGHT + 100;
-                drawCenterText(canvas, Color.WHITE, 100, vHeight,"Level " + SceneManager.ACTIVE_LEVEL + " High Scores:");
-                vHeight += 50;
+                vHeight = Constants.HEADER_HEIGHT + (int)(Constants.BTN_HEIGHT * 2);
+                drawCenterText(canvas, Color.WHITE, Constants.TXT_MD, vHeight,"Level " + SceneManager.ACTIVE_LEVEL + " High Scores:");
+                vHeight += Constants.BTN_HEIGHT;
                 for (Highscores.Highscore hs: SceneManager.highscores.getHighscores()) {
-                    vHeight += 100;
+                    vHeight += (Constants.BTN_HEIGHT * 2);
                     canvas.drawText(hs.getNumber() + ": " + hs.getScore() + " - " + hs.getName(), Constants.SCREEN_WIDTH/3f, vHeight, txtPaint);
                 }
 
                 //Button: Replay Level
                 canvas.drawRoundRect( bReplay, 25,25, paint);
                 canvas.drawRoundRect( bReplay, 25,25, bPaint);
-                drawCenterText(canvas, Color.WHITE, 75,(int)bReplay.centerY(), "Replay Level");
+                drawCenterText(canvas, Color.WHITE, Constants.TXT_SM, (int)bReplay.centerY(),"Replay Level");
 
                 //Button: Next Level
                 canvas.drawRoundRect( bNext, 25,25, paint);
                 canvas.drawRoundRect( bNext, 25,25, bPaint);
-                drawCenterText(canvas, Color.WHITE, 75,(int)bNext.centerY(), "Next Level");
+                drawCenterText(canvas, Color.WHITE, Constants.TXT_SM, (int)bNext.centerY(),"Next Level");
 
                 //Button: Level Select
                 canvas.drawRoundRect( bLevelGO, 25,25, paint);
                 canvas.drawRoundRect( bLevelGO, 25,25, bPaint);
-                drawCenterText(canvas, Color.WHITE, 75,(int)bLevelGO.centerY(), "Level Select");
+                drawCenterText(canvas, Color.WHITE, Constants.TXT_SM, (int)bLevelGO.centerY(),"Level Select");
 
                 //Button: Back to Menu
                 canvas.drawRoundRect( bMenu, 25,25, paint);
                 canvas.drawRoundRect( bMenu, 25,25, bPaint);
-                drawCenterText(canvas, Color.WHITE, 75,(int)bMenu.centerY(), "Back to Menu");
+                drawCenterText(canvas, Color.WHITE, Constants.TXT_SM, (int)bMenu.centerY(),"Back to Menu");
             }
         }
     }
@@ -353,13 +352,11 @@ public class GamePlayArea extends GamePlayBase implements IScene {
                         currentObject.pop();
                         explosions.add(new ParticleExplosion( (int)currentObject.getSize()/partCount, currentObject.getSize(), currentObject.getCenter(), currentObject.getType(), true ));
                         gameObjects.remove(currentObject);
-                        //gameSounds.playSound("POP");
                         SoundManager.playSound("POP");
 
                         gobPop.pop();
                         explosions.add(new ParticleExplosion( (int)gobPop.getSize()/partCount, gobPop.getSize(), gobPop.getCenter(), gobPop.getType(), true ));
                         gameObjects.remove(gobPop);
-                        //gameSounds.playSound("POP");
                         SoundManager.playSound("POP");
                         addingShape = false;
                         objectPop = true;
@@ -369,7 +366,6 @@ public class GamePlayArea extends GamePlayBase implements IScene {
                             currentObject.pop();
                             explosions.add(new ParticleExplosion( (int)currentObject.getSize()/partCount, currentObject.getSize(), currentObject.getCenter(), currentObject.getType(), true ));
                             gameObjects.remove(currentObject);
-                            //gameSounds.playSound("POP");
                             SoundManager.playSound("POP");
                             addingShape = false;
                             objectPop = true;

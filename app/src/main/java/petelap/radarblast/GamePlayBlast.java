@@ -26,10 +26,10 @@ public class GamePlayBlast extends GamePlayBase implements IScene  {
     private long expireFreeze;
 
     private final float bFirstY = Constants.SCREEN_HEIGHT * 0.7f;
-    private final float bGap = 50f;
+    private final float bGap = Constants.BTN_HEIGHT;
 
-    private RectF bStartLevel = new RectF(bLeft, bFirstY, bRight, bFirstY + bHeight);
-    private RectF bMenu = new RectF(bLeft, bStartLevel.bottom + bGap, bRight, bStartLevel.bottom + bGap + bHeight);
+    private RectF bStartLevel = new RectF(Constants.BTN_LEFT, bFirstY, Constants.BTN_RIGHT, bFirstY + (Constants.BTN_HEIGHT * 3));
+    private RectF bMenu = new RectF(Constants.BTN_LEFT, bStartLevel.bottom + bGap, Constants.BTN_RIGHT, bStartLevel.bottom + bGap + (Constants.BTN_HEIGHT * 3));
 
     public GamePlayBlast() {
         playerPoint = new PointF(0, 0);
@@ -120,7 +120,6 @@ public class GamePlayBlast extends GamePlayBase implements IScene  {
                     if (bStartLevel.contains(event.getX(), event.getY())) {
                         gameStart = true;
                         gameTimer.startTimer();
-                        //gameSounds.playMusic();
                         SoundManager.playMusic();
                     }
                     //Button: Menu
@@ -167,61 +166,61 @@ public class GamePlayBlast extends GamePlayBase implements IScene  {
 
         // Score
         Paint scorePaint = new Paint();
-        scorePaint.setTextSize(100);
+        scorePaint.setTextSize(Constants.TXT_MD);
         scorePaint.setStyle(Paint.Style.FILL);
         scorePaint.setColor(Color.WHITE);
-        canvas.drawText("" + Math.round(score), 50,150, scorePaint );
+        canvas.drawText("" + Math.round(score), Constants.BTN_HEIGHT,(Constants.BTN_HEIGHT * 3), scorePaint );
 
         // Countdown Timer
         scorePaint.setColor(Color.GREEN);
-        canvas.drawText("" + gameTimer.getTimeLeftInSeconds(), Constants.SCREEN_WIDTH - 150,150, scorePaint );
+        canvas.drawText("" + gameTimer.getTimeLeftInSeconds(), Constants.SCREEN_WIDTH - (Constants.BTN_HEIGHT * 3),(Constants.BTN_HEIGHT * 3), scorePaint );
 
         if(!gameStart || gameOver) {
             canvas.drawRect(gameOverlay, overlayPaint);
 
             int vHeight = Constants.SCREEN_HEIGHT/4;
             if (!gameStart) {
-                drawCenterText(canvas, Color.WHITE, 100, vHeight,"Blast Game!");
+                drawCenterText(canvas, Color.WHITE, Constants.TXT_MD, vHeight,"Blast Game!");
             }
             if (gameOver) {
-                drawCenterText(canvas, Color.WHITE, 100, vHeight,"Time's up!");
+                drawCenterText(canvas, Color.WHITE, Constants.TXT_MD, vHeight,"Time's up!");
             }
 
-            vHeight += 150;
+            vHeight += (Constants.BTN_HEIGHT * 3);
 
             // High scores
             Paint txtPaint = new Paint();
             txtPaint.setTextAlign(Paint.Align.LEFT);
             txtPaint.setColor(Color.WHITE);
-            txtPaint.setTextSize(75);
+            txtPaint.setTextSize(Constants.TXT_SM);
 
-            drawCenterText(canvas, Color.WHITE, 100, vHeight,"High Scores: ");
-            vHeight += 50;
+            drawCenterText(canvas, Color.WHITE, Constants.TXT_MD, vHeight,"High Scores: ");
+            vHeight += Constants.BTN_HEIGHT;
             for (Highscores.Highscore hs: SceneManager.highscores.getHighscores()) {
-                vHeight += 100;
+                vHeight += (Constants.BTN_HEIGHT * 2);
                 canvas.drawText(hs.getNumber() + ": " + hs.getScore() + " - " + hs.getName(), Constants.SCREEN_WIDTH/3f, vHeight, txtPaint);
             }
 
             //Button: Start Level
             canvas.drawRoundRect( bStartLevel, 25,25, paint);
             canvas.drawRoundRect( bStartLevel, 25,25, bPaint);
-            drawCenterText(canvas, Color.WHITE, 75,(int)bStartLevel.centerY(), "Start Level");
+            drawCenterText(canvas, Color.WHITE, Constants.TXT_SM, (int)bStartLevel.centerY(), "Start Level");
             //Button: Menu
             canvas.drawRoundRect( bMenu, 25,25, paint);
             canvas.drawRoundRect( bMenu, 25,25, bPaint);
-            drawCenterText(canvas, Color.WHITE, 75,(int)bMenu.centerY(), "Back to Menu");
+            drawCenterText(canvas, Color.WHITE, Constants.TXT_SM, (int)bMenu.centerY(), "Back to Menu");
         }
 
         // Special notifications
         if(!gameOver) {
             if (isDoublePoints) {
-                drawCenterText(canvas, Color.WHITE, 50, Constants.SCREEN_HEIGHT/2 + 100,"Double Points");
+                drawCenterText(canvas, Color.WHITE, Constants.TXT_XS, Constants.SCREEN_HEIGHT/2 + (int)(Constants.BTN_HEIGHT * 2),"Double Points");
             }
             if (isFrenzy) {
-                drawCenterText(canvas, Color.WHITE, 50, Constants.SCREEN_HEIGHT/2 + 200,"Frenzy");
+                drawCenterText(canvas, Color.WHITE, Constants.TXT_XS, Constants.SCREEN_HEIGHT/2 + (int)(Constants.BTN_HEIGHT * 4),"Frenzy");
             }
             if (isFreeze) {
-                drawCenterText(canvas, Color.WHITE, 50, Constants.SCREEN_HEIGHT/2 + 300,"Freeze");
+                drawCenterText(canvas, Color.WHITE, Constants.TXT_XS, Constants.SCREEN_HEIGHT/2 + (int)(Constants.BTN_HEIGHT * 6),"Freeze");
             }
         }
     }
@@ -277,7 +276,6 @@ public class GamePlayBlast extends GamePlayBase implements IScene  {
                         if (gobPopSpec.getType().equals("SpecialSpike")) {
                             explosions.add(new ParticleExplosion( 20, 12, gobPopSpec.getCenter(), gobPopSpec.getType(), true ));
                             score += 5;
-                            //gameSounds.playSound("SPIKE");
                             SoundManager.playSound("SPIKE");
                         }
 
@@ -303,7 +301,6 @@ public class GamePlayBlast extends GamePlayBase implements IScene  {
                         explosions.add(new ParticleExplosion( (int)gobPop.getSize()/partCount, gobPop.getSize(), gobPop.getCenter(), gobPop.getType(), true ));
                         gameObjects.remove(gobPop);
                         speed += 1;
-                        //gameSounds.playSound("POP");
                         SoundManager.playSound("POP");
                     }
 
@@ -318,7 +315,6 @@ public class GamePlayBlast extends GamePlayBase implements IScene  {
                             if (CollisionManager.GameObjectSpecialCollide(ob,gob)) {
                                 explosions.add(new ParticleExplosion( (int)ob.getSize()/partCount, ob.getSize(), ob.getCenter(), ob.getType(), true ));
                                 popped.add(ob);
-                                //gameSounds.playSound("POP");
                                 SoundManager.playSound("POP");
                             }
                         }

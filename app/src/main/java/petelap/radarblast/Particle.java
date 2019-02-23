@@ -10,7 +10,7 @@ public class Particle {
     private static final int STATE_DEAD = 1;
     private static final int DEFAULT_LIFETIME = 125;
     private static final int FADE_TIME = 5;
-    private static final int MAX_DIMENSION = 25;
+    private static final int MAX_DIMENSION = (int)(Constants.BTN_HEIGHT/2f);
     private static final int MAX_SPEED = 12;
 
     private int state;

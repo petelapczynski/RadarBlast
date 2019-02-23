@@ -57,7 +57,7 @@ public class SceneManager {
                 break;
             case "AREA":
                 // GamePlayArea
-                Constants.HEADER_HEIGHT = 200;
+                Constants.HEADER_HEIGHT = (int)(Constants.BTN_HEIGHT * 4f);
                 LEVEL_PREFIX = "area_" + level;
                 highscores = jsonFileHelper.getHighScores(LEVEL_PREFIX);
                 scenes.add(new GamePlayArea(level));
@@ -75,7 +75,7 @@ public class SceneManager {
                 break;
             case "PICTURE":
                 // GamePlayPicture
-                Constants.HEADER_HEIGHT = 200;
+                Constants.HEADER_HEIGHT = (int)(Constants.BTN_HEIGHT * 4f);
                 scenes.add(new GamePlayPicture());
                 break;
             case "LASER_LEVELS":
@@ -88,7 +88,7 @@ public class SceneManager {
                 break;
             case "LASER":
                 // GamePlayLaser
-                Constants.HEADER_HEIGHT = 200;
+                Constants.HEADER_HEIGHT = (int)(Constants.BTN_HEIGHT * 4f);
                 LEVEL_PREFIX = "laser_" + level;
                 highscores = jsonFileHelper.getHighScores(LEVEL_PREFIX);
                 scenes.add(new GamePlayLaser(level));

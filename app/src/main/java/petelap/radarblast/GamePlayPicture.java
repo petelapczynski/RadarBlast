@@ -21,14 +21,14 @@ public class GamePlayPicture extends GamePlayBase implements IScene {
     private boolean isLayerRefresh;
     private Bitmap bitmapLayer;
 
-    private final float bFirstY = Constants.SCREEN_HEIGHT/2f - 50;
-    private final float bGap = 50f;
+    private final float bFirstY = Constants.SCREEN_HEIGHT/2f - Constants.BTN_HEIGHT;
+    private final float bGap = Constants.BTN_HEIGHT;
 
     private Paint scorePaint;
 
-    private RectF bStartLevel = new RectF(bLeft, bFirstY, bRight, bFirstY + bHeight);
-    private RectF bQueueType = new RectF(bLeft, bStartLevel.bottom + bGap, bRight, bStartLevel.bottom + bGap + bHeight);
-    private RectF bMenuGS = new RectF(bLeft, bQueueType.bottom + bGap, bRight, bQueueType.bottom + bGap + bHeight);
+    private RectF bStartLevel = new RectF(Constants.BTN_LEFT, bFirstY, Constants.BTN_RIGHT, bFirstY + (Constants.BTN_HEIGHT * 3));
+    private RectF bQueueType = new RectF(Constants.BTN_LEFT, bStartLevel.bottom + bGap, Constants.BTN_RIGHT, bStartLevel.bottom + bGap + (Constants.BTN_HEIGHT * 3));
+    private RectF bMenuGS = new RectF(Constants.BTN_LEFT, bQueueType.bottom + bGap, Constants.BTN_RIGHT, bQueueType.bottom + bGap + (Constants.BTN_HEIGHT * 3));
 
     private String QueueType;
     private RectF SelectedRect;
@@ -69,7 +69,7 @@ public class GamePlayPicture extends GamePlayBase implements IScene {
         bPaint.setColor(Color.BLACK);
         //Score paint
         scorePaint = new Paint();
-        scorePaint.setTextSize(100);
+        scorePaint.setTextSize(Constants.TXT_MD);
         scorePaint.setStyle(Paint.Style.FILL);
         scorePaint.setColor(Color.WHITE);
 
@@ -87,7 +87,7 @@ public class GamePlayPicture extends GamePlayBase implements IScene {
         SoundManager.setGameMusic("AREA");
 
         SelectedRect = new RectF(0,0,0,0);
-        ScoreRect = new RectF(0,Constants.HEADER_HEIGHT,125,Constants.HEADER_HEIGHT + 125);
+        ScoreRect = new RectF(0,Constants.HEADER_HEIGHT,(Constants.BTN_HEIGHT * 2.5f),Constants.HEADER_HEIGHT + (Constants.BTN_HEIGHT * 2.5f));
     }
 
     private void reset() {
@@ -251,7 +251,7 @@ public class GamePlayPicture extends GamePlayBase implements IScene {
         }
 
         // Score
-        canvas.drawText("" + Math.round(score), 25,Constants.HEADER_HEIGHT + 100, scorePaint );
+        canvas.drawText("" + Math.round(score), Constants.BTN_HEIGHT / 2f,Constants.HEADER_HEIGHT + (Constants.BTN_HEIGHT * 2), scorePaint );
 
         if (!gameStart || gameOver) {
             // Display Level Details and button to start game
@@ -259,25 +259,25 @@ public class GamePlayPicture extends GamePlayBase implements IScene {
             canvas.drawRect(gameOverlay, overlayPaint);
 
             // Level Details
-            drawCenterText(canvas, Color.WHITE, 100,(int)gameStartBack.top + 150, "Hidden Picture");
-            drawCenterText(canvas, Color.WHITE, 75, (int)gameStartBack.top + 300, "Uncover the picture!");
-            drawCenterText(canvas, Color.WHITE, 75, (int)gameStartBack.top + 375, "Click the score to finish.");
+            drawCenterText(canvas, Color.WHITE, Constants.TXT_MD,(int)gameStartBack.top + (int)(Constants.BTN_HEIGHT * 3), "Hidden Picture");
+            drawCenterText(canvas, Color.WHITE, Constants.TXT_SM,(int)gameStartBack.top + (int)(Constants.BTN_HEIGHT * 6), "Uncover the picture!");
+            drawCenterText(canvas, Color.WHITE, Constants.TXT_SM,(int)gameStartBack.top + (int)(Constants.BTN_HEIGHT * 7.5f), "Click the score to finish.");
             //Button: Start Level
             canvas.drawRoundRect( bStartLevel, 25,25, paint);
             canvas.drawRoundRect( bStartLevel, 25,25, bPaint);
             if (gameOver) {
-                drawCenterText(canvas, Color.WHITE, 75,(int)bStartLevel.centerY(), "Next Level");
+                drawCenterText(canvas, Color.WHITE, Constants.TXT_SM, (int)bStartLevel.centerY(), "Next Level");
             } else {
-                drawCenterText(canvas, Color.WHITE, 75,(int)bStartLevel.centerY(), "Start Level");
+                drawCenterText(canvas, Color.WHITE, Constants.TXT_SM, (int)bStartLevel.centerY(), "Start Level");
             }
             //Button: Queue Type
             canvas.drawRoundRect( bQueueType, 25,25, paint);
             canvas.drawRoundRect( bQueueType, 25,25, bPaint);
-            drawCenterText(canvas, Color.WHITE, 75,(int)bQueueType.centerY(), "Toggle Queue");
+            drawCenterText(canvas, Color.WHITE, Constants.TXT_SM, (int)bQueueType.centerY(), "Toggle Queue");
             //Button: Exit to Main
             canvas.drawRoundRect( bMenuGS, 25,25, paint);
             canvas.drawRoundRect( bMenuGS, 25,25, bPaint);
-            drawCenterText(canvas, Color.WHITE, 75,(int)bMenuGS.centerY(), "Back to Menu");
+            drawCenterText(canvas, Color.WHITE, Constants.TXT_SM, (int)bMenuGS.centerY(), "Back to Menu");
         } else {
             // game started
             //Game Objects
@@ -359,14 +359,12 @@ public class GamePlayPicture extends GamePlayBase implements IScene {
                         currentObject.pop();
                         explosions.add(new ParticleExplosion( (int)currentObject.getSize()/partCount, currentObject.getSize(), currentObject.getCenter(), currentObject.getType(), true ));
                         gameObjects.remove(currentObject);
-                        //gameSounds.playSound("POP");
                         SoundManager.playSound("POP");
                         isLayerRefresh = true;
 
                         gobPop.pop();
                         explosions.add(new ParticleExplosion( (int)gobPop.getSize()/partCount, gobPop.getSize(), gobPop.getCenter(), gobPop.getType(), true ));
                         gameObjects.remove(gobPop);
-                        //gameSounds.playSound("POP");
                         SoundManager.playSound("POP");
                         addingShape = false;
                         objectPop = true;
@@ -376,7 +374,6 @@ public class GamePlayPicture extends GamePlayBase implements IScene {
                             currentObject.pop();
                             explosions.add(new ParticleExplosion( (int)currentObject.getSize()/partCount, currentObject.getSize(), currentObject.getCenter(), currentObject.getType(), true ));
                             gameObjects.remove(currentObject);
-                            //gameSounds.playSound("POP");
                             SoundManager.playSound("POP");
                             isLayerRefresh = true;
                             addingShape = false;

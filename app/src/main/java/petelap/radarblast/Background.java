@@ -6,7 +6,6 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RadialGradient;
-import android.graphics.Rect;
 import android.graphics.Shader;
 import android.os.AsyncTask;
 
@@ -15,31 +14,26 @@ import java.io.InputStream;
 public class Background {
     // Draws bitmap to full screen
     private Bitmap image;
-    private Rect src, dst;
 
     public Background(int left, int top, int right, int bottom) {
-        dst = new Rect(left, top, right, bottom);
         String imgStr = Common.getPreferenceString("background");
         if (imgStr.equals("bg_url")) {
             setBackgroundURL(Common.getPreferenceString("pictureURL"));
         } else {
             int resID = Constants.CONTEXT.getResources().getIdentifier(Common.getPreferenceString("background"), "drawable", Constants.CONTEXT.getPackageName());
-            image = BitmapFactory.decodeResource(Constants.CONTEXT.getResources(),resID);
-            src = new Rect(0, 0, image.getWidth(), image.getHeight());
+            image = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(Constants.CONTEXT.getResources(),resID), Constants.SCREEN_WIDTH,Constants.SCREEN_HEIGHT - Constants.HEADER_HEIGHT,false);
         }
     }
 
     public Background(String URLString, int left, int top, int right, int bottom) {
-        dst = new Rect(left, top, right, bottom);
         setBackgroundURL(URLString);
     }
 
     public Background(int color, int left, int top, int right, int bottom) {
-        dst = new Rect(left, top, right, bottom);
         int x, y, radius;
         x = Constants.SCREEN_WIDTH/2;
         y = (Constants.SCREEN_HEIGHT - Constants.HEADER_HEIGHT)/2 + Constants.HEADER_HEIGHT;
-        Bitmap b = Bitmap.createBitmap(Constants.SCREEN_WIDTH, Constants.SCREEN_HEIGHT, Bitmap.Config.ARGB_8888);
+        Bitmap b = Bitmap.createBitmap(Constants.SCREEN_WIDTH, Constants.SCREEN_HEIGHT - Constants.HEADER_HEIGHT, Bitmap.Config.ARGB_8888);
         Canvas c = new Canvas(b);
 
         if (Constants.SHAPE_GRADIENT) {
@@ -54,18 +48,17 @@ public class Background {
             c.drawColor( color );
         }
         image = b;
-        src = new Rect(0, 0, image.getWidth(), image.getHeight());
     }
 
     private void setBackgroundURL(String url){
         int resID = Constants.CONTEXT.getResources().getIdentifier("bg_gray", "drawable", Constants.CONTEXT.getPackageName());
-        image = BitmapFactory.decodeResource(Constants.CONTEXT.getResources(),resID);
+        image = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(Constants.CONTEXT.getResources(),resID),Constants.SCREEN_WIDTH,Constants.SCREEN_HEIGHT - Constants.HEADER_HEIGHT,false);
+
         new DownloadImageTask(image).execute(url);
-        src = new Rect(0, 0, image.getWidth(), image.getHeight());
     }
 
     public void draw(Canvas canvas){
-            canvas.drawBitmap(image, src, dst, null);
+        canvas.drawBitmap(image,0,Constants.HEADER_HEIGHT,null);
     }
 
     private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
@@ -90,8 +83,7 @@ public class Background {
 
         protected void onPostExecute(Bitmap result) {
             if (result != null) {
-                image = result;
-                src = new Rect(0, 0, image.getWidth(), image.getHeight());
+                image = Bitmap.createScaledBitmap(result,Constants.SCREEN_WIDTH,Constants.SCREEN_HEIGHT - Constants.HEADER_HEIGHT,false);
             }
         }
     }

@@ -33,10 +33,7 @@ public abstract class GamePlayBase {
 
     protected Background bg;
     protected Paint overlayPaint;
-    protected RectF gameOverlay = new RectF(0 , 0, Constants.SCREEN_WIDTH,Constants.SCREEN_HEIGHT);
-    protected RectF gameStartBack = new RectF(Constants.SCREEN_WIDTH * 10/100, Constants.SCREEN_HEIGHT * 20/100, Constants.SCREEN_WIDTH * 90/100, Constants.SCREEN_HEIGHT * 80/100);
+    protected RectF gameOverlay = new RectF(0 , 0, Constants.SCREEN_WIDTH, Constants.SCREEN_HEIGHT);
+    protected RectF gameStartBack = new RectF(Constants.SCREEN_WIDTH * 10f/100f, Constants.SCREEN_HEIGHT * 20f/100f, Constants.SCREEN_WIDTH * 90f/100f, Constants.SCREEN_HEIGHT * 80f/100f);
 
-    protected final float bLeft = Constants.SCREEN_WIDTH/2 - 275;
-    protected final float bRight = Constants.SCREEN_WIDTH/2 + 275;
-    protected final float bHeight = 150f;
 }

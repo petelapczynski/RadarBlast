@@ -24,16 +24,16 @@ public class GamePlayHowTo extends GamePlayBase implements IScene  {
     private long startTime;
     private GameTimer gameTimer;
 
-    private final float bFirstY = Constants.SCREEN_HEIGHT/2f - 200;
-    private final float bGap = 35f;
+    private final float bFirstY = Constants.SCREEN_HEIGHT/2f - (Constants.BTN_HEIGHT * 4);
+    private final float bGap = Constants.BTN_HEIGHT * 0.7f;
 
-    private RectF bArea = new RectF(bLeft, bFirstY, bRight, bFirstY + bHeight);
-    private RectF bBlast = new RectF(bLeft, bArea.bottom + bGap, bRight,  bArea.bottom + bHeight + bGap);
-    private RectF bPicture = new RectF(bLeft, bBlast.bottom + bGap, bRight, bBlast.bottom + bHeight + bGap);
-    private RectF bLaser = new RectF(bLeft, bPicture.bottom + bGap, bRight, bPicture.bottom + bHeight + bGap);
-    private RectF bMenu = new RectF(bLeft, bLaser.bottom + bGap, bRight, bLaser.bottom + bHeight + bGap);
-    private RectF bNext = new RectF(Constants.SCREEN_WIDTH/2f - 125, Constants.SCREEN_HEIGHT - 250, Constants.SCREEN_WIDTH/2f + 125, Constants.SCREEN_HEIGHT - 250 + bHeight);
-    private RectF bExit = new RectF(Constants.SCREEN_WIDTH - 300, Constants.SCREEN_HEIGHT - 250, Constants.SCREEN_WIDTH - 50, Constants.SCREEN_HEIGHT - 250 + bHeight);
+    private RectF bArea = new RectF(Constants.BTN_LEFT, bFirstY, Constants.BTN_RIGHT, bFirstY + (Constants.BTN_HEIGHT * 3));
+    private RectF bBlast = new RectF(Constants.BTN_LEFT, bArea.bottom + bGap, Constants.BTN_RIGHT,  bArea.bottom + (Constants.BTN_HEIGHT * 3) + bGap);
+    private RectF bPicture = new RectF(Constants.BTN_LEFT, bBlast.bottom + bGap, Constants.BTN_RIGHT, bBlast.bottom + (Constants.BTN_HEIGHT * 3) + bGap);
+    private RectF bLaser = new RectF(Constants.BTN_LEFT, bPicture.bottom + bGap, Constants.BTN_RIGHT, bPicture.bottom + (Constants.BTN_HEIGHT * 3) + bGap);
+    private RectF bMenu = new RectF(Constants.BTN_LEFT, bLaser.bottom + bGap, Constants.BTN_RIGHT, bLaser.bottom + (Constants.BTN_HEIGHT * 3) + bGap);
+    private RectF bNext = new RectF(Constants.SCREEN_WIDTH/2f - (Constants.BTN_HEIGHT * 2.5f), Constants.SCREEN_HEIGHT - (Constants.BTN_HEIGHT * 5), Constants.SCREEN_WIDTH/2f + (Constants.BTN_HEIGHT * 2.5f), Constants.SCREEN_HEIGHT - (Constants.BTN_HEIGHT * 2));
+    private RectF bExit = new RectF(Constants.SCREEN_WIDTH - (Constants.BTN_HEIGHT * 6), Constants.SCREEN_HEIGHT - (Constants.BTN_HEIGHT * 5), Constants.SCREEN_WIDTH - Constants.BTN_HEIGHT, Constants.SCREEN_HEIGHT - (Constants.BTN_HEIGHT * 2));
 
     private boolean areaTutorial;
     private boolean blastTutorial;
@@ -83,7 +83,7 @@ public class GamePlayHowTo extends GamePlayBase implements IScene  {
         txtPaint = new Paint();
         txtPaint.setTextAlign(Paint.Align.CENTER);
         txtPaint.setColor(Color.WHITE);
-        txtPaint.setTextSize(75);
+        txtPaint.setTextSize(Constants.TXT_SM);
 
         //Background
         bg = new Background(Color.DKGRAY,0,0,Constants.SCREEN_WIDTH,Constants.SCREEN_HEIGHT);
@@ -137,7 +137,7 @@ public class GamePlayHowTo extends GamePlayBase implements IScene  {
                 if (!areaTutorial && !blastTutorial && !pictureTutorial && !laserTutorial) {
                     //Button: Start Area Tutorial
                     if( bArea.contains(menuPoint.x, menuPoint.y) ) {
-                        Constants.HEADER_HEIGHT = 200;
+                        Constants.HEADER_HEIGHT = (int)(Constants.BTN_HEIGHT * 4f);
                         iScreen = 1;
                         iAnimation = 1;
                         areaTutorial = true;
@@ -245,42 +245,42 @@ public class GamePlayHowTo extends GamePlayBase implements IScene  {
 
         if (!areaTutorial && !blastTutorial && !pictureTutorial && !laserTutorial) {
             //Logo
-            drawCenterText(canvas, Color.WHITE, 150, Constants.SCREEN_HEIGHT/4, "How to Play", true);
+            drawCenterText(canvas, Color.WHITE, Constants.TXT_LG,Constants.SCREEN_HEIGHT/4, "How to Play", true);
             //Button: Start Area Tutorial
             canvas.drawRoundRect( bArea, 25,25, paint);
             canvas.drawRoundRect( bArea, 25,25, bPaint);
-            drawCenterText(canvas, Color.WHITE, 75,(int)bArea.centerY(), "Area Game", false);
+            drawCenterText(canvas, Color.WHITE, Constants.TXT_SM, (int)bArea.centerY(),"Area Game", false);
 
             //Button: Start Blast Tutorial
             canvas.drawRoundRect( bBlast, 25,25, paint);
             canvas.drawRoundRect( bBlast, 25,25, bPaint);
-            drawCenterText(canvas, Color.WHITE, 75,(int)bBlast.centerY(), "Blast Game", false);
+            drawCenterText(canvas, Color.WHITE, Constants.TXT_SM, (int)bBlast.centerY(),"Blast Game", false);
 
             //Button: Start Picture Tutorial
             canvas.drawRoundRect( bPicture, 25,25, paint);
             canvas.drawRoundRect( bPicture, 25,25, bPaint);
-            drawCenterText(canvas, Color.WHITE, 75,(int)bPicture.centerY(), "Picture Game", false);
+            drawCenterText(canvas, Color.WHITE, Constants.TXT_SM, (int)bPicture.centerY(),"Picture Game", false);
 
             //Button: Start Laser Tutorial
             canvas.drawRoundRect( bLaser, 25,25, paint);
             canvas.drawRoundRect( bLaser, 25,25, bPaint);
-            drawCenterText(canvas, Color.WHITE, 75,(int)bLaser.centerY(), "Laser Game", false);
+            drawCenterText(canvas, Color.WHITE, Constants.TXT_SM, (int)bLaser.centerY(),"Laser Game", false);
 
             //Button: Back to Menu
             canvas.drawRoundRect( bMenu, 25,25, paint);
             canvas.drawRoundRect( bMenu, 25,25, bPaint);
-            drawCenterText(canvas, Color.WHITE, 75,(int)bMenu.centerY(), "Back to Menu", false);
+            drawCenterText(canvas, Color.WHITE, Constants.TXT_SM, (int)bMenu.centerY(),"Back to Menu", false);
         } else {
             //Button: Exit
             canvas.drawRoundRect( bExit, 25,25, paint);
             canvas.drawRoundRect( bExit, 25,25, bPaint);
-            canvas.drawText("Exit", bExit.centerX(), bExit.bottom - 50, txtPaint);
+            canvas.drawText("Exit", bExit.centerX(), bExit.bottom - Constants.BTN_HEIGHT, txtPaint);
 
             //Button: Next
             if(bShowNext) {
                 canvas.drawRoundRect( bNext, 25,25, paint);
                 canvas.drawRoundRect( bNext, 25,25, bPaint);
-                drawCenterText(canvas, Color.WHITE, 75,(int)bNext.centerY(), "Next", false);
+                drawCenterText(canvas, Color.WHITE, Constants.TXT_SM, (int)bNext.centerY(),"Next", false);
             }
         }
 
@@ -319,45 +319,45 @@ public class GamePlayHowTo extends GamePlayBase implements IScene  {
 
             switch (iScreen) {
                 case 1:
-                    drawCenterText(canvas, Color.WHITE, 60, (int)bFirstY,"How is the 'Area Game' played?", false);
+                    drawCenterText(canvas, Color.WHITE, Constants.TXT_XS, (int)bFirstY,"How is the 'Area Game' played?", false);
                     break;
                 case 2:
-                    drawCenterText(canvas, Color.WHITE, 60, (int)bFirstY,"How is the 'Area Game' played?", false);
-                    drawCenterText(canvas, Color.WHITE, 60, (int)bFirstY + 100,"Great question! I'm glad you asked!", false);
+                    drawCenterText(canvas, Color.WHITE, Constants.TXT_XS, (int)bFirstY,"How is the 'Area Game' played?", false);
+                    drawCenterText(canvas, Color.WHITE, Constants.TXT_XS, (int)bFirstY + (int)(Constants.BTN_HEIGHT * 2),"Great question! I'm glad you asked!", false);
                     break;
                 case 3:
-                    drawCenterText(canvas, Color.WHITE, 60, (int)bFirstY,"The goal is to cover the play area", false);
-                    drawCenterText(canvas, Color.WHITE, 60, (int)bFirstY + 100,"with shapes while avoiding obstacles.", false);
+                    drawCenterText(canvas, Color.WHITE, Constants.TXT_XS, (int)bFirstY,"The goal is to cover the play area", false);
+                    drawCenterText(canvas, Color.WHITE, Constants.TXT_XS, (int)bFirstY + (int)(Constants.BTN_HEIGHT * 2),"with shapes while avoiding obstacles.", false);
                     break;
                 case 4:
-                    drawCenterText(canvas, Color.WHITE, 60, (int)bFirstY,"Let's learn about the game shapes.", false);
-                    drawCenterText(canvas, Color.WHITE, 60, (int)bFirstY + 100,"Each level you have a queue of shapes.", false);
-                    drawCenterText(canvas, Color.WHITE, 60, (int)bFirstY + 200,"You only see the next 5 shapes.", false);
-                    drawCenterText(canvas, Color.WHITE, 60, (int)bFirstY + 300,"The next shape is on the right =>", false);
+                    drawCenterText(canvas, Color.WHITE, Constants.TXT_XS, (int)bFirstY,"Let's learn about the game shapes.", false);
+                    drawCenterText(canvas, Color.WHITE, Constants.TXT_XS, (int)bFirstY + (int)(Constants.BTN_HEIGHT * 2),"Each level you have a queue of shapes.", false);
+                    drawCenterText(canvas, Color.WHITE, Constants.TXT_XS, (int)bFirstY + (int)(Constants.BTN_HEIGHT * 4),"You only see the next 5 shapes.", false);
+                    drawCenterText(canvas, Color.WHITE, Constants.TXT_XS, (int)bFirstY + (int)(Constants.BTN_HEIGHT * 6),"The next shape is on the right =>", false);
                     break;
                 case 5:
-                    drawCenterText(canvas, Color.WHITE, 60, (int)bFirstY,"Tap the play area to start the shape.", false);
-                    drawCenterText(canvas, Color.WHITE, 60, (int)bFirstY + 100,"It grows from the center.", false);
+                    drawCenterText(canvas, Color.WHITE, Constants.TXT_XS, (int)bFirstY,"Tap the play area to start the shape.", false);
+                    drawCenterText(canvas, Color.WHITE, Constants.TXT_XS, (int)bFirstY + (int)(Constants.BTN_HEIGHT * 2),"It grows from the center.", false);
                     break;
                 case 6:
-                    drawCenterText(canvas, Color.WHITE, 60, (int)bFirstY,"Tap again to stop growing the shape.", false);
-                    drawCenterText(canvas, Color.WHITE, 60, (int)bFirstY + 100,"Size does matter in this game!", false);
+                    drawCenterText(canvas, Color.WHITE, Constants.TXT_XS, (int)bFirstY,"Tap again to stop growing the shape.", false);
+                    drawCenterText(canvas, Color.WHITE, Constants.TXT_XS, (int)bFirstY + (int)(Constants.BTN_HEIGHT * 2),"Size does matter in this game!", false);
                     break;
                 case 7:
-                    drawCenterText(canvas, Color.WHITE, 60, (int)bFirstY,"Hit the play area edge...", false);
-                    drawCenterText(canvas, Color.WHITE, 60, (int)bFirstY + 100,"The shape will pop.", false);
+                    drawCenterText(canvas, Color.WHITE, Constants.TXT_XS, (int)bFirstY,"Hit the play area edge...", false);
+                    drawCenterText(canvas, Color.WHITE, Constants.TXT_XS, (int)bFirstY + (int)(Constants.BTN_HEIGHT * 2),"The shape will pop.", false);
                     break;
                 case 8:
-                    drawCenterText(canvas, Color.WHITE, 60, (int)bFirstY,"Hit another shape...", false);
-                    drawCenterText(canvas, Color.WHITE, 60, (int)bFirstY + 100,"Both shapes pop.", false);
+                    drawCenterText(canvas, Color.WHITE, Constants.TXT_XS, (int)bFirstY,"Hit another shape...", false);
+                    drawCenterText(canvas, Color.WHITE, Constants.TXT_XS, (int)bFirstY + (int)(Constants.BTN_HEIGHT * 2),"Both shapes pop.", false);
                     break;
                 case 9:
-                    drawCenterText(canvas, Color.WHITE, 60, (int)bFirstY,"The level ends...", false);
-                    drawCenterText(canvas, Color.WHITE, 60, (int)bFirstY + 100,"when you are out of shapes", false);
-                    drawCenterText(canvas, Color.WHITE, 60, (int)bFirstY + 200,"or hit a [Green] box.", false);
+                    drawCenterText(canvas, Color.WHITE, Constants.TXT_XS, (int)bFirstY,"The level ends...", false);
+                    drawCenterText(canvas, Color.WHITE, Constants.TXT_XS, (int)bFirstY + (int)(Constants.BTN_HEIGHT * 2),"when you are out of shapes", false);
+                    drawCenterText(canvas, Color.WHITE, Constants.TXT_XS, (int)bFirstY + (int)(Constants.BTN_HEIGHT * 4),"or hit a [Green] box.", false);
                     break;
                 case 10:
-                    drawCenterText(canvas, Color.WHITE, 125, (int)bFirstY,"Have Fun!", false);
+                    drawCenterText(canvas, Color.WHITE, Constants.TXT_MD, (int)bFirstY,"Have Fun!", false);
                     break;
                 default:
                     break;
@@ -371,10 +371,10 @@ public class GamePlayHowTo extends GamePlayBase implements IScene  {
                 // Header Queue
                 obstacleQueue.draw(canvas);
                 // Score
-                hPaint.setTextSize(100);
+                hPaint.setTextSize(Constants.TXT_MD);
                 hPaint.setStyle(Paint.Style.FILL);
                 hPaint.setColor(Color.WHITE);
-                canvas.drawText("" + Math.round(score), 50,150, hPaint );
+                canvas.drawText("" + Math.round(score), Constants.BTN_HEIGHT,(Constants.BTN_HEIGHT * 3), hPaint );
             }
         }
 
@@ -419,54 +419,54 @@ public class GamePlayHowTo extends GamePlayBase implements IScene  {
             */
             switch (iScreen) {
                 case 1:
-                    drawCenterText(canvas, Color.WHITE, 60, (int)bFirstY,"How is the 'Blast Game' played?", false);
+                    drawCenterText(canvas, Color.WHITE, Constants.TXT_XS, (int)bFirstY,"How is the 'Blast Game' played?", false);
                     break;
                 case 2:
-                    drawCenterText(canvas, Color.WHITE, 60, (int)bFirstY,"How is the 'Blast Game' played?", false);
-                    drawCenterText(canvas, Color.WHITE, 60, (int)bFirstY + 100,"Great question! I'm glad you asked!", false);
+                    drawCenterText(canvas, Color.WHITE, Constants.TXT_XS, (int)bFirstY,"How is the 'Blast Game' played?", false);
+                    drawCenterText(canvas, Color.WHITE, Constants.TXT_XS, (int)bFirstY + (int)(Constants.BTN_HEIGHT * 2),"Great question! I'm glad you asked!", false);
                     break;
                 case 3:
-                    drawCenterText(canvas, Color.WHITE, 60, (int)bFirstY,"The goal is to pop shapes to get the", false);
-                    drawCenterText(canvas, Color.WHITE, 60, (int)bFirstY + 100,"highest score in 60 seconds.", false);
-                    drawCenterText(canvas, Color.WHITE, 60, (int)bFirstY + 200,"Size does matter in this game!", false);
+                    drawCenterText(canvas, Color.WHITE, Constants.TXT_XS, (int)bFirstY,"The goal is to pop shapes to get the", false);
+                    drawCenterText(canvas, Color.WHITE, Constants.TXT_XS, (int)bFirstY + (int)(Constants.BTN_HEIGHT * 2),"highest score in 60 seconds.", false);
+                    drawCenterText(canvas, Color.WHITE, Constants.TXT_XS, (int)bFirstY + (int)(Constants.BTN_HEIGHT * 4),"Size does matter in this game!", false);
                     break;
                 case 4:
-                    drawCenterText(canvas, Color.WHITE, 60, (int)bFirstY,"Shapes will spawn and grow until", false);
-                    drawCenterText(canvas, Color.WHITE, 60, (int)bFirstY + 100,"they are tapped or hit the edge.", false);
-                    drawCenterText(canvas, Color.WHITE, 60, (int)bFirstY + 200,"If tapped... points are earned.", false);
-                    drawCenterText(canvas, Color.WHITE, 60, (int)bFirstY + 300,"If they hit the edge... no points.", false);
+                    drawCenterText(canvas, Color.WHITE, Constants.TXT_XS, (int)bFirstY,"Shapes will spawn and grow until", false);
+                    drawCenterText(canvas, Color.WHITE, Constants.TXT_XS, (int)bFirstY + (int)(Constants.BTN_HEIGHT * 2),"they are tapped or hit the edge.", false);
+                    drawCenterText(canvas, Color.WHITE, Constants.TXT_XS, (int)bFirstY + (int)(Constants.BTN_HEIGHT * 4),"If tapped... points are earned.", false);
+                    drawCenterText(canvas, Color.WHITE, Constants.TXT_XS, (int)bFirstY + (int)(Constants.BTN_HEIGHT * 6),"If they hit the edge... no points.", false);
                     break;
                 case 5:
-                    drawCenterText(canvas, Color.WHITE, 60, (int)bFirstY,"Keeping a combo streak alive", false);
-                    drawCenterText(canvas, Color.WHITE, 60, (int)bFirstY + 100,"earns faster shape growth", false);
-                    drawCenterText(canvas, Color.WHITE, 60, (int)bFirstY + 200,"and a higher point modifier.", false);
+                    drawCenterText(canvas, Color.WHITE, Constants.TXT_XS, (int)bFirstY,"Keeping a combo streak alive", false);
+                    drawCenterText(canvas, Color.WHITE, Constants.TXT_XS, (int)bFirstY + (int)(Constants.BTN_HEIGHT * 2),"earns faster shape growth", false);
+                    drawCenterText(canvas, Color.WHITE, Constants.TXT_XS, (int)bFirstY + (int)(Constants.BTN_HEIGHT * 4),"and a higher point modifier.", false);
                     break;
                 case 6:
-                    drawCenterText(canvas, Color.WHITE, 60, (int)bFirstY,"If a large shape is tapped", false);
-                    drawCenterText(canvas, Color.WHITE, 60, (int)bFirstY + 100,"there is a chance for good things.", false);
+                    drawCenterText(canvas, Color.WHITE, Constants.TXT_XS, (int)bFirstY,"If a large shape is tapped", false);
+                    drawCenterText(canvas, Color.WHITE, Constants.TXT_XS, (int)bFirstY + (int)(Constants.BTN_HEIGHT * 2),"there is a chance for good things.", false);
                     break;
                 case 7:
-                    drawCenterText(canvas, Color.WHITE, 60, (int)bFirstY,"Double Points: Earn double points", false);
+                    drawCenterText(canvas, Color.WHITE, Constants.TXT_XS, (int)bFirstY,"Double Points: Earn double points", false);
                     //
-                    drawCenterText(canvas, Color.WHITE, 60, (int)bFirstY + 200,"Freeze: Timer stops for 5 seconds", false);
-                    drawCenterText(canvas, Color.WHITE, 60, (int)bFirstY + 400,"Frenzy: More shapes spawn", false);
+                    drawCenterText(canvas, Color.WHITE, Constants.TXT_XS, (int)bFirstY + (int)(Constants.BTN_HEIGHT * 4),"Freeze: Timer stops for 5 seconds", false);
+                    drawCenterText(canvas, Color.WHITE, Constants.TXT_XS, (int)bFirstY + (int)(Constants.BTN_HEIGHT * 8),"Frenzy: More shapes spawn", false);
                     //add double pts, freeze, frenzy.
                     break;
                 case 8:
-                    drawCenterText(canvas, Color.WHITE, 60, (int)bFirstY,"If a small shape is popped", false);
-                    drawCenterText(canvas, Color.WHITE, 60, (int)bFirstY + 100,"there is a chance for bad things.", false);
+                    drawCenterText(canvas, Color.WHITE, Constants.TXT_XS, (int)bFirstY,"If a small shape is popped", false);
+                    drawCenterText(canvas, Color.WHITE, Constants.TXT_XS, (int)bFirstY + (int)(Constants.BTN_HEIGHT * 2),"there is a chance for bad things.", false);
                     break;
                 case 9:
-                    drawCenterText(canvas, Color.WHITE, 60, (int)bFirstY,"Spike Ball: If it touches another", false);
-                    drawCenterText(canvas, Color.WHITE, 60, (int)bFirstY + 100,"shape it pops it for no points.", false);
-                    drawCenterText(canvas, Color.WHITE, 60, (int)bFirstY + 200,"The Spike Ball itself can be popped.", false);
+                    drawCenterText(canvas, Color.WHITE, Constants.TXT_XS, (int)bFirstY,"Spike Ball: If it touches another", false);
+                    drawCenterText(canvas, Color.WHITE, Constants.TXT_XS, (int)bFirstY + (int)(Constants.BTN_HEIGHT * 2),"shape it pops it for no points.", false);
+                    drawCenterText(canvas, Color.WHITE, Constants.TXT_XS, (int)bFirstY + (int)(Constants.BTN_HEIGHT * 4),"The Spike Ball itself can be popped.", false);
                     break;
                 case 10:
-                    drawCenterText(canvas, Color.WHITE, 60, (int)bFirstY,"The level ends...", false);
-                    drawCenterText(canvas, Color.WHITE, 60, (int)bFirstY + 100,"when the countdown is reached.", false);
+                    drawCenterText(canvas, Color.WHITE, Constants.TXT_XS, (int)bFirstY,"The level ends...", false);
+                    drawCenterText(canvas, Color.WHITE, Constants.TXT_XS, (int)bFirstY + (int)(Constants.BTN_HEIGHT * 2),"when the countdown is reached.", false);
                     break;
                 case 11:
-                    drawCenterText(canvas, Color.WHITE, 125, (int)bFirstY,"Have Fun!", false);
+                    drawCenterText(canvas, Color.WHITE, Constants.TXT_MD, (int)bFirstY,"Have Fun!", false);
                     break;
                 default:
                     break;
@@ -474,14 +474,14 @@ public class GamePlayHowTo extends GamePlayBase implements IScene  {
             if (bHeader) {
                 // Score
                 Paint hPaint = new Paint();
-                hPaint.setTextSize(100);
+                hPaint.setTextSize(Constants.TXT_MD);
                 hPaint.setStyle(Paint.Style.FILL);
                 hPaint.setColor(Color.WHITE);
-                canvas.drawText("" + Math.round(score), 50,150, hPaint );
+                canvas.drawText("" + Math.round(score), Constants.BTN_HEIGHT,(Constants.BTN_HEIGHT * 3), hPaint );
 
                 // Countdown Timer
                 hPaint.setColor(Color.GREEN);
-                canvas.drawText("" + gameTimer.getTimeLeftInSeconds(), Constants.SCREEN_WIDTH - 150,150, hPaint );
+                canvas.drawText("" + gameTimer.getTimeLeftInSeconds(), Constants.SCREEN_WIDTH - (Constants.BTN_HEIGHT * 3),(Constants.BTN_HEIGHT * 3), hPaint );
             }
         }
 
@@ -521,38 +521,38 @@ public class GamePlayHowTo extends GamePlayBase implements IScene  {
 
             switch (iScreen) {
                 case 1:
-                    drawCenterText(canvas, Color.WHITE, 60, (int)bFirstY,"How is the 'Picture Game' played?", false);
+                    drawCenterText(canvas, Color.WHITE, Constants.TXT_XS, (int)bFirstY,"How is the 'Picture Game' played?", false);
                     break;
                 case 2:
-                    drawCenterText(canvas, Color.WHITE, 60, (int)bFirstY,"How is the 'Picture Game' played?", false);
-                    drawCenterText(canvas, Color.WHITE, 60, (int)bFirstY + 100,"Great question! I'm glad you asked!", false);
+                    drawCenterText(canvas, Color.WHITE, Constants.TXT_XS, (int)bFirstY,"How is the 'Picture Game' played?", false);
+                    drawCenterText(canvas, Color.WHITE, Constants.TXT_XS, (int)bFirstY + (int)(Constants.BTN_HEIGHT * 2),"Great question! I'm glad you asked!", false);
                     break;
                 case 3:
-                    drawCenterText(canvas, Color.WHITE, 60, (int)bFirstY,"The goal is to uncover the play area", false);
-                    drawCenterText(canvas, Color.WHITE, 60, (int)bFirstY + 100,"with shapes to reveal the picture.", false);
+                    drawCenterText(canvas, Color.WHITE, Constants.TXT_XS, (int)bFirstY,"The goal is to uncover the play area", false);
+                    drawCenterText(canvas, Color.WHITE, Constants.TXT_XS, (int)bFirstY + (int)(Constants.BTN_HEIGHT * 2),"with shapes to reveal the picture.", false);
                     break;
                 case 4:
-                    drawCenterText(canvas, Color.WHITE, 60, (int)bFirstY,"Let's learn about the game shapes.", false);
-                    drawCenterText(canvas, Color.WHITE, 60, (int)bFirstY + 100,"Each level you have a queue of shapes.", false);
+                    drawCenterText(canvas, Color.WHITE, Constants.TXT_XS, (int)bFirstY,"Let's learn about the game shapes.", false);
+                    drawCenterText(canvas, Color.WHITE, Constants.TXT_XS, (int)bFirstY + (int)(Constants.BTN_HEIGHT * 2),"Each level you have a queue of shapes.", false);
                     break;
                 case 5:
-                    drawCenterText(canvas, Color.WHITE, 60, (int)bFirstY,"Tap the play area to start the shape.", false);
-                    drawCenterText(canvas, Color.WHITE, 60, (int)bFirstY + 100,"It grows from the center.", false);
+                    drawCenterText(canvas, Color.WHITE, Constants.TXT_XS, (int)bFirstY,"Tap the play area to start the shape.", false);
+                    drawCenterText(canvas, Color.WHITE, Constants.TXT_XS, (int)bFirstY + (int)(Constants.BTN_HEIGHT * 2),"It grows from the center.", false);
                     break;
                 case 6:
-                    drawCenterText(canvas, Color.WHITE, 60, (int)bFirstY,"Tap again to stop growing the shape.", false);
-                    drawCenterText(canvas, Color.WHITE, 60, (int)bFirstY + 100,"A portion of the picture is revealed!", false);
+                    drawCenterText(canvas, Color.WHITE, Constants.TXT_XS, (int)bFirstY,"Tap again to stop growing the shape.", false);
+                    drawCenterText(canvas, Color.WHITE, Constants.TXT_XS, (int)bFirstY + (int)(Constants.BTN_HEIGHT * 2),"A portion of the picture is revealed!", false);
                     break;
                 case 7:
-                    drawCenterText(canvas, Color.WHITE, 60, (int)bFirstY,"Hit the play area edge...", false);
-                    drawCenterText(canvas, Color.WHITE, 60, (int)bFirstY + 100,"The shape will pop.", false);
+                    drawCenterText(canvas, Color.WHITE, Constants.TXT_XS, (int)bFirstY,"Hit the play area edge...", false);
+                    drawCenterText(canvas, Color.WHITE, Constants.TXT_XS, (int)bFirstY + (int)(Constants.BTN_HEIGHT * 2),"The shape will pop.", false);
                     break;
                 case 8:
-                    drawCenterText(canvas, Color.WHITE, 60, (int)bFirstY,"Hit part that is uncovered...", false);
-                    drawCenterText(canvas, Color.WHITE, 60, (int)bFirstY + 100,"Both shapes pop.", false);
+                    drawCenterText(canvas, Color.WHITE, Constants.TXT_XS, (int)bFirstY,"Hit part that is uncovered...", false);
+                    drawCenterText(canvas, Color.WHITE, Constants.TXT_XS, (int)bFirstY + (int)(Constants.BTN_HEIGHT * 2),"Both shapes pop.", false);
                     break;
                 case 9:
-                    drawCenterText(canvas, Color.WHITE, 125, (int)bFirstY,"Have Fun!", false);
+                    drawCenterText(canvas, Color.WHITE, Constants.TXT_MD, (int)bFirstY,"Have Fun!", false);
                     break;
                 default:
                     break;
@@ -566,10 +566,10 @@ public class GamePlayHowTo extends GamePlayBase implements IScene  {
                 // Header Queue
                 obstacleQueue.draw(canvas);
                 // Score
-                hPaint.setTextSize(100);
+                hPaint.setTextSize(Constants.TXT_MD);
                 hPaint.setStyle(Paint.Style.FILL);
                 hPaint.setColor(Color.WHITE);
-                canvas.drawText("" + Math.round(score), 50,150, hPaint );
+                canvas.drawText("" + Math.round(score), Constants.BTN_HEIGHT,(Constants.BTN_HEIGHT * 3), hPaint );
             }
         }
 
@@ -612,46 +612,46 @@ public class GamePlayHowTo extends GamePlayBase implements IScene  {
             }
             switch (iScreen) {
                 case 1:
-                    drawCenterText(canvas, Color.WHITE, 60, (int)bFirstY,"How is the 'Laser Game' played?", false);
+                    drawCenterText(canvas, Color.WHITE, Constants.TXT_XS, (int)bFirstY,"How is the 'Laser Game' played?", false);
                     break;
                 case 2:
-                    drawCenterText(canvas, Color.WHITE, 60, (int)bFirstY,"How is the 'Laser Game' played?", false);
-                    drawCenterText(canvas, Color.WHITE, 60, (int)bFirstY + 100,"Great question! I'm glad you asked!", false);
+                    drawCenterText(canvas, Color.WHITE, Constants.TXT_XS, (int)bFirstY,"How is the 'Laser Game' played?", false);
+                    drawCenterText(canvas, Color.WHITE, Constants.TXT_XS, (int)bFirstY + (int)(Constants.BTN_HEIGHT * 2),"Great question! I'm glad you asked!", false);
                     break;
                 case 3:
-                    drawCenterText(canvas, Color.WHITE, 60, (int)bFirstY,"The goal is to keep the laser", false);
-                    drawCenterText(canvas, Color.WHITE, 60, (int)bFirstY + 100,"inside of the play area.", false);
-                    drawCenterText(canvas, Color.WHITE, 60, (int)bFirstY + 200,"Bounce the laser off shapes", false);
-                    drawCenterText(canvas, Color.WHITE, 60, (int)bFirstY + 300,"to earn points.", false);
+                    drawCenterText(canvas, Color.WHITE, Constants.TXT_XS, (int)bFirstY,"The goal is to keep the laser", false);
+                    drawCenterText(canvas, Color.WHITE, Constants.TXT_XS, (int)bFirstY + (int)(Constants.BTN_HEIGHT * 2),"inside of the play area.", false);
+                    drawCenterText(canvas, Color.WHITE, Constants.TXT_XS, (int)bFirstY + (int)(Constants.BTN_HEIGHT * 4),"Bounce the laser off shapes", false);
+                    drawCenterText(canvas, Color.WHITE, Constants.TXT_XS, (int)bFirstY + (int)(Constants.BTN_HEIGHT * 6),"to earn points.", false);
                     break;
                 case 4:
-                    drawCenterText(canvas, Color.WHITE, 60, (int)bFirstY,"Let's learn about the game shapes.", false);
-                    drawCenterText(canvas, Color.WHITE, 60, (int)bFirstY + 100,"Each level you have a queue of shapes.", false);
-                    drawCenterText(canvas, Color.WHITE, 60, (int)bFirstY + 200,"You only see the next 5 shapes.", false);
-                    drawCenterText(canvas, Color.WHITE, 60, (int)bFirstY + 300,"The next shape is on the right =>", false);
+                    drawCenterText(canvas, Color.WHITE, Constants.TXT_XS, (int)bFirstY,"Let's learn about the game shapes.", false);
+                    drawCenterText(canvas, Color.WHITE, Constants.TXT_XS, (int)bFirstY + (int)(Constants.BTN_HEIGHT * 2),"Each level you have a queue of shapes.", false);
+                    drawCenterText(canvas, Color.WHITE, Constants.TXT_XS, (int)bFirstY + (int)(Constants.BTN_HEIGHT * 4),"You only see the next 5 shapes.", false);
+                    drawCenterText(canvas, Color.WHITE, Constants.TXT_XS, (int)bFirstY + (int)(Constants.BTN_HEIGHT * 6),"The next shape is on the right =>", false);
                     break;
                 case 5:
-                    drawCenterText(canvas, Color.WHITE, 60, (int)bFirstY,"Tap the play area to start the shape.", false);
-                    drawCenterText(canvas, Color.WHITE, 60, (int)bFirstY + 100,"It grows from the center.", false);
+                    drawCenterText(canvas, Color.WHITE, Constants.TXT_XS, (int)bFirstY,"Tap the play area to start the shape.", false);
+                    drawCenterText(canvas, Color.WHITE, Constants.TXT_XS, (int)bFirstY + (int)(Constants.BTN_HEIGHT * 2),"It grows from the center.", false);
                     break;
                 case 6:
-                    drawCenterText(canvas, Color.WHITE, 60, (int)bFirstY,"Tap again to stop growing the shape.", false);
-                    drawCenterText(canvas, Color.WHITE, 60, (int)bFirstY + 100,"Size does matter in this game!", false);
+                    drawCenterText(canvas, Color.WHITE, Constants.TXT_XS, (int)bFirstY,"Tap again to stop growing the shape.", false);
+                    drawCenterText(canvas, Color.WHITE, Constants.TXT_XS, (int)bFirstY + (int)(Constants.BTN_HEIGHT * 2),"Size does matter in this game!", false);
                     break;
                 case 7:
-                    drawCenterText(canvas, Color.WHITE, 60, (int)bFirstY,"Hit the play area edge...", false);
-                    drawCenterText(canvas, Color.WHITE, 60, (int)bFirstY + 100,"The shape will pop.", false);
+                    drawCenterText(canvas, Color.WHITE, Constants.TXT_XS, (int)bFirstY,"Hit the play area edge...", false);
+                    drawCenterText(canvas, Color.WHITE, Constants.TXT_XS, (int)bFirstY + (int)(Constants.BTN_HEIGHT * 2),"The shape will pop.", false);
                     break;
                 case 8:
-                    drawCenterText(canvas, Color.WHITE, 60, (int)bFirstY,"Hit another shape...", false);
-                    drawCenterText(canvas, Color.WHITE, 60, (int)bFirstY + 100,"Both shapes pop.", false);
+                    drawCenterText(canvas, Color.WHITE, Constants.TXT_XS, (int)bFirstY,"Hit another shape...", false);
+                    drawCenterText(canvas, Color.WHITE, Constants.TXT_XS, (int)bFirstY + (int)(Constants.BTN_HEIGHT * 2),"Both shapes pop.", false);
                     break;
                 case 9:
-                    drawCenterText(canvas, Color.WHITE, 60, (int)bFirstY,"The level ends...", false);
-                    drawCenterText(canvas, Color.WHITE, 60, (int)bFirstY + 100,"when the laser hits the edge.", false);
+                    drawCenterText(canvas, Color.WHITE, Constants.TXT_XS, (int)bFirstY,"The level ends...", false);
+                    drawCenterText(canvas, Color.WHITE, Constants.TXT_XS, (int)bFirstY + (int)(Constants.BTN_HEIGHT * 2),"when the laser hits the edge.", false);
                     break;
                 case 10:
-                    drawCenterText(canvas, Color.WHITE, 125, (int)bFirstY,"Have Fun!", false);
+                    drawCenterText(canvas, Color.WHITE, Constants.TXT_MD, (int)bFirstY,"Have Fun!", false);
                     break;
                 default:
                     break;
@@ -701,7 +701,6 @@ public class GamePlayHowTo extends GamePlayBase implements IScene  {
                     explosions.add(new ParticleExplosion((int) gobPop.getSize()/partCount, gobPop.getSize(), gobPop.getCenter(), gobPop.getType(), true));
                     gameObjects.remove(gobPop);
                     speed += 1;
-                    //gameSounds.playSound("POP");
                     SoundManager.playSound("POP");
                     currPop = false;
                 }
@@ -719,7 +718,6 @@ public class GamePlayHowTo extends GamePlayBase implements IScene  {
                     gobPopSpec.pop();
                     if (gobPopSpec.getType().equals("SpecialSpike")) {
                         score += 5;
-                        //gameSounds.playSound("SPIKE");
                         SoundManager.playSound("SPIKE");
                     }
                     explosions.add(new ParticleExplosion((int) gobPopSpec.getSize()/partCount, gobPopSpec.getSize(), gobPopSpec.getCenter(), gobPopSpec.getType(), true));
@@ -743,7 +741,6 @@ public class GamePlayHowTo extends GamePlayBase implements IScene  {
                 popped.add(gob);
                 explosions.add(new ParticleExplosion((int) gob.getSize()/partCount, gob.getSize(), gob.getCenter(), gob.getType(), true));
                 speed = 2;
-                //gameSounds.playSound("POP");
                 SoundManager.playSound("POP");
             }
         }
@@ -799,16 +796,16 @@ public class GamePlayHowTo extends GamePlayBase implements IScene  {
                     if (!bShowNext) {
                         if ((System.currentTimeMillis() > (startTime + 1000)) && (iAnimation == 1)) {
                             obstacleManager = new ObstacleManager();
-                            obstacleManager.addObstacle(100f,100f, Constants.SCREEN_WIDTH /5,Constants.SCREEN_HEIGHT/4,  Color.parseColor( Common.getPreferenceString("color_Obj") ));
+                            obstacleManager.addObstacle((Constants.BTN_HEIGHT * 2f),(Constants.BTN_HEIGHT * 2f), Constants.SCREEN_WIDTH /5,Constants.SCREEN_HEIGHT/4,  Color.parseColor( Common.getPreferenceString("color_Obj") ));
                             iAnimation += 1;
                         } else if ((System.currentTimeMillis() > (startTime + 2000)) && (iAnimation == 2)) {
-                            obstacleManager.addObstacle(100f,100f, Constants.SCREEN_WIDTH * 2/5,Constants.SCREEN_HEIGHT/4,  Color.parseColor( Common.getPreferenceString("color_Obj") ));
+                            obstacleManager.addObstacle((Constants.BTN_HEIGHT * 2f),(Constants.BTN_HEIGHT * 2f), Constants.SCREEN_WIDTH * 2/5,Constants.SCREEN_HEIGHT/4,  Color.parseColor( Common.getPreferenceString("color_Obj") ));
                             iAnimation += 1;
                         } else if ((System.currentTimeMillis() > (startTime + 3000)) && (iAnimation == 3)) {
-                            obstacleManager.addObstacle(100f,100f, Constants.SCREEN_WIDTH * 3/5,Constants.SCREEN_HEIGHT/4,  Color.parseColor( Common.getPreferenceString("color_Obj") ));
+                            obstacleManager.addObstacle((Constants.BTN_HEIGHT * 2f),(Constants.BTN_HEIGHT * 2f), Constants.SCREEN_WIDTH * 3/5,Constants.SCREEN_HEIGHT/4,  Color.parseColor( Common.getPreferenceString("color_Obj") ));
                             iAnimation += 1;
                         } else if ((System.currentTimeMillis() > (startTime + 4000)) && (iAnimation == 4)) {
-                            obstacleManager.addObstacle(100f,100f, Constants.SCREEN_WIDTH * 4/5,Constants.SCREEN_HEIGHT/4,  Color.parseColor( Common.getPreferenceString("color_Obj") ));
+                            obstacleManager.addObstacle((Constants.BTN_HEIGHT * 2f),(Constants.BTN_HEIGHT * 2f), Constants.SCREEN_WIDTH * 4/5,Constants.SCREEN_HEIGHT/4,  Color.parseColor( Common.getPreferenceString("color_Obj") ));
                             bShowNext = true;
                         }
                     }
@@ -816,7 +813,7 @@ public class GamePlayHowTo extends GamePlayBase implements IScene  {
                 case 4:
                     if (!bShowNext) {
                         if ((System.currentTimeMillis() > startTime) && (iAnimation == 1)) {
-                            Constants.HEADER_HEIGHT = 200;
+                            Constants.HEADER_HEIGHT = (int)(Constants.BTN_HEIGHT * 4f);
                             obstacleQueue = null;
                             obstacleQueue = new ObstacleQueue();
                             bHeader = true;
@@ -942,13 +939,11 @@ public class GamePlayHowTo extends GamePlayBase implements IScene  {
                                         currentObject.pop();
                                         explosions.add(new ParticleExplosion( (int)currentObject.getSize()/partCount, currentObject.getSize(), currentObject.getCenter(), currentObject.getType(), true ));
                                         gameObjects.remove(currentObject);
-                                        //gameSounds.playSound("POP");
                                         SoundManager.playSound("POP");
 
                                         gobPop.pop();
                                         explosions.add(new ParticleExplosion( (int)gobPop.getSize()/partCount, gobPop.getSize(), gobPop.getCenter(), gobPop.getType(), true ));
                                         gameObjects.remove(gobPop);
-                                        //gameSounds.playSound("POP");
                                         SoundManager.playSound("POP");
                                         bShowNext = true;
                                         speed = 1;
@@ -1029,13 +1024,13 @@ public class GamePlayHowTo extends GamePlayBase implements IScene  {
                 case 7:
                     if (!bShowNext) {
                         if ((System.currentTimeMillis() > (startTime + 1000)) && (iAnimation == 1)) {
-                            gameSpecialObjects.add(new ObstacleSpecialDouble(Constants.SCREEN_WIDTH/2f, bFirstY + 100f,85f,Color.WHITE));
+                            gameSpecialObjects.add(new ObstacleSpecialDouble(Constants.SCREEN_WIDTH/2f, bFirstY + (Constants.BTN_HEIGHT * 2f),(Constants.BTN_HEIGHT * 1.7f),Color.WHITE));
                             iAnimation += 1;
                         } else if ((System.currentTimeMillis() > (startTime + 2000)) && (iAnimation == 2)) {
-                            gameSpecialObjects.add(new ObstacleSpecialTime(Constants.SCREEN_WIDTH/2f, bFirstY + 300f,85f,Color.WHITE));
+                            gameSpecialObjects.add(new ObstacleSpecialTime(Constants.SCREEN_WIDTH/2f, bFirstY + (Constants.BTN_HEIGHT * 6f),(Constants.BTN_HEIGHT * 1.7f),Color.WHITE));
                             iAnimation += 1;
                         } else if ((System.currentTimeMillis() > (startTime + 3000)) && (iAnimation == 3)) {
-                            gameSpecialObjects.add(new ObstacleSpecialFrenzy(Constants.SCREEN_WIDTH/2f, bFirstY + 500f,85f,Color.WHITE));
+                            gameSpecialObjects.add(new ObstacleSpecialFrenzy(Constants.SCREEN_WIDTH/2f, bFirstY + (Constants.BTN_HEIGHT * 10f),(Constants.BTN_HEIGHT * 1.7f),Color.WHITE));
                             iAnimation += 1;
                             bAnimation = true;
                             bShowNext = true;
@@ -1118,7 +1113,7 @@ public class GamePlayHowTo extends GamePlayBase implements IScene  {
                 case 4:
                     if (!bShowNext) {
                         if ((System.currentTimeMillis() > startTime) && (iAnimation == 1)) {
-                            Constants.HEADER_HEIGHT = 200;
+                            Constants.HEADER_HEIGHT = (int)(Constants.BTN_HEIGHT * 4f);
                             obstacleQueue = null;
                             obstacleQueue = new ObstacleQueue();
                             bHeader = true;
@@ -1306,13 +1301,13 @@ public class GamePlayHowTo extends GamePlayBase implements IScene  {
                     bShowNext = true;
                     break;
                 case 3:
-                    laserObject = new ObstacleSpecialLaser(Constants.SCREEN_WIDTH/2f,255f, 25f, Color.YELLOW);
+                    laserObject = new ObstacleSpecialLaser(Constants.SCREEN_WIDTH/2f,Constants.HEADER_HEIGHT + Constants.BTN_HEIGHT + 5f, Constants.BTN_HEIGHT / 2f, Color.YELLOW);
                     bShowNext = true;
                     break;
                 case 4:
                     if (!bShowNext) {
                         if ((System.currentTimeMillis() > startTime) && (iAnimation == 1)) {
-                            Constants.HEADER_HEIGHT = 200;
+                            Constants.HEADER_HEIGHT = (int)(Constants.BTN_HEIGHT * 4f);
                             obstacleQueue = null;
                             obstacleQueue = new ObstacleQueue();
                             bHeader = true;
@@ -1468,13 +1463,11 @@ public class GamePlayHowTo extends GamePlayBase implements IScene  {
                                         currentObject.pop();
                                         explosions.add(new ParticleExplosion( (int)currentObject.getSize()/partCount, currentObject.getSize(), currentObject.getCenter(), currentObject.getType(), true ));
                                         gameObjects.remove(currentObject);
-                                        //gameSounds.playSound("POP");
                                         SoundManager.playSound("POP");
 
                                         gobPop.pop();
                                         explosions.add(new ParticleExplosion( (int)gobPop.getSize()/partCount, gobPop.getSize(), gobPop.getCenter(), gobPop.getType(), true ));
                                         gameObjects.remove(gobPop);
-                                        //gameSounds.playSound("POP");
                                         SoundManager.playSound("POP");
                                         bShowNext = true;
                                         speed = 1;
