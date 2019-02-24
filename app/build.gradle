@@ -18,9 +18,9 @@ android {
         applicationId "petelap.radarblast"
         minSdkVersion 21
         targetSdkVersion 27
-        versionCode 4
-        versionName "BetaRelease"
-        resValue 'string', "about_version_Summary", "Build 2019–02–21"
+        versionCode 5
+        versionName "ProductionRelease"
+        resValue 'string', "about_version_Summary", "Build 2019–02–24"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         signingConfig signingConfigs.config
         flavorDimensions "default"

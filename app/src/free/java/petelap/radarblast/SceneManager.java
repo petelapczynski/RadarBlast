@@ -140,8 +140,8 @@ public class SceneManager {
     }
 
     private static void adHandler() {
-        if (System.currentTimeMillis() >= (Constants.INIT_TIME + 300000) ) {
-            // 5 min Ad interval
+        if (System.currentTimeMillis() >= (Constants.INIT_TIME + 150000) ) {
+            // 2.5 min Ad interval
             Constants.GAME_STATUS = "AD";
             adsManager.showAd();
             Constants.INIT_TIME = System.currentTimeMillis();
